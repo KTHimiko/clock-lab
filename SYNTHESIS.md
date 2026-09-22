@@ -531,6 +531,69 @@ than a defect of the approach. The clean version of this test trains on the wide
 cohort and tests on the narrow one — which is the next stage, not a rescue of
 this one.
 
+## Stage 10 — it was the training range, not the design
+
+Stage 9 left the Horvath clocks unreachable and named a suspect: the family had
+trained on ages 35–83 and been tested on 19–101, so its slope was compressed by
+extrapolating. This stage runs the test backwards — train on GSE40279 (656
+samples, 19–101), test on GSE61151 (184, 35–83). Now the family has the wider
+range and the published clocks do not.
+
+*(GSE40279 is Hannum's training cohort, so a family trained there stands exactly
+where Hannum stands, and comparing them on GSE61151 is finally fair. Both
+Horvath clocks are external to both.)*
+
+| clock | r on test | scale | displacement per year of response | family configurations better on **both** |
+|---|---|---|---|---|
+| Horvath 2013 | +0.849 | 0.914 | 6.0 yr | **8** |
+| Horvath 2018 | +0.889 | 0.900 | 6.4 yr | **7** |
+| Hannum 2013 | +0.896 | 0.875 | 12.5 yr | 13 |
+| Levine 2018 | +0.795 | 0.859 | 15.8 yr | 22 |
+
+**Best family configuration: 1,000 probes, λ=1 — r = 0.922 at 3.9 years of
+displacement per year of age response.** More accurate than Horvath 2013 and
+roughly a third less exposed.
+
+*(These numbers are not comparable with stage 9's table: scale is measured on
+whichever cohort is the test set, so Horvath 2013 reads 6.91 there and 6.04
+here. The comparison inside each table is what carries meaning.)*
+
+### Where the design advantage actually lives — nowhere much
+
+| variant | r | scale | displacement per year of response |
+|---|---|---|---|
+| (a) Horvath's probes, Horvath's coefficients — the published clock | +0.849 | 0.914 | 6.0 yr |
+| (b) Horvath's probes, coefficients refitted on GSE40279 | +0.856 | 0.884 | 5.2 yr |
+| (c) 353 probes chosen by the family, fitted on GSE40279 | +0.912 | 0.971 | 4.7 yr |
+
+Refitting Horvath's own 353 CpGs on a modern wide cohort improves both axes
+(6.0 → 5.2). Letting the family pick its own 353 improves them again, and adds
+0.06 of correlation. **Horvath's probes are not special, and neither are his
+coefficients — what he had, in stage 9, was a training set that spanned the
+ages he was tested on.**
+
+### What this does not say
+
+The best clock built here still displaces **3.9 years between cell fractions for
+every year of genuine age response.** Reducible is not the same as eliminated;
+nothing in this sweep produced a clock that reads time and not composition. And
+the whole comparison rests on one test cohort of 184 people in a narrow band.
+
+### A second check rewritten after it failed, and why that is defensible here
+
+Check 4 first required the degenerate corner to look bad on the normalised axis.
+It failed at 10.5 against a median of 11.2 — and **the premise was wrong.** As λ
+grows, ridge does not converge to noise; it converges to the correlation-weighted
+direction, a perfectly reasonable estimator multiplied by a vanishing constant.
+Normalising by scale divides that constant out, so a collapsed configuration is
+entitled to a decent displacement-per-response. What disqualifies it is that its
+slope is 0.009 and it is wrong by ten years — it does not report an age at all.
+
+The replacement is a calibration band: slope between 0.5 and 1.5, which is what
+"reports years" means. **The result does not depend on the swap** — the best
+collapsed configuration reaches 10.5 and the frontier sits at 3.9, so they were
+never in contention.
+
 ---
 
 ## Corrections so far
@@ -551,6 +614,8 @@ this one.
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| reading stage 9's verdict as a statement about clock design | running the same test backwards, where the family beats both Horvath clocks on both axes | the conclusion that published clocks are better designed — they were better matched to their test range |
+| writing stage 10's check 4 on the assumption that large-λ ridge converges to noise | the check failing while the collapsed configurations were nowhere near the frontier | a check rewritten mid-stage, on a premise that was wrong rather than a threshold that was |
 | drawing stage 8's frontier with a scale-invariant accuracy axis and a scale-dependent displacement axis | the degenerate corner of the sweep scoring r = 0.885 and zero displacement at once, while predicting a constant | stage 8's practical conclusion — "dilution is a defence" was a model shrinking itself, not resisting anything |
 | stage 4 naming Σ\|β\| as the quantity that governs displacement | 45 trained clocks ranking +0.97 with the L2 norm against +0.75 with L1 | the practical conclusion — dilution defends, and stage 4 said concentration was irrelevant |
 | writing stage 8's degenerate-corner check with an absolute threshold on a sum whose scale rides on probe count | the check failing at 1.877 against a limit of 1.0, with both real clauses passing | a threshold rewritten after it failed, which is on the record rather than in the history |
