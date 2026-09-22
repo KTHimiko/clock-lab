@@ -5,38 +5,61 @@ Do epigenetic clocks measure ageing, or the cell composition of blood?
 Every longevity company sells a "biological age" test built on DNA methylation.
 The serious, unresolved objection: blood composition shifts with age —
 lymphocytes fall, myeloid cells rise — and each cell type carries its own
-methylation pattern. A clock fitted on whole blood may be reading **who is in the
-sample** rather than **how old those cells are**.
+methylation pattern. A clock fitted on whole blood may be reading **who is in
+the sample** rather than **how old those cells are**.
 
-## The design that makes it answerable
+## The answer, after fourteen stages
 
-Reinius et al. (GSE35069) sequenced **six donors, ten fractions each**: whole
-blood, PBMC, granulocytes, CD4+ T, CD8+ T, monocytes, B cells, NK cells,
-neutrophils, eosinophils.
+**Both, and the proportions matter more than either camp says.**
 
-Same person, same day, ten measurements. **Any difference in epigenetic age
-between those fractions cannot be ageing.** It is composition, and its size
-measures the confound directly.
+In sorted cells the effect is enormous: up to 35 years between fractions of one
+donor's blood drawn on one day, replicated on a second cohort and a second
+array — and that was measured on a panel too coarse to see the largest component
+of it. A naive CD8 T cell reads 47 years below expectation where a memory CD8
+reads near zero.
 
-That is a cleaner test than adjusting for composition statistically: it removes
-the mixture instead of correcting for it.
+In whole blood from real people, composition explains **10% to 32% of age
+acceleration**, depending on the clock, which lands on the published figures.
 
-## Status
+It can be **partly designed away**: excluding CpGs that correlate with naive-CD8
+identity cuts a clock's cell-type displacement by 41% while slightly improving
+its accuracy on an external cohort. It cannot reliably be **subtracted** away
+after the fact — a correction fitted on one cohort removes most of nothing in
+another.
 
-Stage 0 — feasibility — is done, and it already changed the question.
+Full argument, every number and every correction:
+[`SYNTHESIS.md`](SYNTHESIS.md).
 
-The original plan needed a cohort with methylation *and* measured cell counts.
-GSE61151 was the candidate: 573 samples, and the paper reports flow cytometry on
-95 of them. **Those counts were never deposited.** Fifteen metadata fields, none
-of them cellular. That is the same wall the previous project hit four times — an
-aggregated table answers questions about probes, and every question about people
-needs the cohort it was built from.
+## How it is built
 
-Checking first cost twenty minutes. Finding out later would have cost a night.
+Each stage is one script in `analysis/`, numbered, with its **sanity checks
+written into the docstring before the result is read**. Where a check failed,
+what happened to it is on the page rather than in the history — three checks in
+this project were revisited after failing, and each of those is recorded with
+the reasoning that justified it.
+
+`SYNTHESIS.md` carries a corrections table. It is the most useful thing in the
+repository: several stages reached conclusions that later stages overturned, and
+the overturned sections are **amended in place** rather than rewritten, so the
+path stays readable.
+
+## Data
+
+Four cohorts, all public, none redistributed here. Provenance, sizes, checksums
+and download commands in [`reference/README.md`](reference/README.md).
+
+| accession | what it is |
+|---|---|
+| GSE35069 | 6 donors × 10 purified fractions — the within-donor design |
+| GSE61151 | 188 whole blood samples with age, 35–83 |
+| GSE110554 | EPIC: 37 purified + 12 mixtures with known proportions |
+| GSE40279 | 656 whole blood samples with age, 19–101 |
+| GSE167998 | 12 leukocyte subtypes, naive and memory split |
 
 ## Clocks
 
-Four, all with published open coefficients, none refitted here:
+Four, all with published open coefficients, none refitted except where a stage
+says so explicitly:
 
 | clock | CpGs | transform |
 |---|---|---|
@@ -51,13 +74,11 @@ values published with each paper.
 ## Layout
 
 ```
-model/      the clocks
-analysis/   numbered stages
+model/      the clocks and the deconvolution
+analysis/   numbered stages, one question each
 scripts/    data loading
-reference/  third-party data (not versioned)
+reference/  third-party data provenance (the data itself is not versioned)
 ```
 
-## Data
-
-All open. Provenance, licence and download for each set in
-[`reference/README.md`](reference/README.md). Nothing is redistributed here.
+Analysis outputs land in `results/` and are not versioned either — every one of
+them is reproducible from the scripts and the download commands.
