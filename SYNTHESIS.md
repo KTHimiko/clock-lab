@@ -6,6 +6,29 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
+## The answer, after twelve stages
+
+**Both, and the proportions matter more than either camp says.**
+
+In sorted cells the effect is enormous: up to 35 years between fractions of one
+man's blood drawn on one day, replicated in a second cohort on a second array.
+In actual blood from actual people it is small — composition explains **0.9% to
+2.7%** of epigenetic age beyond chronological age, worth about **1 to 1.6 years
+of standard deviation** and 6 to 9 years between the extremes of a cohort.
+
+It cannot be designed away: two thirds of the best age-tracking probes in the
+genome sit in the quarter that varies most between cell types, so removing one
+removes the other, and no filtered clock ever beat an unfiltered one. It cannot
+reliably be subtracted away either: a correction fitted on one cohort removes
+most of nothing in another, because the deconvolution's split between
+neighbouring cell types does not transport even when its total does.
+
+What is *not* true is that the published clocks are badly designed. Their
+apparent advantage and their apparent deficit both turned out to be artefacts of
+what they were tested against — and when a family of ridge clocks is trained on
+a matched age range, it beats them, by about a third, on exposure per unit of
+age response. The floor it hits, 3.9 years, is the biology.
+
 ## The design that answers it
 
 Reinius et al. (GSE35069) split one blood draw from each of six men into ten
@@ -651,6 +674,58 @@ Under independence it would be 25%.
 probes that vary most between cell types.** That is the floor. The selection is
 not being careless — the probes that mark time are, substantially, the probes
 that mark which cell you are looking at. Removing one removes the other.
+
+## Stage 12 — the standard fix does not travel
+
+This is what practitioners do: estimate blood composition from the methylation
+and subtract the part of the epigenetic age it explains. On GSE40279 the model
+`clock_age ~ chronological_age + composition` is fitted and only the composition
+coefficients are kept — so applying them needs no age, which is the whole point
+of a clock. Fitting *with* age in the model matters: composition drifts with age,
+and a correction fitted without it would strip out real ageing along with the
+blood count.
+
+Then those coefficients, unchanged, are carried to GSE61151.
+
+| clock | composition R² at home | after | **composition R² away** | **after** | chance level | p |
+|---|---|---|---|---|---|---|
+| Horvath 2013 | 0.0086 | 0.0000 | 0.0182 | 0.0172 | 0.0076 | 0.046 |
+| Hannum 2013 | 0.0105 | 0.0000 | 0.0282 | **0.0107** | 0.0051 | 0.059 |
+| Levine 2018 | 0.0353 | 0.0000 | 0.0271 | 0.0174 | 0.0100 | 0.116 |
+| Horvath 2018 | 0.0020 | 0.0000 | 0.0091 | 0.0091 | 0.0058 | 0.177 |
+| family, k=1,000 | 0.0004 | 0.0000 | 0.0132 | 0.0123 | 0.0043 | 0.011 |
+
+At home the correction removes everything, which is guaranteed and proves
+nothing. **Away it removes 5%, 62%, 36%, 0% and 7%** — and what is left still
+sits above chance.
+
+It is at least cheap: correlation with age is unchanged to three decimals for
+every clock, and the mean error moves by at most 0.3 years.
+
+### Why it does not transfer, and the answer was already in stage 7
+
+The composition *signal* is present in both cohorts. What differs is how the
+deconvolution splits it between types — median CD8T is 0.036 in GSE40279 and
+0.000 in GSE61151, CD4T 0.129 against 0.179 — while the neutrophil fraction,
+which is two thirds of the sample and the easiest to pin down, agrees to within
+0.008.
+
+That is stage 7's recorded failure arriving with consequences. The proportions
+are collinear, so **the joint fit is sound while the split between neighbouring
+types is not** — and a correction made of per-type coefficients is built
+entirely out of the part that is not sound. The composition term is real in both
+cohorts and describable in neither's coordinates.
+
+### The extrapolation, reported and not counted
+
+The corrected clocks were also measured on purified cells, where composition is
+100% of one type and the correction learned its coefficients where neutrophils
+run 50–75% and B cells 1–4%.
+
+Displacement gets **worse** for every clock — Horvath 2013 from 5.52 to 13.67
+years. That is what extrapolating a linear term fifty percentage points outside
+its range does. It is reported because displacement is how this project measures
+exposure throughout, and it is not the verdict on anything.
 
 ---
 
