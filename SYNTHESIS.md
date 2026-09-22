@@ -385,6 +385,76 @@ the weak result it is, and not rescued.
 stage 2. The stage 5 column, from another cohort and another array, does not
 have that problem — and it is the weaker of the two.)*
 
+## Stage 8 — the stage 4 argument, finally measured
+
+Stage 4 concluded that the cell-type displacement of a clock is exactly what a
+random pairing of its weights with its probes' cell-type shifts produces, and
+that what separates clocks is therefore **gain** rather than probe choice. That
+was recorded as an argument, not a measurement, because it rested on two linear
+clocks — where a correlation is ±1 by arithmetic.
+
+Four clocks cannot test it. Forty-five can. This stage trains a family of ridge
+age predictors on GSE61151 whole blood, sweeping probe count (100 → 458,674) and
+penalty (10⁻³ → 10⁶), and measures each on two axes: **accuracy**, 5-fold
+cross-validated, and **displacement**, the stage 2 statistic, on GSE35069
+purified cells the training never touches.
+
+### Stage 4 was right about the mechanism and wrong about the quantity
+
+| summary of β | Spearman with displacement | log-log slope | residual scatter |
+|---|---|---|---|
+| L1 — Σ\|β\|, what stage 4 used | +0.747 | 0.82 | 1.80× |
+| **L2 — √Σβ²** | **+0.968** | 0.79 | 2.05× |
+| L2 weighted by each probe's cell-type shift | +0.967 | 0.81 | 2.01× |
+
+Spreading the same total weight over more probes leaves L1 untouched and drops
+L2. Displacement follows L2, not L1 — so **dilution is a defence**, and stage 4
+named the wrong norm. (All three leave about a two-fold residual scatter around
+a log-log line, so no single summary of β captures everything; the rank
+correlation is what separates them.)
+
+### The frontier
+
+The published clocks, recomputed on the same six fractions with the same
+statistic — *not* imported from stage 2, whose number is over ten fractions and
+is not comparable:
+
+| clock | displacement | family configurations that are flatter **and** reach r > 0.75 |
+|---|---|---|
+| Horvath 2013 | 5.52 yr | 10 |
+| Horvath 2018 | 5.77 yr | 11 |
+| Hannum 2013 | 10.96 yr | 22 |
+| Levine 2018 | 13.61 yr | 23 |
+
+Along the family's own Pareto edge, r = 0.888 costs 9.21 years of displacement,
+while r = 0.822 buys it down to 5.45 and r = 0.782 to 4.10. **The exposure is
+not the price of accuracy — it is the price of concentration.**
+
+### The caveat that governs how far this goes
+
+The two axes are not equally fair. Displacement is measured identically for both
+sides on GSE35069, which neither trained on — that axis is clean. Accuracy is
+not: the family is cross-validated *inside* the cohort it was trained on, while
+the published clocks arrive cold. The family plays at home.
+
+So the claim that survives is not "you can beat Hannum". It is: **displacement
+halves without losing accuracy within the cohort, and what governs it is the L2
+norm of the coefficients.** Whether the diluted version's accuracy transfers to
+another cohort, this stage did not test.
+
+### A check that was mis-specified, and what happened to it
+
+Check 3 required the degenerate corner to appear — at a large enough penalty,
+coefficients collapse and both axes go to zero. It had three clauses.
+Displacement → 0.020 years and |r| → 0.16 passed decisively. The third,
+**total absolute weight < 1.0, failed at 1.877** — because that total is a sum
+over probes, so its scale rides on probe count, and 1.877 across 458,674 probes
+is four millionths per probe. The threshold was meaningless when written.
+
+It was replaced by its scale-free form, weight *per probe*, and not deleted.
+Relaxing a check that has just failed is the move that should always be looked
+at twice, so it is in the docstring, in the output, and here.
+
 ---
 
 ## Corrections so far
@@ -405,6 +475,8 @@ have that problem — and it is the weaker of the two.)*
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| stage 4 naming Σ\|β\| as the quantity that governs displacement | 45 trained clocks ranking +0.97 with the L2 norm against +0.75 with L1 | the practical conclusion — dilution defends, and stage 4 said concentration was irrelevant |
+| writing stage 8's degenerate-corner check with an absolute threshold on a sum whose scale rides on probe count | the check failing at 1.877 against a limit of 1.0, with both real clauses passing | a threshold rewritten after it failed, which is on the record rather than in the history |
 | specifying stage 7's physiology check on neutrophils only — 64% of blood and the easiest cell to get right | three of the five unchecked types landing outside clinical range | nothing, because the joint test does not depend on the split; but the per-type reconciliation was read as weak evidence rather than as a broken measurement until this was found |
 
 Three of those returned plausible numbers without crashing, and the loader bug
