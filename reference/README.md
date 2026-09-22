@@ -36,6 +36,25 @@ cytometry on 95 samples; the values were not deposited with the series. The
 metadata carries gender, age, plate, well, chip and batch — nothing cellular.
 Recorded so the check is not repeated.
 
+## GSE40279 — Hannum et al., 656 whole blood samples with age
+
+Downloaded 2026-09-22 for stage 9, as an **external** cohort: a clock trained on
+GSE61151 and tested here has never seen any of these people.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40279>
+- 473,034 probes × 656 samples, 1,237,679,628 bytes compressed
+- md5 `5506575f4598dd4b88cbcdbdd90ac826`
+- ages 19 to 101, whole blood, two collection sites
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz"
+```
+
+**This is the cohort the Hannum clock was trained on.** So it is a fair external
+test for anything trained elsewhere, and an in-sample one for Hannum. Any table
+that puts Hannum's accuracy here beside another clock's is comparing a memory
+with a prediction, and says so.
+
 ## Clock coefficients — `clocks/`
 
 From the `dnaMethyAge` R package, which stores the values published with each

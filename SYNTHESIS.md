@@ -427,8 +427,15 @@ is not comparable:
 | Levine 2018 | 13.61 yr | 23 |
 
 Along the family's own Pareto edge, r = 0.888 costs 9.21 years of displacement,
-while r = 0.822 buys it down to 5.45 and r = 0.782 to 4.10. **The exposure is
-not the price of accuracy — it is the price of concentration.**
+while r = 0.822 buys it down to 5.45 and r = 0.782 to 4.10.
+
+> **Stage 9 overturned the practical half of this.** The frontier above mixes a
+> scale-invariant axis (correlation) with a scale-dependent one (displacement in
+> years), and that lets a model buy flatness by shrinking itself. The diluted
+> configurations were not reading less composition — they were responding less to
+> everything, age included. What survives from this stage is the mechanism:
+> displacement tracks L2, not L1. What does not survive is "dilution is a
+> defence". See stage 9.
 
 ### The caveat that governs how far this goes
 
@@ -455,6 +462,75 @@ It was replaced by its scale-free form, weight *per probe*, and not deleted.
 Relaxing a check that has just failed is the move that should always be looked
 at twice, so it is in the docstring, in the output, and here.
 
+## Stage 9 — the external cohort, and the frontier falls over
+
+Stage 8 ended on a caveat: its accuracy was cross-validated inside the cohort it
+trained on. GSE40279 settles it — 656 whole blood samples, ages 19 to 101, a
+different study and a different population, downloaded for this stage.
+
+*(It is also the cohort the Hannum clock was trained on. Hannum's accuracy here
+is a memory, not a prediction. It is reported and marked, and never used as a
+bar the family must clear.)*
+
+### The trap, which this stage walked into before climbing out
+
+**Correlation is scale-invariant.** At the degenerate end of a ridge sweep the
+coefficients collapse, predictions become the training mean plus an epsilon
+multiple of a real age direction — and r stays at 0.885 while every prediction
+is wrong by 13.7 years. Displacement, measured in years, collapses by the same
+epsilon.
+
+So the degenerate corner reads as *accurate and perfectly flat at once*, and it
+dominated the frontier. It is not a clock; it is a constant with a rumour of a
+direction.
+
+Both axes are therefore normalised by the predictor's scale — the slope of its
+prediction on real age in the external cohort — and displacement becomes years
+of cell-type spread **per year of genuine age response**. Epsilon cancels.
+
+**That normalisation kills stage 8's recommendation.** The diluted
+configurations were not flat; they were small:
+
+| configuration | raw displacement | scale | displacement per year of age response |
+|---|---|---|---|
+| 447,564 probes, λ=10⁻³ | 5.45 yr | 0.247 | **22.1** |
+| 100,000 probes, λ=10⁻³ | 6.36 yr | 0.280 | 22.7 |
+| 1,000 probes, λ=1 | 9.21 yr | 0.574 | 16.0 |
+| **100 probes, λ=1** | 8.30 yr | 0.564 | **14.7** |
+
+And on that measure the published clocks are better than anything the family
+produced:
+
+| clock | r on GSE40279 | scale | displacement per year of response | family configurations that beat it on both |
+|---|---|---|---|---|
+| **Horvath 2013** | +0.918 | 0.798 | **6.91** | **0** |
+| **Horvath 2018** | +0.940 | 0.787 | **7.33** | **0** |
+| Hannum 2013 | +0.946 | 0.843 | 12.99 | 0 — *and it trained here* |
+| Levine 2018 | +0.852 | 0.770 | 17.66 | 9 |
+
+### Dilution does not travel either
+
+Spearman between a configuration's L2 norm and how much accuracy it loses
+leaving home: **−0.384.** Higher L2 means *less* loss — the concentrated clocks
+transfer better. Dilution costs accuracy out of cohort on top of buying no real
+flatness.
+
+### What survives, and what this cost
+
+From stage 8, the mechanism survives: displacement tracks the L2 norm of the
+coefficients, not the L1 norm stage 4 named. The recommendation does not.
+
+**There is no evidence here that a better-chosen clock can be flatter than
+Horvath 2013 at equal accuracy.** The two Horvath clocks sit where nothing in a
+45-configuration sweep could reach them.
+
+One honest handicap, stated: the family trains on ages 35–83 and is tested on
+19–101, so its slope is compressed by extrapolating outside its training range,
+and its scale of ~0.56 against the published ~0.79 partly reflects that rather
+than a defect of the approach. The clean version of this test trains on the wide
+cohort and tests on the narrow one — which is the next stage, not a rescue of
+this one.
+
 ---
 
 ## Corrections so far
@@ -475,6 +551,7 @@ at twice, so it is in the docstring, in the output, and here.
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| drawing stage 8's frontier with a scale-invariant accuracy axis and a scale-dependent displacement axis | the degenerate corner of the sweep scoring r = 0.885 and zero displacement at once, while predicting a constant | stage 8's practical conclusion — "dilution is a defence" was a model shrinking itself, not resisting anything |
 | stage 4 naming Σ\|β\| as the quantity that governs displacement | 45 trained clocks ranking +0.97 with the L2 norm against +0.75 with L1 | the practical conclusion — dilution defends, and stage 4 said concentration was irrelevant |
 | writing stage 8's degenerate-corner check with an absolute threshold on a sum whose scale rides on probe count | the check failing at 1.877 against a limit of 1.0, with both real clauses passing | a threshold rewritten after it failed, which is on the record rather than in the history |
 | specifying stage 7's physiology check on neutrophils only — 64% of blood and the easiest cell to get right | three of the five unchecked types landing outside clinical range | nothing, because the joint test does not depend on the split; but the per-type reconciliation was read as weak evidence rather than as a broken measurement until this was found |
