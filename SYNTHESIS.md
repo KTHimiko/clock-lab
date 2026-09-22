@@ -137,6 +137,71 @@ That proposed mechanism rests on two linear clocks, where a correlation is
 numbers, not a measurement. **The measured result is the null one: there is no
 alignment to find.**
 
+## Stage 5 — it replicates, in other people, on another array
+
+Everything above rests on six men, one lab, one 450K run. GSE110554 (Salas et
+al.) is a different cohort, the EPIC array, and magnetic-bead separation:
+37 purified samples, ages 19 to 59.
+
+**The design is not the same, and that changed the statistic.** GSE35069 is
+paired — ten fractions per donor, so the within-person spread is measured
+directly. GSE110554 is not: each purified sample is one cell type from one
+*different* donor. The paired statistic does not exist here. So the replication
+is of the claim rather than the arithmetic — if cell type shifts epigenetic age,
+each cell type must carry its own systematic offset from its donor's real age,
+and those six offsets must spread further apart than shuffling the labels
+produces.
+
+| clock | EPIC coverage | spread across cell types | shuffle null | ratio | p | technical noise |
+|---|---|---|---|---|---|---|
+| Horvath 2013 | 94.6% | 2.79 yr | 1.52 | 1.8× | 0.003 | 1.13 yr |
+| Hannum 2013 | 91.5% | **10.24 yr** | 4.04 | 2.5× | <0.0001 | 2.05 yr |
+| Levine 2018 | 100% | **15.73 yr** | 6.01 | 2.6× | <0.0001 | 5.74 yr |
+| Horvath 2018 | 100% | 4.90 yr | 2.03 | 2.4× | <0.0001 | 2.79 yr |
+
+**All four clocks replicate**, and the ordering of magnitudes is the stage 2
+ordering: the Horvath clocks least exposed, Hannum and Levine two to three times
+more.
+
+### The two checks that could have killed it
+
+**The ruler.** Th2535-1 and Th2535-2 are the same donor, same cell type, same
+plate — technical replicates, and they only became visible after the loader fix
+below. Their difference *is* the measurement noise: 1.1, 2.1, 5.7 and 2.8 years.
+Every clock's cell-type spread clears its own noise floor, Horvath 2013 by the
+narrowest margin (2.5×).
+
+**The confound.** A clock compresses the age scale, so an older donor gets a
+negative age gap for free — every clock here has a slope of −0.11 to −0.23
+years per year. And the cell types are *not* age-balanced: B cells average 40.5
+years, neutrophils 26.8, a 13.7-year gap, and those two sat at opposite ends of
+the raw result. That is exactly what the confound would manufacture. Residualising
+each age gap on chronological age barely moves anything — 3.36 → 2.79,
+10.33 → 10.24, 15.87 → 15.73, 5.45 → 4.90 — and every p-value survives. The
+effect is not regression to the mean.
+
+### Do the two studies rank the cell types the same way?
+
+The harder test: not "is there an effect" but "is it the same effect". Six cell
+types map between the studies, so the null is exact — all 720 orderings.
+
+| clock | Spearman ρ | p |
+|---|---|---|
+| Levine 2018 | **+0.94** | 0.008 |
+| Horvath 2018 | +0.77 | 0.051 |
+| Hannum 2013 | +0.60 | 0.121 |
+| Horvath 2013 | +0.26 | 0.329 |
+
+**The clocks with the larger effects reproduce their ordering; the ones with
+small effects do not** — which is what a real signal buried in noise looks like,
+and the opposite of what a cohort artefact would do.
+
+The single most reproducible number in this project is CD8+ T cells. Hannum
+reads them 22 years young in the first cohort and 23 in the second; Levine, 22
+and 28. Two cohorts, two array versions, two sorting protocols.
+
+**So the stage 2 finding is biology, not GSE35069.**
+
 ---
 
 ## Corrections so far
@@ -146,6 +211,8 @@ alignment to find.**
 | the original question needed cell counts GSE61151 never deposited | checking the metadata before analysing | the question, changed for a better one |
 | metadata prefix strip guarded by `dtype == object`, which pandas 3.0 broke | every age coming back NaN | a validation run |
 | four samples with ages 0, 6, 7 — `agegap` leaking into `agebloodtaken` | the validation gate refusing to pass | r of 0.89 reading as 0.68 |
+| **the cause of that leak**: the loader named each GEO characteristics line after the *first* sample's field, so one sample with an extra field shifted every later field — for it alone | two cell types in GSE110554 that were Illumina barcodes | 8 samples mislabelled in GSE61151, 2 in GSE110554, and an exclusion rule written to work around it |
+| the blanket `^[^:]+:` prefix strip that positional naming required | it cut into `supplementary_file` URLs in all 49 samples | nothing yet — but it would cut into any field whose value holds a colon |
 | assuming the series had the paper's 573 samples | the file declaring 188 | an expectation, not a result |
 | decomposing variance over a matrix with missing values | components summing above 1 | a wrong answer about where the signal lives |
 | expecting cell-type-variable probes to make a clock vulnerable | the correlation coming out inverted | the obvious hypothesis |
@@ -154,7 +221,10 @@ alignment to find.**
 | writing the null as `einsum` over a `broadcast_to` view | 27 minutes at 99.5% of one core with no output | half an hour |
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 
-Two of those returned plausible numbers without crashing.
+Three of those returned plausible numbers without crashing, and the loader bug
+returned them for four stages before anything noticed. What finally caught it was
+not a check — it was reading the metadata of a new dataset closely enough to
+notice that two of its "cell types" were barcodes.
 
 ## Data
 
