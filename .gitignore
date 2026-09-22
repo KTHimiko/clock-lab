@@ -1,0 +1,15 @@
+# material de terceiros: baixado, nunca versionado aqui
+reference/data/
+reference/code/
+
+# saidas de analise
+results/
+work/
+*.sif
+
+# ruido
+__pycache__/
+*.pyc
+
+# ambiente virtual
+.venv/
