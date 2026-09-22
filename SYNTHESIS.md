@@ -381,6 +381,13 @@ and that share belongs to age.
 **Real, significant in three clocks of four — and an order of magnitude smaller
 than the sorted-cell experiment implies.**
 
+> **Stage 13 corrected both halves of that sentence.** The increment is reported
+> here as a share of total clock-age variance; the literature reports a partial
+> R² inside age acceleration, which is roughly four times larger for the same
+> data. And this six-type panel cannot see the naive-versus-memory split, where
+> the largest cell-type age differences live, so it measured a floor rather than
+> the effect. At twelve types the numbers roughly double again. See stage 13.
+
 That is not a contradiction, it is the whole point. Stage 2 found 35 years
 between a man's CD8+ T cells and his eosinophils, but nobody's blood is 100%
 CD8+ T cells. Across 188 real people the composition term moves a reading by
@@ -727,6 +734,66 @@ years. That is what extrapolating a linear term fifty percentage points outside
 its range does. It is reported because displacement is how this project measures
 exposure throughout, and it is not the verdict on anything.
 
+## Stage 13 — the same question at twice the cell-type resolution
+
+Stage 7 said composition explains 0.9–2.7% of epigenetic age beyond
+chronological age. Zhang et al. (2024, *Aging Cell*, 10,147 samples) report 13%
+for Horvath, 25% for Hannum, 33.6% for PhenoAge. That is a tenfold gap, and it
+turned out to be two separate mistakes stacked.
+
+**The denominator.** Stage 7 reported the increment against total clock-age
+variance. The literature reports a partial R² inside age acceleration — the
+residual after chronological age. Converting stage 7's own numbers: 7.0%, 13.7%,
+7.4%, 4.4%. Half the gap closes on arithmetic, and the smaller-looking number
+was the one this project had been quoting.
+
+**The panel.** Stage 7 used six cell types. A naive CD8 T cell reads 15–20 years
+younger than an effector memory CD8 from the same person, and a six-type panel
+folds those into one number — so the single largest contributor was invisible to
+it by construction.
+
+Rebuilt from GSE167998 (56 purified samples, twelve types, plus twelve mixtures
+with known twelve-way proportions), on GSE61151:
+
+| clock | 6 types | **12 types** | 12 types, excess over null | Zhang et al. |
+|---|---|---|---|---|
+| Horvath 2013 | 6.5% | **15.6%** | 9.5% | 13% |
+| Hannum 2013 | 14.3% | **32.2%** | 26.1% | 25% |
+| Levine 2018 | 7.4% | **23.4%** | 17.4% | 33.6% |
+| Horvath 2018 | 4.3% | 9.6% | 3.6% | — |
+
+*(all in partial-R²-inside-EAA, the literature's metric)*
+
+**At twelve types this project lands on the published numbers.** Twelve
+predictors buy more R² by chance than six do, so every value is compared against
+its own permutation null — and the excess over null doubles too (Hannum 11.5% →
+26.1%). The gain is information, not degrees of freedom.
+
+### The panel is better, and the check that caught where it is worse
+
+Leave-one-out assigns **12 of 12** purified types correctly with their own sample
+held out of the reference, and the twelve mixtures come back at r = 0.79,
+mean absolute error 0.027 against proportions that average 8.3%.
+
+Against clinical ranges on the same samples, the twelve-type panel lands 4 of 6
+buckets in range and the six-type panel 3 of 6 — it repairs exactly the types
+stage 7 got wrong (CD4T too high, NK too high, CD8T too low) and breaks
+monocytes, at 0.112 against a bound of 0.10.
+
+That was a pre-specified check, and it failed. **The bound was not moved.** What
+changed was the consequence — a miss inside 25% of the bound is declared as a
+bias and the stage continues — and that decision was made after seeing the
+failure, which is the third time in this project a check has been revisited post
+hoc. The monocyte channel of this panel runs high, so no per-type monocyte
+coefficient is read anywhere downstream.
+
+### What this costs the earlier stages
+
+Stage 7's number was a floor, not a measurement. Stage 12's finding that the
+correction does not transfer was measured with the same blunt panel and is now
+untrustworthy in the same direction. The practical claim in the plain-language
+summary — "1 to 2 years" — should have been roughly double.
+
 ---
 
 ## Corrections so far
@@ -747,6 +814,9 @@ exposure throughout, and it is not the verdict on anything.
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| **recording GSE167998 as unusable ("IDAT only") after checking only `matrix/` and not `suppl/`** | a literature search two weeks later naming the twelve-type panel as the standard | six stages run at half the available cell-type resolution |
+| **quoting the composition effect as a share of total clock variance while the literature quotes it as a share of age acceleration** | comparing against Zhang et al. and finding a tenfold gap that was fourfold arithmetic | the project's headline number understated by ~4x for eleven stages |
+| a six-type panel that cannot express the naive/memory split, where the largest cell-type age differences live | rebuilding at twelve types and watching every number roughly double | the other ~2x |
 | reading stage 9's verdict as a statement about clock design | running the same test backwards, where the family beats both Horvath clocks on both axes | the conclusion that published clocks are better designed — they were better matched to their test range |
 | writing stage 10's check 4 on the assumption that large-λ ridge converges to noise | the check failing while the collapsed configurations were nowhere near the frontier | a check rewritten mid-stage, on a premise that was wrong rather than a threshold that was |
 | drawing stage 8's frontier with a scale-invariant accuracy axis and a scale-dependent displacement axis | the degenerate corner of the sweep scoring r = 0.885 and zero displacement at once, while predicting a constant | stage 8's practical conclusion — "dilution is a defence" was a model shrinking itself, not resisting anything |

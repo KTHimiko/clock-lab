@@ -55,6 +55,33 @@ test for anything trained elsewhere, and an in-sample one for Hannum. Any table
 that puts Hannum's accuracy here beside another clock's is comparing a memory
 with a prediction, and says so.
 
+## GSE167998 — FlowSorted.BloodExtended.EPIC, twelve leukocyte subtypes
+
+Downloaded 2026-09-22 for stage 13. 56 purified samples across twelve types —
+the six of the earlier panel split into naive and memory lymphocytes, plus
+regulatory T cells, eosinophils and basophils — and twelve reconstructed
+mixtures whose twelve-way proportions are known.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE167998>
+- 865,859 probes × 68 samples, 819,745,924 bytes compressed
+- md5 `160eef349c185198ff3c2f3a1ff2252c`
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/suppl/GSE167998_matrix_processed.txt.gz"
+curl -sLO "https://raw.githubusercontent.com/immunomethylomics/FlowSorted.BloodExtended.EPIC/master/inst/extdata/Pheno.csv"
+```
+
+**An earlier pass recorded this accession as unusable — "IDAT only, would need
+R/minfi".** That was wrong, and it cost the project six stages of analysis at
+half the available cell-type resolution. GEO carries the processed betas as a
+*supplementary* file rather than as a series matrix, so a check that only looked
+at `matrix/` found nothing. The lesson is in the corrections table: when an
+accession looks empty, list `suppl/` before writing it off.
+
+The phenotype table is the package's own `inst/extdata/Pheno.csv`, which joins
+to the matrix on the sentrix barcode and carries each purified sample's cell
+type and each mixture's known proportions.
+
 ## Clock coefficients — `clocks/`
 
 From the `dnaMethyAge` R package, which stores the values published with each
