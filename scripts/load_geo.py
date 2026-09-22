@@ -38,9 +38,14 @@ def read_series_matrix(path, max_probes=None):
     meta = pd.DataFrame({k: pd.Series(v) for k, v in meta_rows.items()})
     if samples is not None:
         meta.insert(0, "gsm", pd.Series(samples))
+    # Strip the "field: " prefix GEO puts in front of every characteristics
+    # value. This used to be guarded by `dtype == object`, which silently stopped
+    # working under pandas 3.0, where text columns carry the `str` dtype instead:
+    # the ages stayed as "agebloodtaken: 41" and every downstream number came out
+    # NaN. Applying it unconditionally is safe — a value with no colon is left
+    # alone — and removes the dtype assumption entirely.
     for c in meta.columns:
-        if meta[c].dtype == object:
-            meta[c] = meta[c].astype(str).str.replace(r"^[^:]+:\s*", "", regex=True)
+        meta[c] = meta[c].astype(str).str.replace(r"^[^:]+:\s*", "", regex=True)
 
     betas = pd.read_csv(path, sep="\t", comment="!", index_col=0,
                         nrows=max_probes, na_values=["NA", "null", ""],

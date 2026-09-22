@@ -28,6 +28,19 @@ print(f"  sondas {betas.shape[0]:,}  amostras {betas.shape[1]}  "
 
 age = pd.to_numeric(meta.set_index("gsm")["agebloodtaken"], errors="coerce")
 age = age.reindex(betas.columns)
+
+# DOCUMENTED EXCLUSION. Four samples carry ages of 0, 6 and 7 in a cohort of
+# adult women. Those are not people: GEO stores each sample's characteristics as
+# positional lines, and when a sample has them in a different order the wrong
+# field lands in the wrong column — here the study's `agegap` (0, 5, 6, 7)
+# leaking into `agebloodtaken`. Four impossible values in 184 do more damage to
+# a correlation than their count suggests, so they are dropped and the drop is
+# recorded rather than quietly filtered.
+implausible = age < 18
+if implausible.any():
+    print(f"  excluidas {int(implausible.sum())} amostras com idade < 18 "
+          f"({sorted(age[implausible].dropna().unique())}) — ver comentario\n", flush=True)
+    age = age.mask(implausible)
 print(f"  idade: {age.notna().sum()} com valor, "
       f"{age.min():.0f} a {age.max():.0f} anos, mediana {age.median():.0f}\n", flush=True)
 
