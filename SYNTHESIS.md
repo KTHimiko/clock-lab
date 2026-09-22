@@ -56,6 +56,46 @@ been fitted across many tissues rather than on blood alone.
    PBMC is a subset of whole blood. Observed 2.16 years against 5.26 for a random
    pair. This is the check that would catch a donor mix-up, and it held.
 
+## Stage 3 — the obvious explanation is wrong
+
+If a clock varies between cell types, the natural guess is that its probes are
+cell-type markers. Decomposing the variance of all 454k complete probes into
+donor, cell type and residual, then asking where each clock's probes sit:
+
+| clock | probe cell-type variance (weighted by \|coefficient\|) | percentile | spread measured in stage 2 |
+|---|---|---|---|
+| Horvath 2018 | 0.557 | 78th | **4.5 yr** — the least exposed |
+| Hannum 2013 | 0.561 | 66th | 9.9 yr |
+| Horvath 2013 | 0.467 | 63rd | 5.1 yr |
+| Levine 2018 | **0.395** | 53rd | **10.7 yr** — the most exposed |
+
+**Spearman −0.40: the wrong direction.** Horvath 2018 draws on the most
+cell-type-variable probes and is the least vulnerable; Levine draws on the least
+and is the most.
+
+With four clocks this is not a test — four points give a perfect correlation by
+chance once in twenty-four. But the ordering is inverted, not merely weak, and
+that points somewhere specific.
+
+**What matters is not the size of each probe's cell-type effect but its
+alignment with the coefficients.** A clock age is a weighted sum; if the
+cell-type shifts across its probes point in directions unrelated to the weights,
+they cancel. Magnitude without alignment buys nothing, and alignment without
+magnitude is enough.
+
+That is the next thing to measure.
+
+### The sanity check that stopped the first run
+
+The variance components did not sum to one. The identity
+`SS_total = SS_donor + SS_fraction + residual` holds for a balanced complete
+design and breaks as soon as a cell is missing — group means then come from
+different subsets. With 31,442 missing values scattered through the matrix, the
+parts exceeded the whole. Restricting to the 454k complete probes restored it.
+
+**The check existed because this stage was written expecting to be wrong
+somewhere.** It was.
+
 ---
 
 ## Corrections so far
@@ -66,6 +106,8 @@ been fitted across many tissues rather than on blood alone.
 | metadata prefix strip guarded by `dtype == object`, which pandas 3.0 broke | every age coming back NaN | a validation run |
 | four samples with ages 0, 6, 7 — `agegap` leaking into `agebloodtaken` | the validation gate refusing to pass | r of 0.89 reading as 0.68 |
 | assuming the series had the paper's 573 samples | the file declaring 188 | an expectation, not a result |
+| decomposing variance over a matrix with missing values | components summing above 1 | a wrong answer about where the signal lives |
+| expecting cell-type-variable probes to make a clock vulnerable | the correlation coming out inverted | the obvious hypothesis |
 
 Two of those returned plausible numbers without crashing.
 
