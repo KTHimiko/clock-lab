@@ -96,6 +96,47 @@ parts exceeded the whole. Restricting to the 454k complete probes restored it.
 **The check existed because this stage was written expecting to be wrong
 somewhere.** It was.
 
+## Stage 4 — and the alignment hypothesis fails too
+
+Stage 3 proposed that what exposes a clock is not how cell-type-variable its
+probes are but whether those shifts line up with its coefficients. Measured
+against two permutation nulls — one that shuffles which weight goes with which
+probe, keeping both multisets and destroying only the pairing; one that draws
+random probe sets of the same size from all 485k:
+
+| clock | observed | shuffle null | alignment | p(shuffle) |
+|---|---|---|---|---|
+| Horvath 2013 | 0.168 | 0.327 | **0.5×** | 0.85 |
+| Hannum 2013 | 7.303 | 4.838 | 1.5× | 0.13 |
+| Levine 2018 | 6.902 | 8.750 | **0.8×** | 0.62 |
+| Horvath 2018 | 0.144 | 0.306 | **0.5×** | 0.93 |
+
+**No clock shows alignment above chance.** Every p-value is above 0.09, and two
+clocks sit *below* their own null. Shuffling which coefficient goes with which
+probe does not reduce the cell-type displacement — it slightly increases it.
+
+*(The Horvath clocks report in transformed units rather than years, so their
+`observed` and `shuffle` columns are not comparable with the linear clocks'. The
+alignment ratio is unit-free and is.)*
+
+### What that means, and it is stronger than the hypothesis it replaces
+
+The cell-type displacement is **exactly what a random pairing of those weights
+with those shifts produces.** The clocks are not reading cell identity through
+some unlucky probe choice that better selection could avoid. They are
+accumulating whatever cell-type variation exists across their probes, in
+proportion to the size of their coefficients.
+
+Levine carries a total absolute weight of 3,490 against Hannum's 628, and its
+null is correspondingly larger — 8.75 years against 4.84. The differences
+between clocks look like differences in **gain**, not in exposure to cell
+identity.
+
+That proposed mechanism rests on two linear clocks, where a correlation is
+±1 by arithmetic and means nothing. It is an argument consistent with the
+numbers, not a measurement. **The measured result is the null one: there is no
+alignment to find.**
+
 ---
 
 ## Corrections so far
@@ -108,6 +149,10 @@ somewhere.** It was.
 | assuming the series had the paper's 573 samples | the file declaring 188 | an expectation, not a result |
 | decomposing variance over a matrix with missing values | components summing above 1 | a wrong answer about where the signal lives |
 | expecting cell-type-variable probes to make a clock vulnerable | the correlation coming out inverted | the obvious hypothesis |
+| proposing alignment as the replacement explanation | every permutation p-value above 0.09 | the replacement hypothesis, one stage later |
+| restricting stage 4 to complete probes while stage 2 used all of them | the cross-stage reconciliation check | up to 5.7 years of silent disagreement |
+| writing the null as `einsum` over a `broadcast_to` view | 27 minutes at 99.5% of one core with no output | half an hour |
+| filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 
 Two of those returned plausible numbers without crashing.
 
