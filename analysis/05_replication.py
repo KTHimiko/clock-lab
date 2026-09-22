@@ -206,6 +206,8 @@ for _, r in res.iterrows():
     print(f"  {r.clock:<14}{r.spread_raw:>7.2f}a{r.p_raw:>8.4f}   "
           f"{r.spread:>7.2f}a{r.null:>6.2f}a{r.ratio:>7.2f}{r.p:>8.4f}{r.noise:>7.2f}a")
 res.to_csv(OUT / "replication_epic.csv", index=False)
+pd.DataFrame({n: pure.groupby("cell")[n + "_res"].mean() for n in CLK}).to_csv(
+    OUT / "replication_offsets.csv")
 
 
 section("COMPARACAO COM A ETAPA 2 — A MESMA ORDEM DE TIPOS CELULARES?")

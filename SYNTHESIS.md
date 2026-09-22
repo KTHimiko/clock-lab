@@ -303,6 +303,88 @@ either the two reconstruction protocols produce DNA the array reads differently
 look like inside a mixture, which would need the neutrophil mean to move about
 12 years. **Open.**
 
+## Stage 7 — and now the number that actually matters
+
+Nobody buys a sorted-cell test. They send a tube of blood. So: estimate each
+donor's cell composition from their own methylation, and ask how much of what
+the clock calls their biological age is that composition.
+
+The panel is six purified types from GSE35069, and it is validated the hard way
+— by recovering the **known** proportions of GSE110554's twelve reconstructed
+mixtures, a different cohort on a different array:
+
+**r = 0.985 across all 72 cell-by-mixture values, mean absolute error 0.021,
+worst per-type bias 0.032.** Per type, every correlation is above +0.93.
+
+### What that validation does not cover, and the check I failed to specify
+
+A reconstructed mixture is by construction a linear combination of sorted cells
+— far more like the panel than real blood is. Applied to 188 real whole-blood
+samples, the estimates drift from clinical reference ranges:
+
+| type | median estimate | adult range | |
+|---|---|---|---|
+| CD4T | 0.165 | 0.07–0.15 | above |
+| CD8T | 0.026 | 0.03–0.08 | below |
+| B cells | 0.010 | 0.01–0.04 | ok |
+| NK | 0.088 | 0.02–0.06 | above |
+| Monocytes | 0.058 | 0.02–0.08 | ok |
+| Neutrophil-like | 0.639 | 0.40–0.75 | ok |
+
+**My pre-specified physiology check covered neutrophils only** — 64% of blood
+and by far the easiest to get right. The smaller types had no check at all, and
+they are where it went wrong. The pattern is diagnostic: surplus CD4T and NK,
+deficit CD8T, the pairs that compete for the same lymphoid probes. The
+proportions are collinear, so the **joint** fit can be right while the split
+between neighbouring types is wrong.
+
+That determines what may be read below. The joint test survives it; the
+per-type coefficients do not, and are not used as measurements of a type.
+
+### The result
+
+Three nested regressions per clock. Composition enters *after* chronological
+age, so the increment is what blood count explains **beyond** what age already
+did — which is the honest quantity, because composition itself changes with age
+and that share belongs to age.
+
+| clock | R² age | R² age + composition | increment | null | p | in years (SD) | span |
+|---|---|---|---|---|---|---|---|
+| Horvath 2013 | 0.722 | 0.741 | 0.020 | 0.008 | 0.025 | 1.36 yr | 6.9 yr |
+| Hannum 2013 | 0.803 | 0.830 | **0.027** | 0.005 | **0.0002** | 1.47 yr | 8.4 yr |
+| Levine 2018 | 0.632 | 0.659 | **0.027** | 0.010 | 0.018 | 1.63 yr | 8.9 yr |
+| Horvath 2018 | 0.791 | 0.800 | 0.009 | 0.006 | 0.17 | 0.89 yr | 6.0 yr |
+
+**Real, significant in three clocks of four — and an order of magnitude smaller
+than the sorted-cell experiment implies.**
+
+That is not a contradiction, it is the whole point. Stage 2 found 35 years
+between a man's CD8+ T cells and his eosinophils, but nobody's blood is 100%
+CD8+ T cells. Across 188 real people the composition term moves a reading by
+about **1 to 1.6 years of standard deviation, and 6 to 9 years between the two
+most extreme donors in the cohort.** That is the size of the thing when it
+reaches a customer.
+
+### The reconciliation, which came out weak, and is reported weak
+
+Do the whole-blood coefficients recover the ordering measured on sorted cells?
+
+| clock | ρ vs stage 2 | p | ρ vs stage 5 | p |
+|---|---|---|---|---|
+| Horvath 2013 | +0.77 | 0.051 | −0.31 | 0.75 |
+| Hannum 2013 | +0.31 | 0.28 | +0.03 | 0.50 |
+| Levine 2018 | +0.49 | 0.18 | +0.71 | 0.068 |
+| Horvath 2018 | +0.60 | 0.12 | +0.37 | 0.25 |
+
+Seven of eight positive, **not one below 0.05.** This is exactly what the
+collinearity above predicts: individual coefficients are not identified well
+enough to carry an ordering, even where the joint effect is solid. Reported as
+the weak result it is, and not rescued.
+
+*(Circularity, declared: the panel is built from GSE35069, the same data as
+stage 2. The stage 5 column, from another cohort and another array, does not
+have that problem — and it is the weaker of the two.)*
+
 ---
 
 ## Corrections so far
@@ -323,6 +405,7 @@ look like inside a mixture, which would need the neutrophil mean to move about
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| specifying stage 7's physiology check on neutrophils only — 64% of blood and the easiest cell to get right | three of the five unchecked types landing outside clinical range | nothing, because the joint test does not depend on the split; but the per-type reconciliation was read as weak evidence rather than as a broken measurement until this was found |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
