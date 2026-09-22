@@ -12,16 +12,20 @@ pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
 In sorted cells the effect is enormous: up to 35 years between fractions of one
 man's blood drawn on one day, replicated in a second cohort on a second array.
-In actual blood from actual people it is small — composition explains **0.9% to
-2.7%** of epigenetic age beyond chronological age, worth about **1 to 1.6 years
-of standard deviation** and 6 to 9 years between the extremes of a cohort.
+In actual blood from actual people it is smaller but far from small. At twelve
+cell types — splitting naive from memory lymphocytes, which is where the effect
+lives — composition explains **10% to 32%** of age acceleration, landing on the
+published figures. This project's earlier answer of 0.9–2.7% was a floor
+produced by a six-type panel and a denominator the literature does not use.
 
-It cannot be designed away: two thirds of the best age-tracking probes in the
-genome sit in the quarter that varies most between cell types, so removing one
-removes the other, and no filtered clock ever beat an unfiltered one. It cannot
-reliably be subtracted away either: a correction fitted on one cohort removes
-most of nothing in another, because the deconvolution's split between
-neighbouring cell types does not transport even when its total does.
+**It can be designed away, at least partly** — though this project spent three
+stages concluding otherwise. Excluding CpGs that correlate with naive-CD8
+identity cuts a clock's cell-type displacement by 41% while slightly improving
+its accuracy on an external cohort. What defeated the earlier attempts was
+filtering on overall cell-type variance instead of on the naive-versus-memory
+axis, where the effect actually lives. It still cannot reliably be *subtracted*
+away after the fact: a correction fitted on one cohort removes most of nothing
+in another.
 
 What is *not* true is that the published clocks are badly designed. Their
 apparent advantage and their apparent deficit both turned out to be artefacts of
@@ -678,9 +682,15 @@ not use the average probe; it uses the top of the age ranking.
 Under independence it would be 25%.
 
 **Two thirds of the best age-tracking probes in the genome sit in the quarter of
-probes that vary most between cell types.** That is the floor. The selection is
-not being careless — the probes that mark time are, substantially, the probes
-that mark which cell you are looking at. Removing one removes the other.
+probes that vary most between cell types.**
+
+> **Stage 14 refuted the conclusion drawn from this.** The enrichment above is
+> real, but "the floor is biology" does not follow from it. This stage's filter
+> was built from six cell types and could not express the naive-versus-memory
+> axis — which is where the largest cell-type age differences live, and which
+> turns out to be separable from age after all. Filtering on *that* axis cuts
+> displacement by 41% while slightly improving accuracy. The floor was an
+> artefact of filtering on the wrong axis. See stage 14.
 
 ## Stage 12 — the standard fix does not travel
 
@@ -794,6 +804,61 @@ correction does not transfer was measured with the same blunt panel and is now
 untrustworthy in the same direction. The practical claim in the plain-language
 summary — "1 to 2 years" — should have been roughly double.
 
+## Stage 14 — the floor was the wrong axis, and stage 11 is wrong
+
+Stage 11 concluded the exposure floor is biology. Tomusiak et al. (2024,
+*Communications Biology*) report the opposite: IntrinClock, a clock built to be
+invariant across ten immune cell types. Stage 13 explains how both could be
+honest — stage 11's filter was built from six types and could not express the
+naive-versus-memory axis.
+
+IntrinClock's published rule names that axis precisely: keep CpGs with |r| > 0.3
+against chronological age and |r| < 0.3 against a sample being naive CD8. Three
+selection rules, trained identically on GSE40279, tested on GSE61151, measured
+against a twelve-type displacement:
+
+| rule | r on test | scale | displacement per year of response | matched control | edge |
+|---|---|---|---|---|---|
+| (a) no filter | +0.921 | 1.009 | 6.8 yr | — | — |
+| (b) stage 11's six-type filter | +0.909 | 0.972 | 6.7 yr | 6.8 | +0.1 |
+| **(c) the IntrinClock rule** | **+0.925** | 1.012 | **4.0 yr** | 6.6 | **+2.6** |
+
+**Displacement falls 41% and accuracy goes slightly up.** A gain on both axes at
+once, which stage 11 declared impossible. Stage 11's own filter buys 0.1 years —
+nothing, exactly as it reported.
+
+And (c) beats every published clock on this axis: Horvath 2013 at 6.2, Horvath
+2018 at 6.8, Hannum at 18.5, Levine at 24.3.
+
+### The check that made the result readable
+
+Tomusiak reports naive CD8 reading 15–20 years younger than effector memory CD8.
+Required before anything else: at least two clocks showing an 8-year gap.
+
+| clock | memory CD8 − naive CD8 |
+|---|---|
+| Horvath 2013 | +11.0 yr |
+| **Hannum 2013** | **+40.6 yr** |
+| **Levine 2018** | **+46.4 yr** |
+| Horvath 2018 | +4.4 yr |
+
+It reproduces, and larger. Naive CD8 is the single most extreme cell type in
+this project — it reads 47 and 50 years below expectation on the two linear
+clocks, against the 35-year *total spread* that stage 2 found across six types.
+Stage 2's headline was measured on a panel that could not see this.
+
+### A control that was wrong, and what fixing it cost
+
+The first version drew each filter's random control from all 441,010 probes. For
+rule (c), whose eligible pool is only 4,575, that handed the control four
+thousand random probes and asked it to build a clock — so it lost on age
+accuracy, and the filter's apparent edge of **+17.1 years** included "I kept
+probes that correlate with age", which is not what was being tested.
+
+Drawing the control from the probes that already pass the age criterion brings
+the edge down to **+2.6**. The conclusion survives; the effect size was inflated
+sevenfold until the control was fixed.
+
 ---
 
 ## Corrections so far
@@ -814,6 +879,8 @@ summary — "1 to 2 years" — should have been roughly double.
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| **stage 11's conclusion that the exposure floor is biology** | applying the IntrinClock rule on the naive/memory axis: 41% less displacement at slightly better accuracy | a stage's headline, and a claim repeated to the user in plain language |
+| a random control that randomised the age criterion along with the cell-type one | rule (c)'s edge reading +17.1 years, which was too good | an effect size inflated sevenfold, caught before it was written down |
 | **recording GSE167998 as unusable ("IDAT only") after checking only `matrix/` and not `suppl/`** | a literature search two weeks later naming the twelve-type panel as the standard | six stages run at half the available cell-type resolution |
 | **quoting the composition effect as a share of total clock variance while the literature quotes it as a share of age acceleration** | comparing against Zhang et al. and finding a tenfold gap that was fourfold arithmetic | the project's headline number understated by ~4x for eleven stages |
 | a six-type panel that cannot express the naive/memory split, where the largest cell-type age differences live | rebuilding at twelve types and watching every number roughly double | the other ~2x |
