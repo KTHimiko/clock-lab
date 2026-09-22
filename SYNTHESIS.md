@@ -594,6 +594,64 @@ The replacement is a calibration band: slope between 0.5 and 1.5, which is what
 collapsed configuration reaches 10.5 and the frontier sits at 3.9, so they were
 never in contention.
 
+## Stage 11 — the floor is biology
+
+Every clock in this project, published or built, displaces several years between
+cell fractions for each year of genuine age response, and stage 10's best was
+3.9. Two explanations that differ in what anyone can do about them: **method**,
+where ranking probes by correlation with age simply never thought to avoid
+cell-type markers, or **biology**, where the CpGs that track time *are* largely
+the ones that distinguish cell types.
+
+The test: filter probes by their spread across cell types before ranking them by
+age, and sweep the severity.
+
+*(The filter is built from GSE110554's purified cells and displacement is
+measured on GSE35069. Using one cohort for both would be selecting on the
+evaluation set — it would lower the number without lowering anything real.)*
+
+### The answer
+
+| k | filter | displacement/response | matched random control | filter's edge | r | control's r |
+|---|---|---|---|---|---|---|
+| 1,000 | none | **4.1 yr** | — | — | +0.918 | — |
+| 1,000 | keep cleanest 75% | 4.4 | 4.1 | −0.3 | +0.900 | +0.917 |
+| 1,000 | keep cleanest 50% | 4.7 | 4.4 | −0.3 | +0.834 | +0.916 |
+| 1,000 | keep cleanest 25% | 10.8 | 5.4 | −5.4 | +0.736 | +0.910 |
+| 10,000 | none | 5.7 | — | — | +0.932 | — |
+| 10,000 | keep cleanest 75% | 4.6 | 5.8 | **+1.2** | +0.910 | +0.927 |
+| 10,000 | keep cleanest 50% | 5.4 | 6.2 | +0.8 | +0.844 | +0.922 |
+
+Every filtered configuration is matched against one that discards the **same
+number** of probes at random, because any pruning changes the fit and that part
+is free.
+
+**Nothing filtered beats the unfiltered floor.** The one place the cell-type
+information earns its keep — a mild trim at k=10,000, worth 1.2 years over its
+control — still lands at 4.6, above the 4.1 an unfiltered clock reaches without
+being told anything about cell types. Push the filter harder and accuracy falls
+off a cliff while displacement gets *worse*.
+
+### Why
+
+The global rank correlation between |correlation with age| and cell-type spread
+is only **+0.13**, which would suggest the two barely touch. But a clock does
+not use the average probe; it uses the top of the age ranking.
+
+| top age probes | share in the most cell-type-variable quarter | enrichment |
+|---|---|---|
+| 100 | 60% | 2.4× |
+| **1,000** | **67%** | **2.7×** |
+| 10,000 | 53% | 2.1× |
+| 100,000 | 35% | 1.4× |
+
+Under independence it would be 25%.
+
+**Two thirds of the best age-tracking probes in the genome sit in the quarter of
+probes that vary most between cell types.** That is the floor. The selection is
+not being careless — the probes that mark time are, substantially, the probes
+that mark which cell you are looking at. Removing one removes the other.
+
 ---
 
 ## Corrections so far
