@@ -29,17 +29,20 @@ print(f"  sondas {betas.shape[0]:,}  amostras {betas.shape[1]}  "
 age = pd.to_numeric(meta.set_index("gsm")["agebloodtaken"], errors="coerce")
 age = age.reindex(betas.columns)
 
-# DOCUMENTED EXCLUSION. Four samples carry ages of 0, 6 and 7 in a cohort of
-# adult women. Those are not people: GEO stores each sample's characteristics as
-# positional lines, and when a sample has them in a different order the wrong
-# field lands in the wrong column — here the study's `agegap` (0, 5, 6, 7)
-# leaking into `agebloodtaken`. Four impossible values in 184 do more damage to
-# a correlation than their count suggests, so they are dropped and the drop is
-# recorded rather than quietly filtered.
+# TRIPWIRE, not a filter. This used to drop four samples carrying ages of 0, 6
+# and 7 in a cohort of adult women — the study's own `agegap` leaking into
+# `agebloodtaken` because the loader named each characteristics line after the
+# FIRST sample's prefix, so a sample with its fields in a different order had
+# every later value filed under the wrong name. Stage 5 fixed that at the source:
+# the loader now reads each cell's own `field: value` prefix, and those four
+# samples come back as 39, 58, 60 and 60. The guard stays because an impossible
+# age is the cheapest detector of that whole bug family, and it should now be
+# silent. If it ever speaks again, the loader broke — stop and read it.
 implausible = age < 18
 if implausible.any():
-    print(f"  excluidas {int(implausible.sum())} amostras com idade < 18 "
-          f"({sorted(age[implausible].dropna().unique())}) — ver comentario\n", flush=True)
+    print(f"  ATENCAO: {int(implausible.sum())} amostras com idade < 18 "
+          f"({sorted(age[implausible].dropna().unique())}) — o carregador "
+          f"provavelmente voltou a desalinhar os campos; ver comentario\n", flush=True)
     age = age.mask(implausible)
 print(f"  idade: {age.notna().sum()} com valor, "
       f"{age.min():.0f} a {age.max():.0f} anos, mediana {age.median():.0f}\n", flush=True)
