@@ -28,6 +28,12 @@ narrow enough to matter: with a twelve-type panel and a large fitting cohort the
 correction removes most of the signal out of cohort, while the same correction
 fitted on 184 samples makes every clock worse than leaving it alone.
 
+And flattening a clock against composition appears to be **free**: the clock
+built here that reads 41% less composition detects rheumatoid arthritis exactly
+as well as the standard one, with a paired confidence interval that excludes any
+meaningful loss. The worry that composition was half the signal is not supported
+for that outcome.
+
 What is *not* true is that the published clocks are badly designed. Their
 apparent advantage and their apparent deficit both turned out to be artefacts of
 what they were tested against — and when a family of ridge clocks is trained on
@@ -932,6 +938,90 @@ That is the denominator, not the correction. Those rows are marked in the output
 and excluded from the verdict, which is taken only from clocks external to the
 cohort being tested.
 
+## Stage 16 — flattening a clock is free
+
+Every stage to 15 says clocks are contaminated by blood composition, and stage
+14 built one 41% less exposed. The assumption underneath — the field's, and this
+project's — is that removing the contamination improves the clock. Nobody tested
+it, and the assumption might be backwards: blood composition *is* informative
+about health, so it could have been half the signal rather than the noise.
+
+Two cohorts: GSE50660 (464, smoking) and GSE42861 (689, rheumatoid arthritis
+plus smoking, cases and controls in the same batch).
+
+### The positive control, and the check that was written wrong
+
+The control was to be smoking, and the first version required two of four
+published clocks to detect it. **It failed at one of four** — and that one was
+Levine, in both cohorts independently, +0.453 (p = 0.044) and +0.209 (p = 0.033).
+
+The check had encoded a belief the field already knew to be false. First-generation
+clocks are fitted to chronological age and are documented as *not* tracking
+smoking; that is what second-generation clocks were built for. Of the four
+clocks here exactly one is second-generation, and it fired twice.
+
+This is the **fourth** check in this project revisited after failing, and the
+distinction is worth keeping: the first three were a mis-scaled threshold, a
+wrong premise about ridge, and a bound that was too narrow. This one was not
+reading the literature before writing the test — the exact failure the
+bibliography had just finished recommending against, committed in the next
+stage.
+
+It also settled something: the two clocks built here are first-generation too,
+so **neither has smoking signal to lose**, and the flattening question cannot be
+asked on smoking at all. It moved to the disease contrast.
+
+### Reconciliation against published results on this exact dataset
+
+GSE42861 has been analysed before, and the expectation is generation-specific
+and counter-intuitive — first-generation clocks read RA patients as *younger*:
+
+| clock | published | here | |
+|---|---|---|---|
+| Horvath 2013 | −1.3 yr | **−1.3 yr** | matches |
+| Horvath 2018 | −1.3 yr | **−1.4 yr** | matches |
+| Levine 2018 | +2.3 to +3 yr | **+2.5 yr** | matches |
+
+Three for three, to a tenth of a year on two of them. This is the strongest
+external validation anything in this project has passed.
+
+### The answer
+
+Rheumatoid arthritis, cases against controls, adjusted for sex and smoking,
+n = 621, effects in standard deviations of age acceleration:
+
+| clock | effect | p | in years |
+|---|---|---|---|
+| Levine 2018 | +0.465 | <0.0001 | +2.5 |
+| Horvath 2018 | −0.427 | <0.0001 | −1.4 |
+| **flattened (IntrinClock rule)** | **−0.374** | **<0.0001** | **−1.5** |
+| **standard (k = 1,000)** | **−0.347** | **<0.0001** | **−1.3** |
+| Horvath 2013 | −0.284 | 0.0004 | −1.3 |
+| Hannum 2013 | +0.100 | 0.21 | +0.4 |
+
+Paired bootstrap over the same 621 people, so the two clocks are compared on the
+same resamples rather than through separate intervals:
+
+> **difference −0.026 SD, 95% CI [−0.105, +0.052] — indistinguishable.**
+
+**Flattening costs nothing.** The clock that reads 41% less cell composition
+detects rheumatoid arthritis exactly as well as the one that does not.
+
+And it says something about the disease signal: if RA showed up in these clocks
+*because* it shifts blood composition, the flattened clock should have seen less
+of it. It sees the same. The RA signal is not mainly composition.
+
+*(On smoking the flattened clock is marginally ahead — paired difference +0.109,
+CI [+0.009, +0.205] — but neither clock detects smoking on its own, so that is a
+hint about first-generation clocks and not a result.)*
+
+### What this cannot say
+
+RA patients are medicated. This says a clock separates cases from controls; it
+cannot say the separation is the disease rather than methotrexate. And one
+outcome in one cohort is one outcome in one cohort — mortality, which is what
+clocks are sold on, is untested here.
+
 ---
 
 ## Corrections so far
@@ -952,6 +1042,7 @@ cohort being tested.
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| writing stage 16's positive control to require most clocks to detect smoking, when first-generation clocks are documented not to | the check failing at 1 of 4, with the 1 being the only second-generation clock, twice | a rerun — and the irony of committing the exact error the bibliography had just recommended against |
 | **stage 12's conclusion that the composition correction does not transfer** | redoing it at twelve types, where it removes 86% of Hannum's composition signal out of cohort | a stage's headline — it was measuring the panel, not the correction |
 | nearly reading the second transfer direction from clocks trained on the test cohort | the family clock "going from 0.5% to 40%", which is a vanishing denominator | nothing, caught before it was written down |
 | **stage 11's conclusion that the exposure floor is biology** | applying the IntrinClock rule on the naive/memory axis: 41% less displacement at slightly better accuracy | a stage's headline, and a claim repeated to the user in plain language |

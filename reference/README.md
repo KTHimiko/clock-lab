@@ -82,6 +82,47 @@ The phenotype table is the package's own `inst/extdata/Pheno.csv`, which joins
 to the matrix on the sentrix barcode and carries each purified sample's cell
 type and each mixture's known proportions.
 
+## GSE42861 — rheumatoid arthritis, 689 peripheral blood leukocyte samples
+
+Downloaded 2026-09-22 for stage 16. Carries **both** variables that stage needs
+in the same people, same batch, same platform: a hard outcome and the positive
+control.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE42861>
+- 450K (GPL13534), 689 samples, 2,698,668,510 bytes compressed
+- md5 `413f7958e443b89dea7cd3f273c47691`
+- characteristics: `disease state` (rheumatoid arthritis / normal), `subject`
+  (Patient / Normal), `smoking status` (never / ex / current), `age`, `gender`
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE42nnn/GSE42861/matrix/GSE42861_series_matrix.txt.gz"
+```
+
+**Two confounds to carry, not to forget.** Smoking is a risk factor for
+rheumatoid arthritis, so the two variables are correlated inside this cohort and
+each test must adjust for the other. And RA patients are medicated —
+methotrexate, steroids — which is its own methylation exposure. This cohort can
+say whether a clock separates cases from controls; it cannot say the separation
+is the disease rather than its treatment.
+
+## GSE50660 — smoking, 464 peripheral blood samples
+
+Downloaded 2026-09-22 for stage 16, as an independent replication of the
+positive control alone.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE50660>
+- 450K (GPL13534), 464 samples, 604,598,383 bytes compressed
+- md5 `b7a926ba9814a573dea5a6383c09001a`
+- characteristics: `smoking` coded 0/1/2 for never/former/current, `age`,
+  `gender`
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE50nnn/GSE50660/matrix/GSE50660_series_matrix.txt.gz"
+```
+
+The never/former/current coding in both cohorts allows a gradient rather than a
+two-group split, which is harder to produce by accident.
+
 ## Clock coefficients — `clocks/`
 
 From the `dnaMethyAge` R package, which stores the values published with each
