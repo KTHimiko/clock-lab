@@ -23,9 +23,10 @@ stages concluding otherwise. Excluding CpGs that correlate with naive-CD8
 identity cuts a clock's cell-type displacement by 41% while slightly improving
 its accuracy on an external cohort. What defeated the earlier attempts was
 filtering on overall cell-type variance instead of on the naive-versus-memory
-axis, where the effect actually lives. It still cannot reliably be *subtracted*
-away after the fact: a correction fitted on one cohort removes most of nothing
-in another.
+axis, where the effect actually lives. It can also be *subtracted* away after the fact, but only under conditions
+narrow enough to matter: with a twelve-type panel and a large fitting cohort the
+correction removes most of the signal out of cohort, while the same correction
+fitted on 184 samples makes every clock worse than leaving it alone.
 
 What is *not* true is that the published clocks are badly designed. Their
 apparent advantage and their apparent deficit both turned out to be artefacts of
@@ -716,6 +717,13 @@ At home the correction removes everything, which is guaranteed and proves
 nothing. **Away it removes 5%, 62%, 36%, 0% and 7%** — and what is left still
 sits above chance.
 
+> **Stage 15 overturned this.** The diagnosis below — that the per-type
+> coefficients are not identified — was right, and it was a statement about the
+> panel rather than about correction. At twelve types the same correction
+> removes most of the signal. What this stage could not see, having tested only
+> one direction, is that the correction also has a failure mode worse than doing
+> nothing. See stage 15.
+
 It is at least cheap: correlation with age is unchanged to three decimals for
 every clock, and the mean error moves by at most 0.3 years.
 
@@ -859,6 +867,71 @@ Drawing the control from the probes that already pass the age criterion brings
 the edge down to **+2.6**. The conclusion survives; the effect size was inflated
 sevenfold until the control was fixed.
 
+## Stage 15 — the correction works, and it can also poison the well
+
+Stage 12 fitted a composition correction on one cohort, carried it to another,
+and watched it remove almost nothing. Its diagnosis was that the per-type
+coefficients are not identified, because six proportions are collinear. Stage 13
+turned that into a testable claim: if the panel was the problem, twelve types
+should fix it.
+
+It does. Correction fitted with the twelve-type panel, residual measured with
+the six-type panel — the crossed cell, which is the only one that does not score
+a correction against its own representation of what it removed:
+
+**Fitted on GSE40279 (656 samples), tested on GSE61151:**
+
+| clock | before | after | |
+|---|---|---|---|
+| **Hannum 2013** | 11.5% | **1.6%** | −9.9 |
+| Horvath 2013 | 3.8% | **1.0%** | −2.8 |
+| Horvath 2018 | 1.6% | **−0.9%** | −2.4 (below its own null) |
+| family, k=1,000 | 8.0% | 5.7% | −2.3 |
+| IntrinClock-rule clock | 5.3% | 3.3% | −2.0 |
+| Levine 2018 | 4.6% | 5.8% | +1.2 *worse* |
+
+**Improves 5 of 6, median −2.4 points.** Stage 12's verdict was an artefact of
+the panel.
+
+### And the failure mode stage 12 could not see
+
+Stage 12 tested one direction. Reversed — fitted on GSE61151's 184 samples,
+applied to GSE40279's 656 — every clock external to the test cohort gets
+**worse**:
+
+| clock | before | after | |
+|---|---|---|---|
+| Horvath 2013 | 4.7% | 10.7% | +5.9 |
+| Horvath 2018 | 0.9% | 5.9% | +4.9 |
+| Levine 2018 | 12.1% | 13.8% | +1.6 |
+
+**Improves 0 of 3, median +4.9 points.** A correction fitted on 184 samples does
+not fail to remove composition; it *injects* it. Coefficients estimated on a
+small cohort are unstable, and an unstable coefficient carried somewhere else
+adds a composition-correlated term to every prediction.
+
+Meredith et al. (2019) give the mechanism from the other end: cell-type
+proportions collinear with the methylation being adjusted produce variance
+inflation factors above 100 and flip the sign of 83% of coefficients in
+simulation. This is that, transported between cohorts.
+
+**So the practical claim is not "correcting works" and not "correcting fails".
+It is: correcting works with a fine panel and a large fitting cohort, and
+mis-calibrated it is worse than leaving the clock alone.**
+
+### The trap in the second direction, which was nearly read as a result
+
+Three of the six clocks here have a stake in GSE40279 — Hannum was trained on
+it, and both of this project's own clocks were fitted on it. Every number in
+this stage is a share *of the age residual*, and a clock measured in the cohort
+it learned has almost no residual left. Divide by that and a modest absolute
+change reads as an enormous percentage: the family clock appeared to go from
+0.5% to **40%**, and the IntrinClock-rule clock from 0.9% to 32%.
+
+That is the denominator, not the correction. Those rows are marked in the output
+and excluded from the verdict, which is taken only from clocks external to the
+cohort being tested.
+
 ---
 
 ## Corrections so far
@@ -879,6 +952,8 @@ sevenfold until the control was fixed.
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
 | judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
 | measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
+| **stage 12's conclusion that the composition correction does not transfer** | redoing it at twelve types, where it removes 86% of Hannum's composition signal out of cohort | a stage's headline — it was measuring the panel, not the correction |
+| nearly reading the second transfer direction from clocks trained on the test cohort | the family clock "going from 0.5% to 40%", which is a vanishing denominator | nothing, caught before it was written down |
 | **stage 11's conclusion that the exposure floor is biology** | applying the IntrinClock rule on the naive/memory axis: 41% less displacement at slightly better accuracy | a stage's headline, and a claim repeated to the user in plain language |
 | a random control that randomised the age criterion along with the cell-type one | rule (c)'s edge reading +17.1 years, which was too good | an effect size inflated sevenfold, caught before it was written down |
 | **recording GSE167998 as unusable ("IDAT only") after checking only `matrix/` and not `suppl/`** | a literature search two weeks later naming the twelve-type panel as the standard | six stages run at half the available cell-type resolution |
