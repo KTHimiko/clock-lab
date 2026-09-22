@@ -202,6 +202,107 @@ and 28. Two cohorts, two array versions, two sorting protocols.
 
 **So the stage 2 finding is biology, not GSE35069.**
 
+## Stage 6 — the first prediction, and what it cost to read it honestly
+
+Stages 2 and 5 describe. This stage predicts.
+
+GSE110554 also contains 12 samples that are nobody's blood: DNA mixtures
+reconstructed by pooling purified cell types in **annotated proportions** — six
+by "method A" (balanced), six by "method B" (neutrophil-heavy, like real blood).
+A clock score is a weighted sum over probes, so it is linear in the betas; if a
+mixture's methylation is the proportion-weighted average of its ingredients, its
+clock score must be too:
+
+> predicted(m) = Σ<sub>c</sub> p(m,c) × mean_score(c)
+
+The cell-type means come from the 37 purified samples of stage 5; the proportions
+come from the GEO annotation. **Zero free parameters.**
+
+**The premise held.** Every mixture's betas sit closer to its own
+proportion-weighted prediction than to another mixture's — DNA mixing really is
+linear in beta, and the proportions are not mislabelled.
+
+**The prediction, judged within method** (method is nearly collinear with
+composition — 17% neutrophils against 69% — so a correlation across all 12 could
+be a two-group batch effect wearing a costume):
+
+| clock | r (method A) | p | r (method B) | p |
+|---|---|---|---|---|
+| Horvath 2013 | +0.22 | 0.37 | +0.14 | 0.39 |
+| Hannum 2013 | +0.61 | 0.075 | +0.65 | 0.093 |
+| Levine 2018 | +0.38 | 0.23 | **+0.90** | **0.008** |
+| Horvath 2018 | +0.06 | 0.46 | −0.38 | 0.72 |
+
+Seven of eight positive, one convincing, most not. A combined permutation test
+that shuffles proportion assignments within method — preserving the fact that
+four clocks over twelve mixtures are nowhere near independent — gives mean
+r = +0.32 against a null of 0.00 ± 0.22, **p = 0.067.**
+
+On its own that is a shrug.
+
+### Why it is a shrug, and the statistic that says so
+
+The predicted spread across six mixtures of one method ranges from **0.13 to
+2.75 years** depending on the clock. These twelve mixtures barely differ in a
+way any clock could see. So the question is not "did the prediction work" but
+"could it have":
+
+| ordered by predicted spread | spread | r achieved |
+|---|---|---|
+| Horvath 2018, B | 0.13 yr | −0.38 |
+| Horvath 2013, B | 0.13 yr | +0.14 |
+| Horvath 2013, A | 0.42 yr | +0.22 |
+| Horvath 2018, A | 0.53 yr | +0.06 |
+| Hannum 2013, B | 0.78 yr | +0.65 |
+| Levine 2018, B | 1.30 yr | +0.90 |
+| Hannum 2013, A | 2.70 yr | +0.61 |
+| Levine 2018, A | 2.75 yr | +0.38 |
+
+**Spearman +0.71, p = 0.029 against the exact null over all 40,320 orderings.**
+
+The predictor in that table — how far the *prediction* spreads — is computed
+without looking at an observed value even once, so it cannot have been inflated
+by one. **The composition prediction succeeds in proportion to how much
+composition there was to predict.** That is what the hypothesis says should
+happen, and it is not what a coincidence looks like.
+
+*(The eight cells share four clocks and twelve mixtures, so that p is optimistic.
+The direction is the claim; the p-value is decoration.)*
+
+### The honest failure: a power check written after the fact
+
+The power diagnostic above was added **after** seeing the result. It does not
+rescue anything — it is computed from the prediction alone — and it could have
+been pre-specified. It was not. Recorded as a diagnostic, not a criterion.
+
+It also corrected its own first yardstick. Measuring the predicted spread against
+stage 5's technical-noise floor made seven of eight cells look hopeless, but that
+floor came from replicate *purified CD4T pellets*, not mixtures: Levine's
+declared noise is 5.74 years while its method-B mixtures span 2.03 years in
+total, which is impossible if the noise were real. The ratio that does not depend
+on it is predicted spread over observed spread, and that is the column the table
+uses.
+
+### What is left over, and it is not composition
+
+Composition is already subtracted in the prediction, so the residual should sit
+at zero. It does not:
+
+| clock | residual, method A | residual, method B | difference |
+|---|---|---|---|
+| Horvath 2013 | +2.1 yr | +7.5 yr | +5.4 |
+| Hannum 2013 | −3.7 yr | +3.7 yr | +7.4 |
+| Levine 2018 | +0.5 yr | +5.8 yr | +5.3 |
+| Horvath 2018 | +2.2 yr | +9.4 yr | +7.2 |
+
+All four clocks read method-B mixtures **five to seven years older than their
+annotated composition allows.** Two readings, and this cohort cannot separate
+them, because method and neutrophil fraction are nearly the same variable here:
+either the two reconstruction protocols produce DNA the array reads differently
+— nothing to do with clocks — or purified neutrophils are not what neutrophils
+look like inside a mixture, which would need the neutrophil mean to move about
+12 years. **Open.**
+
 ---
 
 ## Corrections so far
@@ -220,6 +321,8 @@ and 28. Two cohorts, two array versions, two sorting protocols.
 | restricting stage 4 to complete probes while stage 2 used all of them | the cross-stage reconciliation check | up to 5.7 years of silent disagreement |
 | writing the null as `einsum` over a `broadcast_to` view | 27 minutes at 99.5% of one core with no output | half an hour |
 | filling gaps with `betas.T.fillna(...).T` | a hang in loading — 485,577 columns after transpose | a second half hour |
+| judging stage 6's null result before asking whether it had the power to be anything else | the predicted spread being 0.13 years in two of eight cells | very nearly the wrong conclusion |
+| measuring stage 6's power against a noise floor taken from purified cell pellets | a clock whose "noise" exceeded the entire range of the samples it was applied to | one misleading table, caught before it was written down |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
