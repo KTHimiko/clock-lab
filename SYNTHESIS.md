@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after eighteen stages
+## The answer, after nineteen stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -1360,6 +1360,14 @@ method, a new reference or a new panel; it is a penalty term and a
 cross-validation loop, and the eight-method benchmark the field uses contains
 no penalised adjustment at all.
 
+> **Stage 19 narrowed this.** On GSE40279 subsamples cross-validation picks
+> well, and on GSE61151 — the cohort that actually broke the transport — it
+> picks alpha = 0.3 and leaves +2.9% of the damage standing. Cross-validation
+> optimises prediction inside the fitting cohort, and that objective does not
+> know the coefficients are about to be shipped elsewhere. The recommendation
+> that survives is narrower: penalise, and do not let cross-validation alone
+> decide how much. See stage 19.
+
 ### What this does not fix
 
 - **Ridge removes the catastrophe, not the coin flip.** At forty samples, 44% of
@@ -1369,6 +1377,127 @@ no penalised adjustment at all.
   transportable claim is "cross-validate the penalty", not "use 3".
 - None of this explains the anchor. A fix that works is not a mechanism, and the
   stage leaves stage 15's reversed direction still unexplained.
+
+---
+
+## Stage 19 — the fix reaches the anchor, cross-validation does not
+
+Two mechanisms are down and stage 15's reversed direction is still unexplained.
+This stage asks three things off the stage 18 cache, with no series reloaded.
+
+### What the algebra ruled out before any data was touched
+
+The planned stage was covariate shift: a linear term extrapolated outside the
+composition range it was fitted in, which is precisely what stage 12
+demonstrated on purified cells when neutrophils went from 50–75% to 100% and
+Horvath 2013's displacement went from 5.52 to 13.67 years.
+
+That stage was not written, because the correction is
+
+    y_corrected = y − (C_test[:, :−1] − c̄_fit[:−1]) @ b
+
+and `c̄_fit` is a constant vector. It adds the same number to every sample, and
+a constant changes no R². **The difference in composition *means* between
+fitting and test cohort is invisible to this metric.** Stage 12's result was a
+displacement measurement, which is sensitive to the mean; everything from stage
+15 onward is a variance-share measurement, which is not. Carrying the mechanism
+across without checking the algebra would have been the stage 7 denominator
+error again, in a new costume.
+
+What survives is the second moment: `b` solves a least-squares problem shaped by
+one cohort's composition covariance and is applied under another's.
+
+### Stage 15's reversed direction reproduces
+
+The check that had to pass before anything else meant anything. Fitting on
+GSE61151's 184 samples, testing on GSE40279's 656, OLS:
+
+| clock | before | after | delta | stage 15 reported |
+|---|---|---|---|---|
+| Horvath 2013 | 4.7% | 11.8% | **+7.1%** | +5.9 |
+| Horvath 2018 | 0.9% | 6.0% | **+5.0%** | +4.9 |
+| Levine 2018 | 12.0% | 14.0% | **+2.0%** | +1.6 |
+
+Three of three positive, median +5.0%. The scales are not identical — stage 15
+quoted shares of the age residual before the null subtraction stages 17–19 use —
+so the agreement in ordering and magnitude across a rewritten pipeline is
+stronger evidence than the digits suggest. **The transport failure is real and
+reproducible.** It is the *explanation* that has been wrong twice.
+
+### The stage 18 fix reaches it
+
+| alpha | Horvath 2013 | Horvath 2018 | Levine 2018 | median | coef. norm |
+|---|---|---|---|---|---|
+| 0 (OLS) | +7.1% | +5.0% | +2.0% | **+5.0%** | 241 |
+| 0.3 | +4.2% | +2.9% | +1.0% | +2.9% | 101 |
+| 1.0 | +1.2% | +1.3% | −0.6% | +1.2% | 65 |
+| **3.0** | −0.5% | +0.2% | −1.3% | **−0.5%** | 35 |
+| 10.0 | −0.6% | −0.1% | −0.9% | −0.6% | 14 |
+
+Alpha = 3 is again the only penalty that passes both arms of the
+degenerate-corner rule: it turns the reversed direction negative **and** keeps
+−1.9% on the forward direction, against OLS's −2.0% there. Alpha = 10 fails the
+second arm exactly as in stage 18.
+
+That stage 18 and stage 19 land on the same penalty, from a subsample curve and
+from the real cohort that failed, is the strongest thing in either stage.
+
+### And cross-validation does not — which corrects stage 18
+
+Stage 18's practical claim was that nobody needs to know the number because
+ordinary leave-one-out cross-validation finds it. **On GSE61151 it does not.**
+
+> Cross-validation on GSE61151 selects **alpha = 0.3**, which leaves
+> **+2.9%** of damage — most of the failure intact.
+
+Cross-validation optimises prediction *inside* the fitting cohort, and nothing
+in that objective knows the coefficients are about to be shipped somewhere else.
+On GSE40279 subsamples it happened to pick well because the test cohorts were
+geometrically close; on the cohort that is geometrically far, it picks a
+penalty far too weak. Stage 18's table is not wrong and its conclusion was too
+broad, which is recorded there rather than rewritten.
+
+So the honest recommendation is narrower than stage 18's: **penalise, and do
+not let cross-validation alone choose how much.**
+
+### The geometry, which survives its test and does not explain much
+
+Distance between the composition correlation matrices, after partialling out
+intercept and age:
+
+| pair | Frobenius | largest principal angle |
+|---|---|---|
+| **GSE61151 ↔ GSE40279** (stage 15's pair) | **1.70** | 26.1° |
+| GSE40279 ↔ GSE50660 | 1.04 | 35.1° |
+| GSE40279 ↔ GSE42861 | 1.27 | **81.7°** |
+
+By Frobenius distance the stage 15 pair is the most distant of the three, which
+is what the hypothesis predicts. **By principal angle it is the closest**, and
+the pair with the most violently different dominant directions is the one that
+transports fine. The two metrics disagree, so "geometry" is not one thing here.
+
+Within each n × clock × cohort cell, so that n cannot masquerade as anything:
+
+> ρ(Frobenius distance, damage) median **+0.082**, positive in **63%** of 81
+> cells. The pre-written bar was a median above zero and more than 60% positive.
+> Conditioning, in stage 18, gave 48% — a coin.
+
+**It passes, and it is weak.** Sixty-three percent against a coin's fifty is a
+real signal and not an explanation; ρ = 0.08 leaves essentially all of the
+damage unaccounted for. What can be said is that composition geometry is the
+first candidate of three that has not been falsified, and that the cohort which
+broke the transport is the geometrically most distant one by the metric that
+matches the algebra.
+
+### What this cannot say
+
+- One directed pair failed and three worked. A mechanism proposed on n = 1
+  failure is a hypothesis with a supporting anecdote.
+- Alpha = 3 is this panel, these clocks, these cohorts. What transports is
+  "penalise", not the number.
+- The reversed direction is fixed by a penalty that does not know why it is
+  needed. A fix is not a mechanism, and stage 15's failure is now reproducible,
+  removable, and still unexplained.
 
 ---
 
@@ -1408,6 +1537,8 @@ no penalised adjustment at all.
 | reading the n-curve's q75 column as a statement about draws | n = 656 having exactly one possible draw, so its spread is across clocks and cohorts while every other row also carries draw-to-draw variation | nothing, caught before it was written down — it would have moved the reliability threshold from 320 to 656 |
 | **stage 17 nominating the conditioning of the composition matrix as the mechanism** | stage 18's check 6: GSE61151 is better conditioned than every GSE40279 subsample, full cohort included, and still did the damage | the second of two candidate mechanisms — both are now down |
 | **writing stage 18's check 5 so that it pooled the four clocks inside each n stratum** | Levine's coefficient norm being 386 with a median delta of −0.7% against Horvath 2018's 183 and +4.8% — a between-clock pattern reading as a within-stratum correlation | a finding: pooled, the coefficient norm appeared to predict *less* damage at ρ = −0.484, p = 3e-17. Caught and redone within cells before it was written down |
+| **stage 18 concluding that ordinary cross-validation finds the penalty on its own** | stage 19 running it on GSE61151, the cohort that actually broke the transport, where it picks alpha = 0.3 and leaves +2.9% of the damage | the practical half of stage 18's recommendation — penalise yes, trust cross-validation to size it no |
+| planning stage 19 around covariate shift in the composition MEAN | the algebra: the fitting cohort's mean enters as a constant vector, and a constant changes no R-squared, so the metric in use since stage 15 cannot see a mean shift at all | a stage, redirected to the second moment before it was written — the stage 7 denominator error in a new costume |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
