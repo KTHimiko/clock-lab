@@ -36,12 +36,21 @@ somewhere around 160 to 184 samples and an unlucky draw keeps hurting to about
 184 of another did the damage that stage 15 blamed on size — and conditioning,
 the other candidate, turned out to carry no information about it at all.
 
-**The failure can be removed without being explained.** Ridge-penalising the
-composition coefficients, with the penalty chosen by ordinary cross-validation
-on the fitting cohort, holds the median delta negative at every fitting size
-from forty samples to six hundred: the +12.2% catastrophe at n = 40 becomes
-−0.2%, and the benefit at full n is kept. No penalised adjustment appears among
-the eight methods the field benchmarks.
+**And it is explained, by a result that was never ours.** The damage is the
+standard excess-risk term for least squares under covariate shift,
+(σ²/n)·tr(Σ_fit⁻¹ Σ_test) — a joint, asymmetric property of the two cohorts that
+ranks 27 configurations at ρ = 0.897 and predicts the cohort pair that defeated
+two stages to within half a point. The failure mode has a name in that
+literature, **spectral inflation**, and none of it appears among the eight
+methods this field benchmarks for cell-type adjustment.
+
+**The fix is the same object from the other side.** Ridge replaces Σ_fit⁻¹ with
+(Σ_fit + λI)⁻¹ and bounds the amplification directly: the +12.2% catastrophe at
+n = 40 becomes −1.6%, the benefit at full n is kept, and the penalty found by
+trial in two independent stages is the one that drops the index below its
+threshold. Cross-validation on the fitting cohort is **not** enough to size it —
+on the cohort that actually failed, it picks a penalty that leaves most of the
+damage standing.
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly

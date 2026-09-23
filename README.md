@@ -8,7 +8,7 @@ lymphocytes fall, myeloid cells rise — and each cell type carries its own
 methylation pattern. A clock fitted on whole blood may be reading **who is in
 the sample** rather than **how old those cells are**.
 
-## The answer, after eighteen stages
+## The answer, after twenty stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -29,12 +29,17 @@ correction removes 61% of the composition signal in a cohort it has never seen,
 while the same correction fitted on forty *adds* nearly three times what was
 there — and is worse than doing nothing in 89% of draws.
 
-**That failure has a one-line fix.** Ridge-penalising the composition
-coefficients, with the penalty picked by ordinary cross-validation on whatever
-cohort you have, keeps the median correction beneficial at every fitting size
-tested: the +12.2% catastrophe at forty samples becomes −0.2%, and the benefit
-at full size survives. None of the eight methods the field benchmarks for
-cell-type adjustment uses a penalty.
+**And it is a known statistical failure mode nobody had looked for here.** The
+damage is the excess-risk term for least squares under covariate shift,
+(σ²/n)·tr(Σ_fit⁻¹ Σ_test): a joint, asymmetric property of the two cohorts that
+ranks 27 configurations at ρ = 0.897 and predicts the cohort pair that broke the
+transport to within half a point.
+
+**The fix is the same object from the other side.** Ridge bounds the
+amplification — the catastrophe at forty samples becomes −1.6% and the benefit
+at full size survives. None of the eight methods this field benchmarks for
+cell-type adjustment uses a penalty, and cross-validation alone does not size
+it correctly on the cohort that fails.
 
 Full argument, every number and every correction:
 [`SYNTHESIS.md`](SYNTHESIS.md).
