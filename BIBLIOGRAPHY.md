@@ -234,6 +234,38 @@ coefficient at any sample size.
 
 ---
 
+## Covariate shift — where stage 20's mechanism comes from
+
+Stage 20 derives the transport index and then does not claim it. These are the
+sources that already had it, found before the stage was written.
+
+**Out of the Ordinary: Spectrally Adapting Regression for Covariate Shift.**
+[abstract] — <https://arxiv.org/html/2312.17463>
+
+Names the failure mode: **spectral inflation**, where spectral subspaces with
+small variation during training see increased variation upon evaluation, and the
+out-of-distribution risk of least squares is characterised by the eigenspectra
+of source and target. That is tr(Σ_fit⁻¹ Σ_test) in words, and it is precisely
+what stage 20 measures on blood composition.
+
+**Patil P, et al. Optimal Ridge Regularization for Out-of-Distribution
+Prediction.** [abstract] — <https://pratikpatil.io/papers/ridge-ood.pdf>
+
+Characterises ridge risk out of distribution without assuming a model for
+either, and the conditions determining optimal regularisation under covariate
+shift. Stages 18 and 19 found alpha = 3 by trial in two independent ways; this
+is the theory that says such an alpha should exist.
+
+> **What this means for the project's claim.** The mechanism is not new and
+> stage 20 says so on its own page. What is not in this literature, and what the
+> field's eight-method benchmark does not contain, is that the standard
+> cell-composition adjustment for epigenetic age is a least-squares fit
+> transported across cohorts with different composition covariance — and is
+> therefore exposed to all of it. The contribution is the identification and the
+> measurement, not the theory.
+
+---
+
 ## A note on method
 
 Both of this project's reversals — stages 7 and 11 — came from reading the
