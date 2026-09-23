@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty stages
+## The answer, after twenty-one stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -1587,6 +1587,11 @@ rank the 27 (n × test cohort) configurations?
 Damage crosses zero at an index near 0.05, consistently across three test
 cohorts. That is a threshold a practitioner can compute.
 
+> **Stage 21 blunted this.** With four fitting cohorts and 63 configurations,
+> 0.05 is not a crossing point but a one-sided safety floor: nothing below it
+> was harmful, 81% above it were, and between 0.05 and 0.16 both outcomes
+> occur. A small index licenses the correction; a large one does not forbid it.
+
 ### And it predicts the anchor, in magnitude
 
 The index is asymmetric, which is the property stages 18 and 19 both needed and
@@ -1671,6 +1676,112 @@ stage's own formula provides.
 
 ---
 
+## Stage 21 — twelve directed pairs, and the index survives the test that could have killed it
+
+Stage 20 wrote its own two weaknesses into its closing section: ρ = 0.897 over
+configurations that were **all** fitted on GSE40279, and an asymmetry resting on
+**one** directed pair. Four cohorts give twelve directed pairs and six
+reversible ones, all off the stage 18 cache.
+
+Hannum is dropped from the whole design rather than from the cells where it is
+unsafe: it was trained on GSE40279, which here is a fitting cohort in six pairs
+and a test cohort in three, and a clock in-sample in half a design is worse than
+one absent from all of it.
+
+### The ranking holds, and it holds inside every fitting cohort separately
+
+| fitting cohort | configurations | Spearman ρ |
+|---|---|---|
+| GSE40279 | 18 | +0.858 |
+| GSE61151 | 12 | **+0.951** |
+| GSE50660 | 15 | +0.907 |
+| GSE42861 | 18 | +0.897 |
+| **all** | **63** | **+0.907** (p = 1.6×10⁻²⁴) |
+
+Stage 20's 0.897 was not a property of GSE40279's subsample ladder. The index
+ranks configurations in four cohorts independently, at essentially the same
+strength, and best in the small cohort that broke the transport in the first
+place.
+
+### The asymmetry, at matched n
+
+Both directions of each pair fitted at n = min(n_A, n_B), so the only thing that
+changes is which covariance does the fitting.
+
+| pair | n | index A→B | B→A | damage A→B | B→A | called |
+|---|---|---|---|---|---|---|
+| 40279 / 61151 | 184 | 0.046 | **0.174** | +0.2% | **+5.0%** | yes |
+| 40279 / 50660 | 464 | 0.024 | 0.039 | −2.5% | −0.4% | yes |
+| 40279 / 42861 | 656 | 0.0275 | 0.0271 | −2.8% | −0.8% | **no** |
+| 61151 / 50660 | 184 | 0.116 | 0.054 | +1.3% | −1.7% | yes |
+| **61151 / 42861** | 184 | **0.194** | 0.062 | **+15.9%** | −0.6% | yes |
+| 50660 / 42861 | 464 | 0.035 | 0.026 | −0.2% | −3.9% | yes |
+
+> **Five of six, binomial p = 0.109.** That is not significance and the script
+> says so: with six pairs there is no bar that both clears 0.05 and tolerates a
+> single miss. The number is the count and its p, not a verdict wearing their
+> clothes.
+
+The miss is worth describing precisely rather than either hiding or excusing.
+On 40279 / 42861 the two indices are **0.0275 and 0.0271** — apart by 1.5%, far
+below anything the measurement resolves. The index is predicting indifference
+there and was scored as if it had predicted a direction. It counts as a miss
+because the rule was written that way; it is not evidence that the index points
+the wrong way.
+
+**And the design found a failure three times worse than the one that started
+this.** GSE61151 → GSE42861 at n = 184 does **+15.9%** of damage, the largest in
+the project, and carries the largest index in the whole design. The anchor that
+defeated stages 18 and 19 is no longer the worst case — it is the second worst,
+and both are at the top of the same ranking.
+
+### The fix generalises to all twelve
+
+| pair | n | OLS | ridge α = 3 |
+|---|---|---|---|
+| 61151 → 42861 | 184 | **+15.9%** | **−2.5%** |
+| 61151 → 40279 | 184 | +5.0% | −0.5% |
+| 61151 → 50660 | 184 | +1.3% | −3.3% |
+| 40279 → 61151 | 184 | +0.2% | −2.0% |
+| 42861 → 50660 | 464 | −3.9% | −3.4% |
+| 40279 → 42861 | 656 | −2.8% | **−0.7%** |
+
+**Median damage at or below zero in all twelve.** Every harmful configuration is
+turned beneficial, including the +15.9%.
+
+It is not free, and the table says where the bill lands. Where OLS already
+transports well, the penalty costs a little: 40279 → 42861 loses most of its
+benefit, −2.8% to −0.7%, and 42861 → 50660 gives up half a point. Penalising is
+insurance, and insurance has a premium in the cases that did not need it.
+
+### The threshold, which stage 20 drew too sharply
+
+| | |
+|---|---|
+| configurations with index ≤ 0.05 that are harmful | **0 of 21** |
+| configurations with index > 0.05 that are harmful | **81%** |
+| highest index still beneficial | 0.163 |
+| lowest index already harmful | 0.051 |
+
+Stage 20, on one fitting cohort, reported damage "crossing zero near 0.05". With
+four it is not a crossing point but a **safety floor**: below 0.05 nothing in 63
+configurations was harmful, above it four in five were, and the zone between
+0.05 and 0.16 contains both outcomes. The usable statement is one-sided — a
+small index licenses the correction, a large one does not forbid it.
+
+### What this cannot say
+
+- Four cohorts, all whole blood on 450k, all adult. Twelve pairs is twelve, and
+  the asymmetry count is six.
+- α = 3 is still this panel and these clocks. What generalised is that a fixed
+  penalty in the right neighbourhood helps in twelve directed pairs, not the
+  number.
+- The index is computed from estimated proportions. Every cohort's composition
+  here comes from the same deconvolution with the same panel, so this says
+  nothing about what happens when two groups deconvolve differently.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -1712,6 +1823,7 @@ stage's own formula provides.
 | **three stages hunting a mechanism without writing down the estimation error** | the algebra: Cov(b̂ − b) = σ²/n · Σ_fit⁻¹, so the damage is tr(Σ_fit⁻¹ Σ_test)/n — a standard covariate-shift term that predicts the anchor to within half a point | stages 18 and 19, which measured the wrong quantities and said so |
 | **stage 20's check 4 demanding a residual below 2% where the stage's own formula predicts 2.1%** | the check failing at 3.83% on a correct implementation | a hard stop mid-run, and a rewrite — the threshold was arithmetically impossible, not inconvenient |
 | stage 20's check 2 testing whether the index predicts a single draw | rho = 0.021 at 56% of cells, worse than the quantity it was meant to beat — and the theory says why: a near-constant predictor cannot track an outcome whose realisation noise has CV 0.43 | nothing, the negative is kept and reported; check 2b is marked post hoc rather than renumbered |
+| stage 20 reporting an index of 0.05 as the point where damage crosses zero | stage 21's 63 configurations across four fitting cohorts, where the crossing is a zone from 0.051 to 0.163 containing both outcomes | a sharp threshold, replaced by a one-sided floor: below 0.05 nothing was harmful |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
