@@ -28,9 +28,10 @@ axis, where the effect actually lives.
 It can also be *subtracted* away after the fact, but only under conditions
 narrow enough to matter. With a twelve-type panel and the full 656-sample
 fitting cohort, the correction removes 61% of the composition signal out of
-cohort. Fitted on forty samples it **adds 2.7 times what was there** — seven
-times more damage than composition coefficients with no information in them —
-and it is worse than doing nothing in 89% of draws. The median turns beneficial
+cohort. Fitted on forty samples it **adds 2.7 times what was there**, and is worse than
+doing nothing in 89% of draws — while composition coefficients carrying no
+information at all sit at +0.5% with an interquartile range straddling zero.
+Noise is harmless here; a badly estimated real correction is not. The median turns beneficial
 somewhere around 160 to 184 samples and an unlucky draw keeps hurting to about
 320. Sample size is not the whole story: 184 samples of one cohort help while
 184 of another did the damage that stage 15 blamed on size — and conditioning,
@@ -1103,17 +1104,25 @@ At full n the correction removes 61% of the composition signal out of cohort.
 At forty samples it does not remove 100% of nothing — it **adds 2.7 times what
 was there**.
 
-### Seven times worse than no information at all
+### Meaningless coefficients are nearly harmless; badly estimated ones are not
 
 The stage carries a reference line: the same transport, with composition
 coefficients fitted at full n on **permuted** composition. Those coefficients
 carry no information by construction.
 
-> permuted coefficients, n = 656: median delta **+1.8%** (range −3.8% to +4.2%)
+> permuted coefficients, n = 656: median delta **+0.5%**, IQR −0.8% to +2.1%,
+> over 180 draws — a distribution straddling zero
 > real coefficients, n = 40: median delta **+12.2%**
 
-A correction fitted on forty samples is **seven times more damaging than a
-coefficient vector with nothing in it**. That is the part worth keeping. Small-n
+**A coefficient vector with nothing in it does essentially nothing.** It is the
+*real* coefficients, estimated on forty samples, that do the damage — and they
+do about twenty times more of it than noise does.
+
+*(This stage first reported the reference as +1.8% from four permutations, and
+quoted a seven-fold ratio off it. Twenty draws per cohort put the stable median
+at +0.5%; the old figure sits inside the new IQR, so it was noise rather than
+error. The corrected framing is the stronger one: the comparison is not "worse
+than noise by a factor", it is "noise is harmless and this is not".)* Small-n
 failure here is not dilution of a good answer toward a harmless one; the
 estimate is actively wrong in a direction that costs more than silence. Meredith
 et al. (2019) give the shape of it from inside one cohort — collinear cell-type
@@ -1943,6 +1952,7 @@ none of which look at whether the rows they summarise exist.
 | stage 20 reporting an index of 0.05 as the point where damage crosses zero | stage 21's 63 configurations across four fitting cohorts, where the crossing is a zone from 0.051 to 0.163 containing both outcomes | a sharp threshold, replaced by a one-sided floor: below 0.05 nothing was harmful |
 | stage 22's matched-n table selecting its rows out of the grid, when the matched n is almost never on the fitting cohort's grid | five of twelve rows printing NaN — arithmetic on empty frames, caught by the output and by none of the seven pre-specified checks | a rerun; none of the checks verify that the rows they summarise exist |
 | **reading stage 22's +0.5% as the cost of panel mismatch** | the sign flipping in four pairs: the mismatched arm also fits with the better panel, so it mixes a mismatch penalty with a panel-quality benefit | the magnitude, which is a mixture and is not quoted as a penalty; the ranking result in check 5 is unaffected |
+| **stage 17's permuted reference line, +1.8% from four permutations, and the seven-fold ratio quoted off it** | recomputing it for the paper figure with twenty draws per cohort: median +0.5%, IQR −0.8% to +2.1% | the ratio, replaced by a better statement — meaningless coefficients are harmless, and it is the badly estimated real ones that do the damage |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was

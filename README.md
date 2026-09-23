@@ -27,7 +27,9 @@ its accuracy on an external cohort. It can be **subtracted** away after the fact
 only with a fine panel and a large fitting cohort: fitted on 656 samples the
 correction removes 61% of the composition signal in a cohort it has never seen,
 while the same correction fitted on forty *adds* nearly three times what was
-there — and is worse than doing nothing in 89% of draws.
+there, and is worse than doing nothing in 89% of draws. Composition
+coefficients carrying no information at all do almost nothing by comparison:
+the damage comes from real coefficients estimated badly, not from noise.
 
 **And it is a known statistical failure mode nobody had looked for here.** The
 damage is the excess-risk term for least squares under covariate shift,

@@ -13,3 +13,6 @@ __pycache__/
 
 # ambiente virtual
 .venv/
+
+# figuras: reproduziveis por paper/figures.py
+paper/figures/
