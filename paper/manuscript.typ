@@ -181,7 +181,7 @@ the 10–90 percentile spread within 2% of it.
 == A transported correction can be worse than no correction
 
 #figure(
-  image("figures/fig1_curva_n.png", width: 95%),
+  image("figures/en/fig1_curva_n.png", width: 95%),
   caption: [*The correction is harmful below roughly 160 fitting samples.*
   Composition left in the age residual after transporting, as a share of
   age-acceleration variance; above zero the correction left the clock worse than
@@ -239,7 +239,7 @@ full cohort). Conditioning of the fitting cohort alone cannot be the mechanism.
 == The transport index ranks the damage
 
 #figure(
-  image("figures/fig2_indice.png", width: 95%),
+  image("figures/en/fig2_indice.png", width: 95%),
   caption: [*The transport index orders 63 directed configurations.* Each point
   is one (fitting cohort, test cohort, fitting size) configuration; marker shape
   gives the fitting cohort. Spearman $rho = 0.907$. No configuration below an
@@ -269,7 +269,7 @@ track an outcome dominated by realisation noise. The index predicts expected
 damage across configurations, not the draw in front of you.
 
 #figure(
-  image("figures/fig3_assimetria.png", width: 95%),
+  image("figures/en/fig3_assimetria.png", width: 95%),
   caption: [*The index is asymmetric, and so is the damage.* Each reversible pair
   fitted in both directions at $n = min(n_A, n_B)$, so only the fitting
   covariance differs. Orange marks the direction the index calls worse; it is to
@@ -303,7 +303,7 @@ origin, $r = 0.815$.
 == Penalising the coefficients removes the failure
 
 #figure(
-  image("figures/fig4_conserto.png", width: 95%),
+  image("figures/en/fig4_conserto.png", width: 95%),
   caption: [*Ridge holds all twelve directed transports at or below zero.* Each
   row is one directed cohort pair at $n = min(n_A, n_B)$; the arrow runs from the
   unpenalised fit to $alpha = 3$.],

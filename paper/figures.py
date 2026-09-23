@@ -32,6 +32,10 @@ those four on screen as identity: figure 4's two blues are an ordinal ramp,
 which is the run above, and figures 1 and 3 use the categorical pair. The
 failing combination does not exist in this paper.
 
+TWO LANGUAGES. The data is computed once and rendered twice, into figures/en and
+figures/pt, so the English manuscript and its Portuguese version never drift
+apart in their numbers — only their labels differ.
+
 GREYSCALE. Journals print in grey and reviewers photocopy. Identity is never
 carried by hue alone in any of the four: figure 1 separates by line weight and
 dash, figure 2 by marker shape, figures 3 and 4 by marker fill and by lightness
@@ -57,7 +61,7 @@ from model.clocks import CLOCKS
 from model.deconvolution import TYPES as TYPES6
 
 RES = ROOT / "results"; CACHE = RES / "cache"
-OUT = ROOT / "paper" / "figures"; OUT.mkdir(parents=True, exist_ok=True)
+OUT = ROOT / "paper" / "figures"
 RNG = np.random.default_rng(20260927)
 
 BLUE, ORANGE = "#2a78d6", "#eb6834"
@@ -92,15 +96,19 @@ def style(ax, ylab=None, xlab=None, title=None):
     if title: ax.set_title(title, loc="left", pad=8, color=INK)
 
 
+PCT_LANG = "en"          # set per render pass; the axis formatter has no other
+                         # way to know which language it is drawing
+
+
 def pct(x, _=None):
-    return f"{x:+.0%}" if x else "0"
+    return dec(f"{x:+.0%}", PCT_LANG) if x else "0"
 
 
-def save(fig, name):
+def save(fig, name, lang):
+    d = OUT / lang; d.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(OUT / f"{name}.{ext}", dpi=300, bbox_inches="tight")
+        fig.savefig(d / f"{name}.{ext}", dpi=300, bbox_inches="tight")
     plt.close(fig)
-    print(f"  {name}.pdf / .png", flush=True)
 
 
 # ------------------------------------------------- machinery off the cache --
@@ -209,105 +217,84 @@ def transport(src, dst, n, reps, alphas=(0.0,), permute=False):
     return rows
 
 
-# =============================================================== figure 1 ====
-print("\nfigura 1 — a curva")
-cur = pd.read_csv(RES / "ncurve.csv")
-V = cur[cur.verdict]
-# one draw per cohort is a single realisation of a random quantity; stage 17
-# reported +1.8% from one, this gets +1.3% from another. Twenty draws each.
+# ------------------------------------------------------------ the strings ---
+T = {
+ "en": dict(
+  f1_title="Above zero, correcting is worse than not correcting",
+  f1_y="composition left in the age residual\n(points of age-acceleration variance)",
+  f1_x="samples in the fitting cohort",
+  f1_med="median (3 clocks × 3 cohorts), IQR shaded",
+  f1_coh="each test cohort, separately",
+  f1_ref="reference: coefficients with no information",
+  f1_refann="coefficients with no information: {v:+.1%}",
+  f1_cross="the median crosses zero\nbetween {a} and {b}",
+  f2_title="A quantity computed in advance orders the damage",
+  f2_y="composition left, in points",
+  f2_floor="below 0.05, none of\nthe 63 was harmful",
+  f2_fit="fitted on {c}",
+  f2_stats="Spearman ρ = {r:.3f}\n{n} configurations\np = {p:.0e}",
+  f3_title="The index is asymmetric, and so is the damage",
+  f3_sub="each pair in both directions, fitted at n = min(nA, nB) — called {k} of {m}",
+  f3_x="composition left, in points",
+  f3_lo="lower-index direction", f3_hi="higher-index direction (predicted worse)",
+  f4_title="Penalising the coefficients zeroes all twelve transports",
+  f4_sub="{k} of 12 pairs are harmful without a penalty; none with one",
+  f4_x="composition left, in points",
+  f4_ols="least squares (no penalty)", f4_ridge="ridge, α = 3"),
+ "pt": dict(
+  f1_title="Acima de zero, corrigir é pior do que não corrigir",
+  f1_y="composição restante no resíduo de idade\n(pontos da variância da aceleração)",
+  f1_x="amostras na coorte de ajuste",
+  f1_med="mediana (3 relógios × 3 coortes), IQR sombreado",
+  f1_coh="cada coorte de teste, separada",
+  f1_ref="referência: coeficientes sem informação",
+  f1_refann="coeficientes sem informação: {v:+.1%}",
+  f1_cross="a mediana cruza zero\nentre {a} e {b}",
+  f2_title="Uma conta feita de antemão ordena o estrago",
+  f2_y="composição restante, em pontos",
+  f2_floor="abaixo de 0,05 nenhuma\ndas 63 foi nociva",
+  f2_fit="ajustado em {c}",
+  f2_stats="Spearman ρ = {r:.3f}\n{n} configurações\np = {p:.0e}",
+  f3_title="O índice é assimétrico, e o dano também",
+  f3_sub="cada par nas duas direções, ajustado em n = min(nA, nB) — acertou {k} de {m}",
+  f3_x="composição restante, em pontos",
+  f3_lo="direção de índice menor", f3_hi="direção de índice maior (prevista pior)",
+  f4_title="Penalizar os coeficientes zera os doze transportes",
+  f4_sub="{k} dos 12 pares são nocivos sem penalidade; nenhum com ela",
+  f4_x="composição restante, em pontos",
+  f4_ols="mínimos quadrados (sem penalidade)", f4_ridge="ridge, α = 3"),
+}
+XLAB = {
+ "en": (r"transport index    $(\sigma^2/n)\,\mathrm{tr}"
+        r"(\Sigma_{\mathrm{fit}}^{-1}\Sigma_{\mathrm{test}})$"),
+ "pt": (r"índice de transporte    $(\sigma^2/n)\,\mathrm{tr}"
+        r"(\Sigma_{\mathrm{ajuste}}^{-1}\Sigma_{\mathrm{teste}})$"),
+}
+
+
+def dec(txt, lang):
+    """Decimal separator follows the language, in the figures as in the text."""
+    return txt.replace(".", ",") if lang == "pt" else txt
+
+
+# ------------------------------------------------------------- the data -----
+print("\ncalculando (uma vez para os dois idiomas) ...", flush=True)
+cur = pd.read_csv(RES / "ncurve.csv"); V = cur[cur.verdict]
+# one draw per cohort is a single realisation of a random quantity: stage 17
+# reported +1.8% from four permutations. Twenty draws per cohort instead.
 perm = pd.DataFrame(sum((transport("GSE40279", d, N["GSE40279"], 20, permute=True)
                          for d in ["GSE61151", "GSE50660", "GSE42861"]), []))
 perm_line = float(perm.delta.median())
-
-fig, ax = plt.subplots(figsize=(6.6, 4.1))
-style(ax, ylab="composition left in the age residual\n(points of age-acceleration variance)",
-      xlab="samples in the fitting cohort")
-ax.axhline(0, color=INK, linewidth=1.0, zorder=2)
-
-# the three test cohorts, de-emphasised: they show replication, not the headline
-for dst, dash in (("GSE61151", (1, 1.6)), ("GSE50660", (3, 1.6)), ("GSE42861", (5, 1.6))):
-    g = V[V.cohort == dst].groupby("n").delta.median()
-    ax.plot(g.index, g.values, color=MUTED, linewidth=1.0, dashes=dash, zorder=3)
-
 agg = V.groupby("n").delta.agg(["median", lambda s: s.quantile(.25),
-                               lambda s: s.quantile(.75)])
+                                lambda s: s.quantile(.75)])
 agg.columns = ["med", "q25", "q75"]
-ax.fill_between(agg.index, agg.q25, agg.q75, color=BLUE, alpha=0.16, zorder=4, lw=0)
-ax.plot(agg.index, agg.med, color=BLUE, linewidth=2.0, zorder=6,
-        marker="o", markersize=4.5, markerfacecolor="white",
-        markeredgecolor=BLUE, markeredgewidth=1.4)
+cross = agg[agg.med < 0].index.min(); below = agg[agg.index < cross].index.max()
 
-ax.axhline(perm_line, color=ORANGE, linewidth=1.6, dashes=(4, 2), zorder=5)
-ax.annotate(f"coefficients with no information: {perm_line:+.1%}",
-            xy=(300, perm_line), xytext=(0, 9), textcoords="offset points",
-            ha="center", va="bottom", color=ORANGE, fontsize=8)
-
-cross = agg[agg.med < 0].index.min()
-below = agg[agg.index < cross].index.max()
-ax.axvspan(below, cross, color=GRID, alpha=0.9, zorder=1)
-ax.annotate(f"the median crosses zero\nbetween {below} and {cross}",
-            xy=(np.sqrt(below * cross), 0.10), ha="center", va="bottom",
-            fontsize=8, color=INK_2)
-ax.annotate(f"{agg.med.iloc[0]:+.0%}", xy=(agg.index[0], agg.med.iloc[0]),
-            xytext=(6, 4), textcoords="offset points", fontsize=9,
-            color=BLUE, fontweight="bold")
-
-ax.set_xscale("log")
-TICKS1 = [40, 80, 160, 320, 656]     # 160 and 184 collide on a log axis
-ax.set_xticks(TICKS1)
-ax.set_xticklabels([str(n) for n in TICKS1])
-ax.minorticks_off()
-ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
-ax.set_ylim(-0.08, 0.30)
-ax.legend(handles=[
-    Line2D([], [], color=BLUE, lw=2.0, marker="o", markersize=4.5,
-           markerfacecolor="white", markeredgecolor=BLUE,
-           label="median (3 clocks × 3 cohorts), IQR shaded"),
-    Line2D([], [], color=MUTED, lw=1.0, dashes=(3, 1.6),
-           label="each test cohort, separately"),
-    Line2D([], [], color=ORANGE, lw=1.6, dashes=(4, 2),
-           label="reference: coefficients with no information"),
-], loc="upper right", ncol=1, handlelength=2.6)
-ax.text(0, 1.06, "Above zero, correcting is worse than not correcting",
-        transform=ax.transAxes, fontsize=10, color=INK)
-save(fig, "fig1_curva_n")
-
-
-# =============================================================== figure 2 ====
-print("figura 2 — o índice ordena")
 A = pd.read_csv(RES / "all_pairs.csv")
 cfg = (A[A.alpha == 0.0].groupby(["src", "dst", "n"])
          .agg(indice=("tindex", "median"), dano=("delta", "median")).reset_index())
 rho, pv = spearmanr(cfg.indice, cfg.dano)
 
-fig, ax = plt.subplots(figsize=(6.6, 4.1))
-style(ax, ylab="composition left, in points",
-      xlab=r"transport index    $(\sigma^2/n)\,\mathrm{tr}"
-           r"(\Sigma_{\mathrm{fit}}^{-1}\Sigma_{\mathrm{test}})$")
-ax.axhline(0, color=INK, linewidth=1.0, zorder=3)
-ax.axvline(0.05, color=MUTED, linewidth=1.0, dashes=(4, 2), zorder=2)
-ax.annotate("below 0.05, none of\nthe 63 was harmful", xy=(0.048, 0.125),
-            ha="right", va="top", fontsize=8, color=INK_2)
-
-# identity is marker shape, not hue: one colour, four shapes, greyscale-safe
-SIZE2 = {"o": 42, "s": 40, "^": 58, "D": 36}   # equal visual area, not equal s
-for src in COHORTS:
-    g = cfg[cfg.src == src]
-    ax.scatter(g.indice, g.dano, s=SIZE2[SHAPES[src]], marker=SHAPES[src],
-               facecolor=BLUE, edgecolor="white", linewidth=0.9, alpha=0.9,
-               zorder=5, label=f"fitted on {src}")
-ax.set_xscale("log")
-ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
-ax.legend(loc="upper left", handletextpad=0.4)
-ax.text(0.03, 0.56, f"Spearman ρ = {rho:.3f}\n{len(cfg)} configurations\np = {pv:.0e}",
-        transform=ax.transAxes, ha="left", va="top", fontsize=9, color=INK)
-ax.text(0, 1.06, "A quantity computed in advance orders the damage",
-        transform=ax.transAxes, fontsize=10, color=INK)
-save(fig, "fig2_indice")
-
-
-# =============================================================== figure 3 ====
-print("figura 3 — a assimetria (recalculando em n casado)")
 rows3 = []
 for a, b in combinations(COHORTS, 2):
     n = min(N[a], N[b])
@@ -315,41 +302,12 @@ for a, b in combinations(COHORTS, 2):
     gb = pd.DataFrame(transport(b, a, n, N_REPS))
     ia, ib = ga.tindex.median(), gb.tindex.median()
     da, db = ga.delta.median(), gb.delta.median()
-    hi = (f"{a[3:]}→{b[3:]}", ia, da) if ia > ib else (f"{b[3:]}→{a[3:]}", ib, db)
-    lo = (f"{b[3:]}→{a[3:]}", ib, db) if ia > ib else (f"{a[3:]}→{b[3:]}", ia, da)
-    rows3.append(dict(par=f"{a[3:]} / {b[3:]}", n=n, hi_lab=hi[0], hi=hi[2],
-                      lo_lab=lo[0], lo=lo[2], acerto=hi[2] > lo[2]))
+    hi = (ia, da) if ia > ib else (ib, db)
+    lo = (ib, db) if ia > ib else (ia, da)
+    rows3.append(dict(par=f"{a[3:]} / {b[3:]}", n=n, hi=hi[1], lo=lo[1],
+                      acerto=hi[1] > lo[1]))
 R3 = pd.DataFrame(rows3).sort_values("hi")
 
-fig, ax = plt.subplots(figsize=(6.6, 3.2))
-style(ax, xlab="composition left, in points")
-ax.axvline(0, color=INK, linewidth=1.0, zorder=2)
-ypos = np.arange(len(R3))
-for y, r in zip(ypos, R3.itertuples()):
-    ax.plot([r.lo, r.hi], [y, y], color=MUTED, linewidth=1.2, zorder=3)
-ax.scatter(R3.lo, ypos, s=52, marker="o", facecolor="white", edgecolor=BLUE,
-           linewidth=1.6, zorder=5, label="lower-index direction")
-ax.scatter(R3.hi, ypos, s=52, marker="o", facecolor=ORANGE, edgecolor="white",
-           linewidth=1.0, zorder=5, label="higher-index direction (predicted worse)")
-# the one miss is explained in the caption, not on the plot: every in-figure
-# placement collided with either the data or the legend
-ax.set_yticks(ypos)
-ax.set_yticklabels([f"{r.par}   n={r.n}" for r in R3.itertuples()], fontsize=8)
-ax.set_ylim(-0.7, len(R3) - 0.3)
-ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.05))
-ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
-ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2,
-          handletextpad=0.4)
-ax.text(0, 1.08, "The index is asymmetric, and so is the damage",
-        transform=ax.transAxes, fontsize=10, color=INK)
-ax.text(0, 1.015, f"each pair in both directions, fitted at n = min(nA, nB) — "
-        f"called {int(R3.acerto.sum())} of {len(R3)}",
-        transform=ax.transAxes, fontsize=8, color=INK_2)
-save(fig, "fig3_assimetria")
-
-
-# =============================================================== figure 4 ====
-print("figura 4 — o conserto")
 rows4 = []
 for src, dst in permutations(COHORTS, 2):
     n = min(N[src], N[dst])
@@ -358,37 +316,132 @@ for src, dst in permutations(COHORTS, 2):
                       ols=g[g.alpha == 0.0].delta.median(),
                       ridge=g[g.alpha == ALPHA_FIX].delta.median()))
 R4 = pd.DataFrame(rows4).sort_values("ols")
-
-fig, ax = plt.subplots(figsize=(6.6, 4.6))
-style(ax, xlab="composition left, in points")
-ax.axvline(0, color=INK, linewidth=1.0, zorder=2)
-ypos = np.arange(len(R4))
-for y, r in zip(ypos, R4.itertuples()):
-    ax.annotate("", xy=(r.ridge, y), xytext=(r.ols, y),
-                arrowprops=dict(arrowstyle="-|>", color=MUTED, linewidth=1.1,
-                                shrinkA=5, shrinkB=5), zorder=3)
-ax.scatter(R4.ols, ypos, s=52, marker="o", facecolor=BLUE_LIGHT,
-           edgecolor="white", linewidth=1.0, zorder=5, label="least squares (no penalty)")
-ax.scatter(R4.ridge, ypos, s=52, marker="s", facecolor=BLUE_DARK,
-           edgecolor="white", linewidth=1.0, zorder=5, label="ridge, α = 3")
-ax.set_yticks(ypos)
-ax.set_yticklabels([f"{r.par}   n={r.n}" for r in R4.itertuples()], fontsize=8)
-ax.set_ylim(-0.7, len(R4) - 0.3)
-ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.05))
-ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
-ax.legend(loc="lower right", handletextpad=0.4)
 n_bad = int((R4.ols > 0).sum())
-ax.text(0, 1.06, "Penalising the coefficients zeroes all twelve transports",
-        transform=ax.transAxes, fontsize=10, color=INK)
-ax.text(0, 1.012, f"{n_bad} of 12 pairs are harmful without a penalty; none with one", transform=ax.transAxes, fontsize=8, color=INK_2)
-save(fig, "fig4_conserto")
 
-print(f"\n  quatro figuras em paper/figures/")
-print(f"  fig 1: cruzamento entre n={below} e n={cross}")
+
+# ----------------------------------------------------------- the rendering --
+def fig1(t, lang):
+    fig, ax = plt.subplots(figsize=(6.6, 4.1))
+    style(ax, ylab=t["f1_y"], xlab=t["f1_x"])
+    ax.axhline(0, color=INK, linewidth=1.0, zorder=2)
+    for dst, dash in (("GSE61151", (1, 1.6)), ("GSE50660", (3, 1.6)),
+                      ("GSE42861", (5, 1.6))):
+        g = V[V.cohort == dst].groupby("n").delta.median()
+        ax.plot(g.index, g.values, color=MUTED, linewidth=1.0, dashes=dash, zorder=3)
+    ax.fill_between(agg.index, agg.q25, agg.q75, color=BLUE, alpha=0.16, zorder=4, lw=0)
+    ax.plot(agg.index, agg.med, color=BLUE, linewidth=2.0, zorder=6, marker="o",
+            markersize=4.5, markerfacecolor="white", markeredgecolor=BLUE,
+            markeredgewidth=1.4)
+    ax.axhline(perm_line, color=ORANGE, linewidth=1.6, dashes=(4, 2), zorder=5)
+    ax.annotate(dec(t["f1_refann"].format(v=perm_line), lang), xy=(300, perm_line),
+                xytext=(0, 9), textcoords="offset points", ha="center",
+                va="bottom", color=ORANGE, fontsize=8)
+    ax.axvspan(below, cross, color=GRID, alpha=0.9, zorder=1)
+    ax.annotate(t["f1_cross"].format(a=below, b=cross),
+                xy=(np.sqrt(below * cross), 0.10), ha="center", va="bottom",
+                fontsize=8, color=INK_2)
+    ax.annotate(f"{agg.med.iloc[0]:+.0%}", xy=(agg.index[0], agg.med.iloc[0]),
+                xytext=(6, 4), textcoords="offset points", fontsize=9,
+                color=BLUE, fontweight="bold")
+    ax.set_xscale("log")
+    ticks = [40, 80, 160, 320, 656]     # 160 and 184 collide on a log axis
+    ax.set_xticks(ticks); ax.set_xticklabels([str(n) for n in ticks])
+    ax.minorticks_off()
+    ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
+    ax.set_ylim(-0.08, 0.30)
+    ax.legend(handles=[
+        Line2D([], [], color=BLUE, lw=2.0, marker="o", markersize=4.5,
+               markerfacecolor="white", markeredgecolor=BLUE, label=t["f1_med"]),
+        Line2D([], [], color=MUTED, lw=1.0, dashes=(3, 1.6), label=t["f1_coh"]),
+        Line2D([], [], color=ORANGE, lw=1.6, dashes=(4, 2), label=t["f1_ref"]),
+    ], loc="upper right", handlelength=2.6)
+    ax.text(0, 1.06, t["f1_title"], transform=ax.transAxes, fontsize=10, color=INK)
+    save(fig, "fig1_curva_n", lang)
+
+
+def fig2(t, lang):
+    fig, ax = plt.subplots(figsize=(6.6, 4.1))
+    style(ax, ylab=t["f2_y"], xlab=XLAB[lang])
+    ax.axhline(0, color=INK, linewidth=1.0, zorder=3)
+    ax.axvline(0.05, color=MUTED, linewidth=1.0, dashes=(4, 2), zorder=2)
+    ax.annotate(t["f2_floor"], xy=(0.048, 0.125), ha="right", va="top",
+                fontsize=8, color=INK_2)
+    size = {"o": 42, "s": 40, "^": 58, "D": 36}   # equal visual area, not equal s
+    for src in COHORTS:
+        g = cfg[cfg.src == src]
+        ax.scatter(g.indice, g.dano, s=size[SHAPES[src]], marker=SHAPES[src],
+                   facecolor=BLUE, edgecolor="white", linewidth=0.9, alpha=0.9,
+                   zorder=5, label=t["f2_fit"].format(c=src))
+    ax.set_xscale("log")
+    ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
+    ax.legend(loc="upper left", handletextpad=0.4)
+    ax.text(0.03, 0.56, dec(t["f2_stats"].format(r=rho, n=len(cfg), p=pv), lang),
+            transform=ax.transAxes, ha="left", va="top", fontsize=9, color=INK)
+    ax.text(0, 1.06, t["f2_title"], transform=ax.transAxes, fontsize=10, color=INK)
+    save(fig, "fig2_indice", lang)
+
+
+def fig3(t, lang):
+    fig, ax = plt.subplots(figsize=(6.6, 3.2))
+    style(ax, xlab=t["f3_x"])
+    ax.axvline(0, color=INK, linewidth=1.0, zorder=2)
+    ypos = np.arange(len(R3))
+    for y, r in zip(ypos, R3.itertuples()):
+        ax.plot([r.lo, r.hi], [y, y], color=MUTED, linewidth=1.2, zorder=3)
+    ax.scatter(R3.lo, ypos, s=52, marker="o", facecolor="white", edgecolor=BLUE,
+               linewidth=1.6, zorder=5, label=t["f3_lo"])
+    ax.scatter(R3.hi, ypos, s=52, marker="o", facecolor=ORANGE, edgecolor="white",
+               linewidth=1.0, zorder=5, label=t["f3_hi"])
+    # the one miss is explained in the caption: every in-figure placement
+    # collided with either the data or the legend
+    ax.set_yticks(ypos)
+    ax.set_yticklabels([f"{r.par}   n={r.n}" for r in R3.itertuples()], fontsize=8)
+    ax.set_ylim(-0.7, len(R3) - 0.3)
+    ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.05))
+    ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2,
+              handletextpad=0.4)
+    ax.text(0, 1.08, t["f3_title"], transform=ax.transAxes, fontsize=10, color=INK)
+    ax.text(0, 1.015, t["f3_sub"].format(k=int(R3.acerto.sum()), m=len(R3)),
+            transform=ax.transAxes, fontsize=8, color=INK_2)
+    save(fig, "fig3_assimetria", lang)
+
+
+def fig4(t, lang):
+    fig, ax = plt.subplots(figsize=(6.6, 4.6))
+    style(ax, xlab=t["f4_x"])
+    ax.axvline(0, color=INK, linewidth=1.0, zorder=2)
+    ypos = np.arange(len(R4))
+    for y, r in zip(ypos, R4.itertuples()):
+        ax.annotate("", xy=(r.ridge, y), xytext=(r.ols, y),
+                    arrowprops=dict(arrowstyle="-|>", color=MUTED, linewidth=1.1,
+                                    shrinkA=5, shrinkB=5), zorder=3)
+    ax.scatter(R4.ols, ypos, s=52, marker="o", facecolor=BLUE_LIGHT,
+               edgecolor="white", linewidth=1.0, zorder=5, label=t["f4_ols"])
+    ax.scatter(R4.ridge, ypos, s=52, marker="s", facecolor=BLUE_DARK,
+               edgecolor="white", linewidth=1.0, zorder=5, label=t["f4_ridge"])
+    ax.set_yticks(ypos)
+    ax.set_yticklabels([f"{r.par}   n={r.n}" for r in R4.itertuples()], fontsize=8)
+    ax.set_ylim(-0.7, len(R4) - 0.3)
+    ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.05))
+    ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
+    ax.legend(loc="lower right", handletextpad=0.4)
+    ax.text(0, 1.06, t["f4_title"], transform=ax.transAxes, fontsize=10, color=INK)
+    ax.text(0, 1.012, t["f4_sub"].format(k=n_bad), transform=ax.transAxes,
+            fontsize=8, color=INK_2)
+    save(fig, "fig4_conserto", lang)
+
+
+for lang, t in T.items():
+    globals()["PCT_LANG"] = lang
+    for f in (fig1, fig2, fig3, fig4):
+        f(t, lang)
+    print(f"  figures/{lang}/ — quatro figuras", flush=True)
+
+print(f"\n  fig 1: cruzamento entre n={below} e n={cross}")
 print(f"  referencia embaralhada: mediana {perm_line:+.2%}, "
       f"IQR {perm.delta.quantile(.25):+.2%} a {perm.delta.quantile(.75):+.2%}, "
-      f"{len(perm)} valores de {perm.delta.abs().count()//9} sorteios")
+      f"{len(perm)} valores")
 print(f"  fig 2: rho = {rho:.3f} sobre {len(cfg)} configuracoes")
 print(f"  fig 3: {int(R3.acerto.sum())} de {len(R3)} direcoes acertadas")
-print(f"  fig 4: {n_bad} de 12 nocivos com OLS, "
-      f"{int((R4.ridge > 0).sum())} com ridge")
+print(f"  fig 4: {n_bad} de 12 nocivos com OLS, {int((R4.ridge > 0).sum())} com ridge")
