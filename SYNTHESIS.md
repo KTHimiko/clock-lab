@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-one stages
+## The answer, after twenty-two stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -1780,6 +1780,123 @@ small index licenses the correction, a large one does not forbid it.
   here comes from the same deconvolution with the same panel, so this says
   nothing about what happens when two groups deconvolve differently.
 
+> **Stage 22 closed this one.** With the fitting cohort deconvolved by one
+> reference and the test cohort by another, the index still ranks configurations
+> at ρ = 0.776 against a bar of 0.70, and ridge at α = 3 still holds all twelve
+> pairs at or below zero. Two references disagreeing about a cell type is itself
+> a covariance mismatch, which is why the index sees it without being told.
+
+---
+
+## Stage 22 — two teams, two reference panels, and the diagnostic still works
+
+Stage 21 wrote its own limitation: every cohort's composition in this project
+comes from the same deconvolution with the same panel, which is not the
+situation any of this is about. The real case is two groups who never spoke —
+one publishes composition coefficients estimated with their reference, another
+applies them to proportions estimated with theirs.
+
+**The obvious framing of that is impossible.** "Fit with six types and apply to
+twelve" cannot be done: the coefficient vectors are not the same length.
+Coefficients only transfer between analyses using the same cell-type *labels*.
+So the mismatch that matters is the same six names estimated from different
+reference data — **direct-6** from Reinius (GSE35069, the panel stages 7–12
+used) against **collapsed-6**, the twelve-type Salas panel folded onto those six
+labels by the published map. Different donors, different probes, different array
+generation, same column names.
+
+### The two panels do measure the same things
+
+Correlation between the two estimates of each type, across four cohorts:
+
+| type | Neu | Bcell | CD4T | NK | CD8T | Mono |
+|---|---|---|---|---|---|---|
+| median r | **0.989** | 0.952 | 0.948 | 0.924 | 0.894 | **0.886** |
+
+Median 0.936 over six types and four cohorts, against a bar of 0.50. These are
+two references agreeing about the same biology, not one broken panel.
+
+**The literature's prediction did not land where it said it would**, and that is
+worth recording rather than smoothing over. Reinius is documented as weakest on
+NK and granulocytes; here NK sits at 0.924 and neutrophils are the *best*
+channel at 0.989. The worst is monocyte, which is where **this project's own
+declared bias** from stage 13 lives — the twelve-type panel's monocyte channel
+runs high. The disagreement is on the side the project already knew about, not
+on the side the literature warned about.
+
+### The diagnostic survives the case it will actually be used in
+
+| arm | configurations | Spearman ρ |
+|---|---|---|
+| same panel both ends | 63 | +0.793 |
+| **different panel each end** | 63 | **+0.776** |
+
+> Bar for the mismatched arm: ρ > 0.70. **Passed**, and barely degraded from the
+> matched arm.
+
+Two references disagreeing about the same cell type *is* a covariance mismatch,
+so the index sees it without being told. That is the prediction stage 22 existed
+to test, and it is the one that matters for anyone using this: the diagnostic
+does not require both cohorts to have been processed by the same hands.
+
+(Neither number is comparable with stage 21's 0.907. This stage applies with
+direct-6 and measures with the twelve-type composition; stage 21 applied with
+twelve and measured with six. Different measurement geometry, same bar.)
+
+### The fix survives it too
+
+Ridge at α = 3 holds median damage at or below zero in **all twelve** directed
+pairs of the mismatched arm, including the three that OLS leaves harmful:
+42861 → 40279 from +1.5% to −1.8%, 42861 → 61151 from +1.3% to −0.6%,
+61151 → 40279 from +3.3% to −1.5%.
+
+### What the mismatch costs, and a confound in my own design
+
+At matched n, paired over the twelve pairs: **median cost +0.5%**, worse in 8 of
+12. Pooling every fitting size including the small ones, the count of harmful
+pairs goes from **5 of 12 to 10 of 12**.
+
+But the sign flips in four pairs, and the reason is a confound I built in
+without seeing it. The mismatched arm does not only mismatch — it also **fits
+with the better panel**. Collapsed-6 comes from Salas, which is the later, finer
+reference; direct-6 comes from Reinius. So the contrast is
+
+> (fit with Salas, apply to Reinius)  against  (fit with Reinius, apply to Reinius)
+
+and it mixes two effects pulling opposite ways: a penalty for mismatching, and a
+benefit from fitting on better-estimated proportions. GSE61151 → GSE50660 goes
+from +4.1% to −0.1% and GSE61151 → GSE42861 from +2.0% to −2.6% — mismatching
+*helped*, which only makes sense as the quality term winning.
+
+**So +0.5% is a mixture and not a mismatch penalty**, and the clean design needs
+the reverse arm too: fit with Reinius, apply to Salas. That is not run here and
+the number should not be quoted as if it were.
+
+What is *not* confounded is check 5, because both arms are ranked by their own
+index and the question there is whether the ranking holds, not how large the
+damage is. The diagnostic result stands on its own.
+
+### A bug, found by NaNs rather than by a check
+
+The first run printed NaN in five of twelve rows. Not a result: the matched-n
+comparison selected its rows out of the grid, and the matched n is almost never
+*on* the fitting cohort's grid — 184 is not in GSE40279's. Empty frames,
+medians of nothing. Stage 21 ran those configurations explicitly and this stage
+did not, until it did.
+
+It is recorded because the failure mode is worth naming: **the check that caught
+it was arithmetic refusing to print**, not any of the seven pre-specified checks,
+none of which look at whether the rows they summarise exist.
+
+### What this cannot say
+
+- One directed mismatch, Salas-fitted to Reinius-applied. The reverse is not run.
+- Both panels are built by this project from public reference data, with a
+  cruder probe selection than either published library. The disagreement between
+  them is therefore a lower bound on what two real labs would produce.
+- Six types. Nothing here says what happens when one team uses twelve and the
+  other six, because as stated at the top, that transfer is not possible at all.
+
 ---
 
 ## Corrections so far
@@ -1824,6 +1941,8 @@ small index licenses the correction, a large one does not forbid it.
 | **stage 20's check 4 demanding a residual below 2% where the stage's own formula predicts 2.1%** | the check failing at 3.83% on a correct implementation | a hard stop mid-run, and a rewrite — the threshold was arithmetically impossible, not inconvenient |
 | stage 20's check 2 testing whether the index predicts a single draw | rho = 0.021 at 56% of cells, worse than the quantity it was meant to beat — and the theory says why: a near-constant predictor cannot track an outcome whose realisation noise has CV 0.43 | nothing, the negative is kept and reported; check 2b is marked post hoc rather than renumbered |
 | stage 20 reporting an index of 0.05 as the point where damage crosses zero | stage 21's 63 configurations across four fitting cohorts, where the crossing is a zone from 0.051 to 0.163 containing both outcomes | a sharp threshold, replaced by a one-sided floor: below 0.05 nothing was harmful |
+| stage 22's matched-n table selecting its rows out of the grid, when the matched n is almost never on the fitting cohort's grid | five of twelve rows printing NaN — arithmetic on empty frames, caught by the output and by none of the seven pre-specified checks | a rerun; none of the checks verify that the rows they summarise exist |
+| **reading stage 22's +0.5% as the cost of panel mismatch** | the sign flipping in four pairs: the mismatched arm also fits with the better panel, so it mixes a mismatch penalty with a panel-quality benefit | the magnitude, which is a mixture and is not quoted as a penalty; the ranking result in check 5 is unaffected |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
