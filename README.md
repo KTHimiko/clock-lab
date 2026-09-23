@@ -8,7 +8,7 @@ lymphocytes fall, myeloid cells rise — and each cell type carries its own
 methylation pattern. A clock fitted on whole blood may be reading **who is in
 the sample** rather than **how old those cells are**.
 
-## The answer, after fourteen stages
+## The answer, after seventeen stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -23,9 +23,11 @@ acceleration**, depending on the clock, which lands on the published figures.
 
 It can be **partly designed away**: excluding CpGs that correlate with naive-CD8
 identity cuts a clock's cell-type displacement by 41% while slightly improving
-its accuracy on an external cohort. It cannot reliably be **subtracted** away
-after the fact — a correction fitted on one cohort removes most of nothing in
-another.
+its accuracy on an external cohort. It can be **subtracted** away after the fact
+only with a fine panel and a large fitting cohort: fitted on 656 samples the
+correction removes 61% of the composition signal in a cohort it has never seen,
+while the same correction fitted on forty *adds* nearly three times what was
+there — and is worse than doing nothing in 89% of draws.
 
 Full argument, every number and every correction:
 [`SYNTHESIS.md`](SYNTHESIS.md).

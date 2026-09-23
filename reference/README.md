@@ -22,10 +22,11 @@ CD19+ B, CD56+ NK, neutrophils, eosinophils — six of each.
 ## GSE61151 — Breakthrough Generations Study, whole blood
 
 Used for validating the clock implementations, because it carries chronological
-age for 573 samples.
+age. The paper reports 573; the series matrix carries 188, and that
+discrepancy is on the corrections table in `SYNTHESIS.md`.
 
 - GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61151>
-- 485,577 probes × 573 samples, 710 MB compressed
+- 485,577 probes × 188 samples, 710 MB compressed
 
 ```bash
 curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE61nnn/GSE61151/matrix/GSE61151_series_matrix.txt.gz"

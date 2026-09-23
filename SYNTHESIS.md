@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twelve stages
+## The answer, after seventeen stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -23,10 +23,18 @@ stages concluding otherwise. Excluding CpGs that correlate with naive-CD8
 identity cuts a clock's cell-type displacement by 41% while slightly improving
 its accuracy on an external cohort. What defeated the earlier attempts was
 filtering on overall cell-type variance instead of on the naive-versus-memory
-axis, where the effect actually lives. It can also be *subtracted* away after the fact, but only under conditions
-narrow enough to matter: with a twelve-type panel and a large fitting cohort the
-correction removes most of the signal out of cohort, while the same correction
-fitted on 184 samples makes every clock worse than leaving it alone.
+axis, where the effect actually lives.
+
+It can also be *subtracted* away after the fact, but only under conditions
+narrow enough to matter. With a twelve-type panel and the full 656-sample
+fitting cohort, the correction removes 61% of the composition signal out of
+cohort. Fitted on forty samples it **adds 2.7 times what was there** — seven
+times more damage than composition coefficients with no information in them —
+and it is worse than doing nothing in 89% of draws. The median turns beneficial
+somewhere around 160 to 184 samples and an unlucky draw keeps hurting to about
+320. Sample size is not the whole story: 184 samples of one cohort help while
+184 of another did the damage that stage 15 blamed on size, which is the
+question stage 18 opens.
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -925,6 +933,14 @@ simulation. This is that, transported between cohorts.
 It is: correcting works with a fine panel and a large fitting cohort, and
 mis-calibrated it is worse than leaving the clock alone.**
 
+> **Stage 17 kept the finding and overturned the mechanism.** "A large fitting
+> cohort" is not what this is. Fitting on 184 samples of GSE40279 and
+> transporting it does **not** reproduce the harm — median −0.9%, against the
+> +4.9 points measured here — so the size of the fitting cohort is not what
+> broke this direction. The curve of n is real and steep, and it is not
+> sufficient. The candidate that is left sits in stage 12's own numbers, where
+> median CD8T is 0.036 in GSE40279 and 0.000 in GSE61151. See stage 17.
+
 ### The trap in the second direction, which was nearly read as a result
 
 Three of the six clocks here have a stake in GSE40279 — Hannum was trained on
@@ -1024,6 +1040,171 @@ clocks are sold on, is untested here.
 
 ---
 
+## Stage 17 — the curve is real, and stage 15's explanation is not
+
+Stage 15 concluded that transporting a composition correction fails when it is
+fitted on too few samples. It never tested that. Its two cells differ in size
+**and** in cohort, age range, array batch, collection site and composition
+distribution, and any of those explains the result equally well.
+
+This stage varies n and holds the rest fixed. Every correction is fitted on
+GSE40279 — the same people, the same array, the same sites — subsampled at ten
+sizes, stratified by age decile, and carried to **three** external cohorts
+instead of stage 15's one.
+
+### The curve
+
+Pooled over the three verdict clocks and the three test cohorts, 270 values per
+row. Delta is what the correction did to the composition term left in the age
+residual, in points of age-acceleration variance. **Positive means the
+correction left the clock worse than not correcting at all.**
+
+| fitting n | median delta | q75 | share of cells worse than doing nothing |
+|---|---|---|---|
+| 40 | **+12.2%** | +22.3% | 89% |
+| 60 | +7.5% | +16.5% | 85% |
+| 80 | +5.2% | +12.8% | 76% |
+| 120 | +2.4% | +8.8% | 67% |
+| 160 | +0.3% | +4.6% | 52% |
+| **184** | **−0.9%** | +2.9% | 41% |
+| 240 | −0.9% | +2.7% | 43% |
+| 320 | −1.8% | +1.0% | 31% |
+| 480 | −2.2% | +0.5% | 27% |
+| 656 | −2.3% | −1.1% | 22% |
+
+**The median crosses zero between n = 160 and n = 184.** Below that the standard
+fix is worse than leaving the clock alone, and at the bottom of the range it is
+not close: at forty samples it makes the clock worse in **89% of draws**.
+
+Normalised against how much composition signal was there to begin with, the
+bottom of the curve is worse than it looks:
+
+| fitting n | 40 | 80 | 120 | 184 | 320 | 656 |
+|---|---|---|---|---|---|---|
+| fraction of the composition signal removed | **−271%** | −104% | −65% | +21% | +41% | **+61%** |
+
+At full n the correction removes 61% of the composition signal out of cohort.
+At forty samples it does not remove 100% of nothing — it **adds 2.7 times what
+was there**.
+
+### Seven times worse than no information at all
+
+The stage carries a reference line: the same transport, with composition
+coefficients fitted at full n on **permuted** composition. Those coefficients
+carry no information by construction.
+
+> permuted coefficients, n = 656: median delta **+1.8%** (range −3.8% to +4.2%)
+> real coefficients, n = 40: median delta **+12.2%**
+
+A correction fitted on forty samples is **seven times more damaging than a
+coefficient vector with nothing in it**. That is the part worth keeping. Small-n
+failure here is not dilution of a good answer toward a harmless one; the
+estimate is actively wrong in a direction that costs more than silence. Meredith
+et al. (2019) give the shape of it from inside one cohort — collinear cell-type
+predictors, variance inflation above 100, 83% of coefficients flipping sign.
+An inflated coefficient with a flipped sign, carried somewhere the composition
+distribution differs, does not cancel. It multiplies.
+
+### The anchor, which failed
+
+The decision rule was written into the script before the run. Stage 15's
+reversed direction fitted on 184 samples and made every clock worse, median
++4.9 points. If sample size is the mechanism, 184 samples of GSE40279 must also
+be harmful.
+
+> **median at n = 184: −0.9%** (IQR −3.1% to +2.9%, 270 values). 41% of cells
+> worse than doing nothing — the minority, not the majority.
+
+**Negative anchor.** One hundred and eighty-four samples are not, by themselves,
+enough to produce stage 15's harm. Something else about GSE61151 *as a fitting
+cohort* did it, and stage 15 named the wrong thing.
+
+### What survives of stage 15, and what does not
+
+The finding survives: a transported correction can be worse than no correction,
+and this stage reproduces that at every n below 160 in three independent
+cohorts. **The mechanism does not survive.** Size is a strong cause — the curve
+is monotone across a factor of sixteen — but it is not sufficient, so it is not
+the cause stage 15 claimed.
+
+The better candidate is already in this project's own record, in stage 12, and
+was not connected to it: **median CD8T is 0.036 in GSE40279 and 0.000 in
+GSE61151.** A cohort where a cell type's estimated proportion is pinned at zero
+cannot identify that type's coefficient at any n. If what governs the damage is
+the conditioning of the composition matrix rather than the number of rows in it,
+then n matters only because more rows usually mean better conditioning — and a
+badly conditioned cohort of 184 behaves like a well-conditioned cohort of 40.
+That is a measurable claim and it is stage 18.
+
+### An artefact in the table above, caught before it was written down
+
+The first table's q75 column tempts a statement it cannot support: *the upper
+quartile only falls below zero at n = 656, so below that a bad draw still hurts.*
+That reads the 656 row as if it described draws. It does not — **n = 656 has one
+possible draw**, so its spread is across clocks and cohorts only, while every
+other row mixes that with draw-to-draw variation. The two are not comparable.
+
+Measured properly, as the spread across draws **within** each clock-by-cohort
+cell:
+
+| fitting n | 120 | 160 | 184 | 240 | 320 | 480 |
+|---|---|---|---|---|---|---|
+| median cell's q75 | +5.5% | +2.4% | +0.3% | +1.2% | **−0.9%** | −1.4% |
+| worst cell's q75 | +18.9% | +15.5% | +13.2% | +10.5% | +11.1% | +6.8% |
+
+So the honest version is two numbers, not one. **The median draw starts helping
+at n ≈ 160–184; an unlucky draw keeps hurting until n ≈ 320**, and in the worst
+clock-by-cohort cell an unlucky draw still hurts at 480.
+
+### Per clock, and per test cohort
+
+| fitting n | Horvath 2013 | Horvath 2018 | Levine 2018 |
+|---|---|---|---|
+| 40 | +9.2% | **+19.8%** | +11.2% |
+| 184 | −1.6% | +0.9% | −3.4% |
+| 656 | −2.8% | −1.1% | **−8.6%** |
+
+Horvath 2018 is the worst behaved and does not cross zero until n = 480. Levine
+gains the most, and it is also the verdict clock with the most composition
+signal to lose (8.3% against 3.8% and 4.4%) — the correction is worth more where
+there is more to correct, which is unsurprising and worth stating because it
+bounds who should bother.
+
+| fitting n | GSE61151 | GSE50660 | GSE42861 |
+|---|---|---|---|
+| 40 | +6.6% | +13.0% | +16.0% |
+| 184 | −0.3% | −1.9% | −0.1% |
+| 656 | −2.0% | −3.1% | −2.8% |
+
+Three independent test cohorts, three curves with the same shape and the same
+crossing region. That is the part stage 15 could not have known with one.
+
+### Hannum, reported and not counted
+
+Hannum was trained on GSE40279, so its correction here is fitted on an age
+residual that barely exists. It is kept out of the verdict for that reason and
+reported because its pattern is the cleanest in the stage: −9.3% at full n,
+still only +1.1% at forty. It is also the clock with by far the most composition
+signal to remove, 11.5%. Where there is a lot of real signal, the correction
+survives a small fit; where there is little, the noise dominates it. That
+pattern is consistent with the conditioning hypothesis and is not evidence for
+it, because the in-sample fit confounds it.
+
+### What this cannot say
+
+- **One fitting cohort.** This is GSE40279's curve. The crossing point is a
+  property of that cohort's composition structure, not a constant, and the whole
+  point of the failed anchor is that another cohort of the same size behaves
+  differently. Nobody should read "n = 184" off this table as a threshold.
+- **Three test cohorts, all whole blood on 450k.** Nothing here speaks to EPIC,
+  to other tissues, or to the twelve-type panel replacing the six-type one as
+  the measurement.
+- The correction is the IEAA-style one: regress clock age on chronological age
+  and composition, keep the composition coefficients. It says nothing about
+  reference-free methods.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -1056,6 +1237,8 @@ clocks are sold on, is untested here.
 | stage 4 naming Σ\|β\| as the quantity that governs displacement | 45 trained clocks ranking +0.97 with the L2 norm against +0.75 with L1 | the practical conclusion — dilution defends, and stage 4 said concentration was irrelevant |
 | writing stage 8's degenerate-corner check with an absolute threshold on a sum whose scale rides on probe count | the check failing at 1.877 against a limit of 1.0, with both real clauses passing | a threshold rewritten after it failed, which is on the record rather than in the history |
 | specifying stage 7's physiology check on neutrophils only — 64% of blood and the easiest cell to get right | three of the five unchecked types landing outside clinical range | nothing, because the joint test does not depend on the split; but the per-type reconciliation was read as weak evidence rather than as a broken measurement until this was found |
+| **stage 15 attributing the transport failure to the size of the fitting cohort** | stage 17's anchor: 184 samples of GSE40279, fitted and transported the same way, do not reproduce the harm — −0.9% against +4.9 | a mechanism, and the headline of the transport finding |
+| reading the n-curve's q75 column as a statement about draws | n = 656 having exactly one possible draw, so its spread is across clocks and cohorts while every other row also carries draw-to-draw variation | nothing, caught before it was written down — it would have moved the reliability threshold from 320 to 656 |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
