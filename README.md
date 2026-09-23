@@ -8,7 +8,7 @@ lymphocytes fall, myeloid cells rise — and each cell type carries its own
 methylation pattern. A clock fitted on whole blood may be reading **who is in
 the sample** rather than **how old those cells are**.
 
-## The answer, after seventeen stages
+## The answer, after eighteen stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -28,6 +28,13 @@ only with a fine panel and a large fitting cohort: fitted on 656 samples the
 correction removes 61% of the composition signal in a cohort it has never seen,
 while the same correction fitted on forty *adds* nearly three times what was
 there — and is worse than doing nothing in 89% of draws.
+
+**That failure has a one-line fix.** Ridge-penalising the composition
+coefficients, with the penalty picked by ordinary cross-validation on whatever
+cohort you have, keeps the median correction beneficial at every fitting size
+tested: the +12.2% catastrophe at forty samples becomes −0.2%, and the benefit
+at full size survives. None of the eight methods the field benchmarks for
+cell-type adjustment uses a penalty.
 
 Full argument, every number and every correction:
 [`SYNTHESIS.md`](SYNTHESIS.md).

@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after seventeen stages
+## The answer, after eighteen stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -33,8 +33,15 @@ times more damage than composition coefficients with no information in them —
 and it is worse than doing nothing in 89% of draws. The median turns beneficial
 somewhere around 160 to 184 samples and an unlucky draw keeps hurting to about
 320. Sample size is not the whole story: 184 samples of one cohort help while
-184 of another did the damage that stage 15 blamed on size, which is the
-question stage 18 opens.
+184 of another did the damage that stage 15 blamed on size — and conditioning,
+the other candidate, turned out to carry no information about it at all.
+
+**The failure can be removed without being explained.** Ridge-penalising the
+composition coefficients, with the penalty chosen by ordinary cross-validation
+on the fitting cohort, holds the median delta negative at every fitting size
+from forty samples to six hundred: the +12.2% catastrophe at n = 40 becomes
+−0.2%, and the benefit at full n is kept. No penalised adjustment appears among
+the eight methods the field benchmarks.
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -1129,7 +1136,14 @@ the cause stage 15 claimed.
 
 The better candidate is already in this project's own record, in stage 12, and
 was not connected to it: **median CD8T is 0.036 in GSE40279 and 0.000 in
-GSE61151.** A cohort where a cell type's estimated proportion is pinned at zero
+GSE61151.**
+
+> **Stage 18 tested that candidate and it lost.** GSE61151 is the *better*
+> conditioned cohort — condition number 40.8 against 54.4 to 65.9 for every
+> GSE40279 subsample, full cohort included — and conditioning carries no
+> information about the damage once n is held fixed. Both candidate mechanisms
+> are down. What stage 18 did find is that ridge-penalising the composition
+> coefficients removes the small-n harm entirely, without explaining it. A cohort where a cell type's estimated proportion is pinned at zero
 cannot identify that type's coefficient at any n. If what governs the damage is
 the conditioning of the composition matrix rather than the number of rows in it,
 then n matters only because more rows usually mean better conditioning — and a
@@ -1205,6 +1219,159 @@ it, because the in-sample fit confounds it.
 
 ---
 
+## Stage 18 — conditioning is not it either, and ridge fixes it anyway
+
+Stage 17 left one candidate standing. If the damage is governed by the
+conditioning of the composition matrix rather than by the number of rows in it,
+then a badly conditioned cohort of 184 behaves like a well conditioned cohort of
+40, the failed anchor is explained, and the practitioner gets a diagnostic they
+can compute on their own single cohort. This stage measured it.
+
+**It is not that.** Two checks, written before the run, both say no.
+
+### Conditioning barely moves with n
+
+Measured on the composition block after partialling out intercept and age —
+the system whose solution the coefficients actually are:
+
+| fitting n | 40 | 80 | 160 | 320 | 656 |
+|---|---|---|---|---|---|
+| condition number | 65.9 | 62.1 | 54.5 | 54.4 | **54.5** |
+| largest VIF | 302.3 | 275.8 | 215.7 | 212.8 | **214.5** |
+| L2 norm of coefficients | 394.7 | 303.3 | 226.0 | 218.1 | **217.7** |
+
+Conditioning is almost a constant of the cell-type structure, not something a
+larger cohort buys: a sixteen-fold change in n moves the condition number by
+about a fifth. What *does* move is the coefficient norm, which is 1.8 times
+larger at forty samples than at full n — the inflation Meredith et al. predict.
+
+Worth recording for scale: Meredith reports a variance inflation factor of
+113.7 at six cell types and calls it far past the acceptable threshold of 5.
+**At twelve types the same measurement runs 215 to 302.** The finer panel that
+stages 13-15 adopted for its resolution is also, unavoidably, twice as collinear.
+
+### Check 5 — conditioning explains nothing beyond n, and my first version of
+### this check would have said something false
+
+n and conditioning are correlated by construction, so the test was written to
+run *within* each n stratum, where n cannot masquerade as anything.
+
+**The first version pooled the four clocks inside each stratum, and that is
+wrong.** The clocks differ enormously in both quantities — Levine's coefficient
+norm is 386 with a median delta of −0.7%, Horvath 2018's norm is 183 with
++4.8% — so a between-clock pattern reads as a within-stratum correlation. Pooled
+that way, the norm appeared to predict *less* damage, strongly and significantly
+(ρ = −0.484 at n = 480, p = 3×10⁻¹⁷). That number is an artefact of mixing
+clocks and it is not a finding.
+
+Redone inside each n × clock × cohort cell, which is the comparison that holds
+everything but the draw fixed:
+
+| | median ρ | share of cells positive |
+|---|---|---|
+| condition number vs damage | **−0.025** | 48% |
+| coefficient norm vs damage | +0.076 | 63% |
+
+Forty-eight percent is a coin. **Conditioning carries no information about the
+damage once n is held fixed.** The coefficient norm carries a little, in the
+direction inflation predicts, and not enough to be a mechanism.
+
+### Check 6 — GSE61151 is the *better* conditioned cohort
+
+This is the number the stage existed for, and it is decisive in the direction
+that kills the hypothesis.
+
+> GSE61151, the cohort stage 15 fitted on: **condition number 40.8**, largest
+> VIF 117.8.
+> Every GSE40279 subsample, at every n from 40 to 656: **54.4 to 65.9**.
+
+Stage 15's fitting cohort is better conditioned than the full 656-sample cohort
+that this project has been treating as the well-behaved one, and it still
+produced the +4.9 points of damage that stage 17 could not reproduce.
+
+**Both candidate mechanisms are now down.** Sample size is a strong cause and
+not a sufficient one (stage 17). Conditioning is not a cause at all (this
+stage). What is left is a cohort difference that neither quantity captures, and
+the obvious remaining candidate is the one stage 12 already demonstrated on
+purified cells without generalising it: the correction is a **linear term
+extrapolated outside the composition range it was fitted in**. Stage 12 pushed
+neutrophils from 50–75% to 100% and watched Horvath 2013's displacement go from
+5.52 to 13.67 years. Two whole-blood cohorts differ far less than that — but
+stage 12 also recorded that median CD8T is 0.036 in GSE40279 and **0.000** in
+GSE61151, which is the same thing in miniature. That is stage 19.
+
+### Ridge, and the degenerate corner it had to survive
+
+Shrinking a correction to zero removes the harm and is not a method. This
+project already lost a conclusion to that shape once, in stage 8, where
+"dilution is a defence" turned out to be a model shrinking itself rather than
+resisting anything. So the rule was two-sided and written before the run: an
+alpha counts only if at n = 40 it is no worse than not correcting **and** beats
+OLS, while at n = 656 it keeps at least 70% of the OLS benefit.
+
+Median delta by penalty and fitting size:
+
+| alpha | 40 | 80 | 160 | 184 | 320 | 656 | coef. norm |
+|---|---|---|---|---|---|---|---|
+| **0** (OLS) | **+12.2%** | +5.2% | +0.3% | −0.9% | −1.8% | −2.3% | 277 |
+| 0.1 | +7.2% | +2.6% | −0.3% | −1.3% | −1.8% | −2.0% | 138 |
+| 0.3 | +3.9% | +0.6% | −1.3% | −1.7% | −2.2% | −2.6% | 112 |
+| 1.0 | +0.0% | −1.1% | −2.0% | −2.4% | −2.6% | **−2.8%** | 69 |
+| **3.0** | **−1.4%** | −1.5% | −1.7% | −2.0% | −1.9% | −1.9% | 35 |
+| 10.0 | −1.0% | −0.8% | −0.8% | −1.0% | −0.9% | −0.9% | 13 |
+
+**Alpha = 3 is the only penalty that passes both arms**, and what it buys is not
+a better number at any single n — it is a **flat** one. Across a sixteen-fold
+range of fitting size the delta moves between −1.4% and −2.0%. The correction
+stops depending on how big the fitting cohort was.
+
+Alpha = 10 is the degenerate corner doing exactly what the check was written to
+catch: coefficient norm 13, delta pinned near −0.9% everywhere, harmless and
+useless. It fails the second arm and is not reported as a fix. Alpha = 1 is the
+near miss worth naming: it is the best penalty at every n from 60 up, and beats
+OLS at full n (−2.8% against −2.3%), but at n = 40 it lands a hair above zero
+and the pre-written rule excludes it. The rule was not moved.
+
+### The number that matters to somebody using this
+
+Nobody picks alpha by looking at this table; they cross-validate on the cohort
+they have. So the stage records what ordinary leave-one-out cross-validation
+picks, per draw, and what that choice then costs out of cohort:
+
+| fitting n | OLS median | OLS worse than doing nothing | CV-ridge median | CV-ridge worse |
+|---|---|---|---|---|
+| 40 | **+12.2%** | **89%** | **−0.2%** | 44% |
+| 60 | +7.5% | 85% | −0.3% | 42% |
+| 80 | +5.2% | 76% | −0.5% | 37% |
+| 120 | +2.4% | 67% | −0.7% | 36% |
+| 160 | +0.3% | 52% | −1.3% | 29% |
+| 184 | −0.9% | 41% | −1.7% | 23% |
+| 320 | −1.8% | 31% | −2.0% | 19% |
+| 480 | −2.2% | 27% | −2.3% | 17% |
+| 656 | −2.3% | 22% | −2.8% | 22% |
+
+**The median never turns positive at any n.** Cross-validation selects alpha = 3
+at n = 40, alpha = 1 from 60 to 184, alpha = 0.3 from 240 to 480, and alpha = 0
+only at the full cohort — which is to say it finds the right answer on its own,
+including the answer that no penalty is needed when the cohort is large enough.
+
+The fix therefore costs nothing anybody does not already have. It is not a new
+method, a new reference or a new panel; it is a penalty term and a
+cross-validation loop, and the eight-method benchmark the field uses contains
+no penalised adjustment at all.
+
+### What this does not fix
+
+- **Ridge removes the catastrophe, not the coin flip.** At forty samples, 44% of
+  draws still come out worse than leaving the clock alone. What changed is that
+  the median stopped being a disaster, not that small cohorts became safe.
+- Alpha = 3 is GSE40279's number on this panel with these clocks. The
+  transportable claim is "cross-validate the penalty", not "use 3".
+- None of this explains the anchor. A fix that works is not a mechanism, and the
+  stage leaves stage 15's reversed direction still unexplained.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -1239,6 +1406,8 @@ it, because the in-sample fit confounds it.
 | specifying stage 7's physiology check on neutrophils only — 64% of blood and the easiest cell to get right | three of the five unchecked types landing outside clinical range | nothing, because the joint test does not depend on the split; but the per-type reconciliation was read as weak evidence rather than as a broken measurement until this was found |
 | **stage 15 attributing the transport failure to the size of the fitting cohort** | stage 17's anchor: 184 samples of GSE40279, fitted and transported the same way, do not reproduce the harm — −0.9% against +4.9 | a mechanism, and the headline of the transport finding |
 | reading the n-curve's q75 column as a statement about draws | n = 656 having exactly one possible draw, so its spread is across clocks and cohorts while every other row also carries draw-to-draw variation | nothing, caught before it was written down — it would have moved the reliability threshold from 320 to 656 |
+| **stage 17 nominating the conditioning of the composition matrix as the mechanism** | stage 18's check 6: GSE61151 is better conditioned than every GSE40279 subsample, full cohort included, and still did the damage | the second of two candidate mechanisms — both are now down |
+| **writing stage 18's check 5 so that it pooled the four clocks inside each n stratum** | Levine's coefficient norm being 386 with a median delta of −0.7% against Horvath 2018's 183 and +4.8% — a between-clock pattern reading as a within-stratum correlation | a finding: pooled, the coefficient norm appeared to predict *less* damage at ρ = −0.484, p = 3e-17. Caught and redone within cells before it was written down |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
