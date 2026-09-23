@@ -220,8 +220,8 @@ perm = pd.DataFrame(sum((transport("GSE40279", d, N["GSE40279"], 20, permute=Tru
 perm_line = float(perm.delta.median())
 
 fig, ax = plt.subplots(figsize=(6.6, 4.1))
-style(ax, ylab="composição restante, em pontos da variância\nda aceleração de idade",
-      xlab="amostras na coorte de ajuste")
+style(ax, ylab="composition left in the age residual\n(points of age-acceleration variance)",
+      xlab="samples in the fitting cohort")
 ax.axhline(0, color=INK, linewidth=1.0, zorder=2)
 
 # the three test cohorts, de-emphasised: they show replication, not the headline
@@ -238,14 +238,14 @@ ax.plot(agg.index, agg.med, color=BLUE, linewidth=2.0, zorder=6,
         markeredgecolor=BLUE, markeredgewidth=1.4)
 
 ax.axhline(perm_line, color=ORANGE, linewidth=1.6, dashes=(4, 2), zorder=5)
-ax.annotate(f"coeficientes sem informação: {perm_line:+.1%}",
+ax.annotate(f"coefficients with no information: {perm_line:+.1%}",
             xy=(300, perm_line), xytext=(0, 9), textcoords="offset points",
             ha="center", va="bottom", color=ORANGE, fontsize=8)
 
 cross = agg[agg.med < 0].index.min()
 below = agg[agg.index < cross].index.max()
 ax.axvspan(below, cross, color=GRID, alpha=0.9, zorder=1)
-ax.annotate(f"a mediana cruza zero\nentre {below} e {cross}",
+ax.annotate(f"the median crosses zero\nbetween {below} and {cross}",
             xy=(np.sqrt(below * cross), 0.10), ha="center", va="bottom",
             fontsize=8, color=INK_2)
 ax.annotate(f"{agg.med.iloc[0]:+.0%}", xy=(agg.index[0], agg.med.iloc[0]),
@@ -262,13 +262,13 @@ ax.set_ylim(-0.08, 0.30)
 ax.legend(handles=[
     Line2D([], [], color=BLUE, lw=2.0, marker="o", markersize=4.5,
            markerfacecolor="white", markeredgecolor=BLUE,
-           label="mediana (3 relógios × 3 coortes), IQR sombreado"),
+           label="median (3 clocks × 3 cohorts), IQR shaded"),
     Line2D([], [], color=MUTED, lw=1.0, dashes=(3, 1.6),
-           label="cada coorte de teste, separada"),
+           label="each test cohort, separately"),
     Line2D([], [], color=ORANGE, lw=1.6, dashes=(4, 2),
-           label="referência: coeficientes sem informação"),
+           label="reference: coefficients with no information"),
 ], loc="upper right", ncol=1, handlelength=2.6)
-ax.text(0, 1.06, "Acima de zero, corrigir é pior do que não corrigir",
+ax.text(0, 1.06, "Above zero, correcting is worse than not correcting",
         transform=ax.transAxes, fontsize=10, color=INK)
 save(fig, "fig1_curva_n")
 
@@ -281,10 +281,12 @@ cfg = (A[A.alpha == 0.0].groupby(["src", "dst", "n"])
 rho, pv = spearmanr(cfg.indice, cfg.dano)
 
 fig, ax = plt.subplots(figsize=(6.6, 4.1))
-style(ax, ylab="composição restante, em pontos", xlab="índice de transporte    (σ²/n) · tr(Σ⁻¹ajuste · Σteste)")
+style(ax, ylab="composition left, in points",
+      xlab=r"transport index    $(\sigma^2/n)\,\mathrm{tr}"
+           r"(\Sigma_{\mathrm{fit}}^{-1}\Sigma_{\mathrm{test}})$")
 ax.axhline(0, color=INK, linewidth=1.0, zorder=3)
 ax.axvline(0.05, color=MUTED, linewidth=1.0, dashes=(4, 2), zorder=2)
-ax.annotate("abaixo de 0,05 nenhuma\ndas 63 foi nociva", xy=(0.048, 0.125),
+ax.annotate("below 0.05, none of\nthe 63 was harmful", xy=(0.048, 0.125),
             ha="right", va="top", fontsize=8, color=INK_2)
 
 # identity is marker shape, not hue: one colour, four shapes, greyscale-safe
@@ -293,13 +295,13 @@ for src in COHORTS:
     g = cfg[cfg.src == src]
     ax.scatter(g.indice, g.dano, s=SIZE2[SHAPES[src]], marker=SHAPES[src],
                facecolor=BLUE, edgecolor="white", linewidth=0.9, alpha=0.9,
-               zorder=5, label=f"ajuste em {src}")
+               zorder=5, label=f"fitted on {src}")
 ax.set_xscale("log")
 ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
 ax.legend(loc="upper left", handletextpad=0.4)
-ax.text(0.03, 0.56, f"Spearman ρ = {rho:.3f}\n{len(cfg)} configurações\np = {pv:.0e}",
+ax.text(0.03, 0.56, f"Spearman ρ = {rho:.3f}\n{len(cfg)} configurations\np = {pv:.0e}",
         transform=ax.transAxes, ha="left", va="top", fontsize=9, color=INK)
-ax.text(0, 1.06, "Uma conta feita de antemão ordena o estrago",
+ax.text(0, 1.06, "A quantity computed in advance orders the damage",
         transform=ax.transAxes, fontsize=10, color=INK)
 save(fig, "fig2_indice")
 
@@ -320,22 +322,17 @@ for a, b in combinations(COHORTS, 2):
 R3 = pd.DataFrame(rows3).sort_values("hi")
 
 fig, ax = plt.subplots(figsize=(6.6, 3.2))
-style(ax, xlab="composição restante, em pontos")
+style(ax, xlab="composition left, in points")
 ax.axvline(0, color=INK, linewidth=1.0, zorder=2)
 ypos = np.arange(len(R3))
 for y, r in zip(ypos, R3.itertuples()):
     ax.plot([r.lo, r.hi], [y, y], color=MUTED, linewidth=1.2, zorder=3)
 ax.scatter(R3.lo, ypos, s=52, marker="o", facecolor="white", edgecolor=BLUE,
-           linewidth=1.6, zorder=5, label="direção de índice menor")
+           linewidth=1.6, zorder=5, label="lower-index direction")
 ax.scatter(R3.hi, ypos, s=52, marker="o", facecolor=ORANGE, edgecolor="white",
-           linewidth=1.0, zorder=5, label="direção de índice maior (prevista pior)")
-for y, r in zip(ypos, R3.itertuples()):
-    if not r.acerto:
-        ax.annotate("índices empatados (0,0275 vs 0,0271):\n"
-                    "o índice previu indiferença, não direção",
-                    xy=(max(r.hi, r.lo), y), xytext=(14, 14),
-                    textcoords="offset points", fontsize=7.5, color=INK_2,
-                    va="center", ha="left")
+           linewidth=1.0, zorder=5, label="higher-index direction (predicted worse)")
+# the one miss is explained in the caption, not on the plot: every in-figure
+# placement collided with either the data or the legend
 ax.set_yticks(ypos)
 ax.set_yticklabels([f"{r.par}   n={r.n}" for r in R3.itertuples()], fontsize=8)
 ax.set_ylim(-0.7, len(R3) - 0.3)
@@ -343,10 +340,10 @@ ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.05))
 ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2,
           handletextpad=0.4)
-ax.text(0, 1.08, "O índice é assimétrico, e o dano também",
+ax.text(0, 1.08, "The index is asymmetric, and so is the damage",
         transform=ax.transAxes, fontsize=10, color=INK)
-ax.text(0, 1.015, f"cada par nas duas direções, ajustado em n = min(nA, nB) — "
-        f"acertou em {int(R3.acerto.sum())} de {len(R3)}",
+ax.text(0, 1.015, f"each pair in both directions, fitted at n = min(nA, nB) — "
+        f"called {int(R3.acerto.sum())} of {len(R3)}",
         transform=ax.transAxes, fontsize=8, color=INK_2)
 save(fig, "fig3_assimetria")
 
@@ -363,7 +360,7 @@ for src, dst in permutations(COHORTS, 2):
 R4 = pd.DataFrame(rows4).sort_values("ols")
 
 fig, ax = plt.subplots(figsize=(6.6, 4.6))
-style(ax, xlab="composição restante, em pontos")
+style(ax, xlab="composition left, in points")
 ax.axvline(0, color=INK, linewidth=1.0, zorder=2)
 ypos = np.arange(len(R4))
 for y, r in zip(ypos, R4.itertuples()):
@@ -371,7 +368,7 @@ for y, r in zip(ypos, R4.itertuples()):
                 arrowprops=dict(arrowstyle="-|>", color=MUTED, linewidth=1.1,
                                 shrinkA=5, shrinkB=5), zorder=3)
 ax.scatter(R4.ols, ypos, s=52, marker="o", facecolor=BLUE_LIGHT,
-           edgecolor="white", linewidth=1.0, zorder=5, label="mínimos quadrados (sem penalidade)")
+           edgecolor="white", linewidth=1.0, zorder=5, label="least squares (no penalty)")
 ax.scatter(R4.ridge, ypos, s=52, marker="s", facecolor=BLUE_DARK,
            edgecolor="white", linewidth=1.0, zorder=5, label="ridge, α = 3")
 ax.set_yticks(ypos)
@@ -381,10 +378,9 @@ ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.05))
 ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
 ax.legend(loc="lower right", handletextpad=0.4)
 n_bad = int((R4.ols > 0).sum())
-ax.text(0, 1.06, "Penalizar os coeficientes zera os doze transportes",
+ax.text(0, 1.06, "Penalising the coefficients zeroes all twelve transports",
         transform=ax.transAxes, fontsize=10, color=INK)
-ax.text(0, 1.012, f"{n_bad} dos 12 pares são nocivos sem penalidade; "
-        f"nenhum com ela", transform=ax.transAxes, fontsize=8, color=INK_2)
+ax.text(0, 1.012, f"{n_bad} of 12 pairs are harmful without a penalty; none with one", transform=ax.transAxes, fontsize=8, color=INK_2)
 save(fig, "fig4_conserto")
 
 print(f"\n  quatro figuras em paper/figures/")

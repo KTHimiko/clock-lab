@@ -16,3 +16,4 @@ __pycache__/
 
 # figuras: reproduziveis por paper/figures.py
 paper/figures/
+paper/manuscript.pdf
