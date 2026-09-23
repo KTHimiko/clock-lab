@@ -8,14 +8,29 @@ printed but never written to disk: stage 17's permuted-coefficient reference
 line, and stage 21's matched-n configurations. Both come off the stage 18 cache,
 so nothing here reloads a series matrix.
 
-COLOUR. Every hex below is taken unchanged from the reference palette of the
-data-viz skill, which documents these exact values as having passed its six
-checks: categorical slots 1 and 2 (blue, orange) for identity, and the blue
-sequential ramp's steps 250 and 600 for the one-hue-two-shades dumbbells, step
-250 being the documented light-mode ordinal floor. The skill's validator is a
-Node script and this machine has no JavaScript runtime, so it was NOT run here —
-which is exactly why nothing is invented: only documented-passing values are
-used, in the roles the palette documents them for.
+COLOUR, validated rather than asserted. Every hex is taken unchanged from the
+reference palette of the data-viz skill, and each combination was run through
+that skill's validator (Node v24.21.0, installed locally for this):
+
+  categorical, figures 1 and 3   #2a78d6 + #eb6834
+      all checks pass — CVD ΔE 24.7 (protan), normal-vision ΔE 33.6, both far
+      above the 8 and 15 floors; contrast >= 3:1
+  ordinal ramp, figure 4         #5598e7 -> #184f95
+      all checks pass — monotone lightness, ΔL gap clear, light end 2.91:1
+      against the surface, hue spread 3°
+  figure 2 uses one hue and carries identity on marker shape, so no categorical
+  check applies to it
+
+The light end of figure 4's ramp started at the palette's documented ordinal
+floor, #86b6ef (2.06:1). That passes, but the validator's categorical run flags
+it at chroma 0.097 and below 3:1, and this figure is going to be printed and
+photocopied. Stepping it to #5598e7 buys 2.91:1 for nothing.
+
+A fourth run — all four hues together as one categorical set, all pairs — FAILS,
+and it is reported here so nobody re-derives it as a problem. No figure puts
+those four on screen as identity: figure 4's two blues are an ordinal ramp,
+which is the run above, and figures 1 and 3 use the categorical pair. The
+failing combination does not exist in this paper.
 
 GREYSCALE. Journals print in grey and reviewers photocopy. Identity is never
 carried by hue alone in any of the four: figure 1 separates by line weight and
@@ -46,7 +61,7 @@ OUT = ROOT / "paper" / "figures"; OUT.mkdir(parents=True, exist_ok=True)
 RNG = np.random.default_rng(20260927)
 
 BLUE, ORANGE = "#2a78d6", "#eb6834"
-BLUE_LIGHT, BLUE_DARK = "#86b6ef", "#184f95"
+BLUE_LIGHT, BLUE_DARK = "#5598e7", "#184f95"
 INK, INK_2, MUTED = "#0b0b0b", "#52514e", "#8a8985"
 GRID = "#e6e5e2"
 
