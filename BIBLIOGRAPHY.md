@@ -176,6 +176,64 @@ independently, found 16.0 / 35.4 / 37.0 on the same design.
 
 ---
 
+## Sample size, conditioning and transport — the gap stage 17 sits in
+
+Searched before stage 18 was written rather than after, which is the whole point
+of the note below.
+
+**Houseman EA, et al. / Teschendorff AE, et al. (2016).** An evaluation of
+methods correcting for cell-type heterogeneity in DNA methylation studies.
+*Genome Biology* 17:84. [full] —
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC4855979/>
+
+The field's own benchmark: eight methods compared — reference-based,
+reference-free, SVA, ISVA, EWASher, CellCDec, Deconf, RUV — with SVA
+recommended for stability across simulated scenarios.
+
+What it does **not** contain is what makes stages 17 and 18 worth running:
+
+- no penalized, ridge or otherwise regularised adjustment of cell-type
+  proportions appears among the eight
+- collinearity of the proportion matrix is not discussed, and neither is its
+  condition number
+- sample size is varied computationally from N = 50 to N = 500, but no
+  reliability threshold is established — the question "below what n does the
+  adjustment cost more than it returns" is not asked
+- **cross-dataset transfer is not tested at all.** Every adjustment is
+  calibrated and evaluated inside the same dataset
+
+That last one is the load-bearing absence. Stage 12 already recorded why it
+matters: in the cohort it was fitted on, the correction removes everything, which
+is guaranteed and proves nothing. A within-dataset benchmark cannot see an
+unstable coefficient, because the residual is orthogonal to the predictors by
+construction.
+
+**Condition number as a diagnostic — used, but on the other matrix.** The
+deconvolution literature does use condition-number criteria, in marker
+*selection*: component-wise condition numbers pick reference probes that keep
+the linear system stable against noise, so that no component carries a large
+relative error. That is conditioning of the **reference panel**. Stage 18's
+question is conditioning of the **cohort's estimated proportion matrix**, used
+as covariates downstream, which is a different matrix and does not appear to
+have been treated this way.
+
+**Rare types are where the conditioning goes.** Reviews of deconvolution report
+that rare cell types are the ones most prone to collinearity bias, and that
+constrained least squares — NNLS, which is what this project uses — is among the
+less accurate families, with estimated proportions differing from truth by as
+much as 0.41 in benchmarks. This is the mechanism behind stage 12's observation
+that median CD8T is 0.036 in GSE40279 and **0.000** in GSE61151: a proportion
+pinned at the non-negativity boundary carries no information about its own
+coefficient at any sample size.
+
+> **This is what stage 18 tests**, and it is why stage 18 is not simply more of
+> stage 17. If conditioning rather than row count governs the damage, then the
+> practitioner's diagnostic is computable on their own cohort without a second
+> one — and ridge-penalising the composition coefficients, which nobody in the
+> eight-method benchmark does, should blunt the failure directly.
+
+---
+
 ## A note on method
 
 Both of this project's reversals — stages 7 and 11 — came from reading the
