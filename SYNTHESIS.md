@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-five stages
+## The answer, after twenty-six stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -1602,6 +1602,10 @@ rank the 27 (n × test cohort) configurations?
 Damage crosses zero at an index near 0.05, consistently across three test
 cohorts. That is a threshold a practitioner can compute.
 
+> **Stage 26 withdrew the floor.** Counted per clock instead of as a median over
+> clocks, 12 of 40 configurations below 0.05 are harmful. The earlier counts let a
+> harmed clock be outvoted by a helped one. The index is not a safety certificate.
+>
 > **Stage 21 blunted this.** With four fitting cohorts and 63 configurations,
 > 0.05 is not a crossing point but a one-sided safety floor: nothing below it
 > was harmful, 81% above it were, and between 0.05 and 0.16 both outcomes
@@ -2176,6 +2180,64 @@ is the seventh check in this project revisited after failing.
 
 ---
 
+## Stage 26 — no quantity computable in advance certifies a transport as safe
+
+The transport index predicts the estimation error a correction leaves, never the
+net effect. The reviewer proposed closing that gap in advance: if β is shared
+between cohorts, E[b′S_B b] = β′S_B β + σ²·index, which gives a pre-transport
+estimate of the net damage, **P_est = 2σ̂²·index − b′S_B b**, needing only the
+fitting cohort and the target's proportions. Stage 25 had already shown β is not
+always shared, so P_est was expected to break where it isn't. An oracle that knows
+the target's own full-cohort β gives the ceiling.
+
+126 configurations — every directed pair, fitting sizes 40 to full, the two clean
+clocks **kept separate**.
+
+| predictor | needs | Spearman with net damage | sign right |
+|---|---|---|---|
+| oracle | target's own β | **0.884** | **81%** |
+| P_est (reviewer's) | fitting cohort + target proportions | 0.633 | 71% |
+| transport index | fitting + target proportions | 0.611 | — |
+
+The ceiling is high, so the twelve-versus-six measurement is not what limits.
+P_est misses both pre-set bars (sign 75%, ρ 0.7). **Failed**, and the way it fails
+is the result:
+
+| | observed beneficial | observed harmful |
+|---|---|---|
+| **P_est says beneficial** | 43 | **30** |
+| P_est says harmful | 7 | 46 |
+
+Of the 73 configurations it calls safe, **30 are harmful — 41%**. A safety
+diagnostic that errs, errs this way at its peril: it reassures where it should
+warn. Its sign errors sit where stage 25's specification term is large (median
++10.4% among misses, +4.0% among hits), and the worst of them is the worst case in
+the project: GSE61151 → GSE42861 for Levine at n = 184, called −21.5% and measured
+**+15.9%**. The stage 25 mechanism predicts where the stage 26 predictor breaks.
+
+### The safety floor was an aggregation artefact
+
+With each clock kept separate, **12 of the 40 configurations below an index of
+0.05 are harmful.** Stage 21 reported none of 21, stage 23 one of 20 — both counts
+taken on configurations whose damage was a median **over clocks**, so a clock that
+was harmed could be outvoted by one that was helped. Horvath 2018 carried from
+GSE40279 into the rheumatoid arthritis cohort at the full n = 656 has a tiny index
+and a leftover of +5.6%; pooled with Levine, it disappears.
+
+**The index is not a safety certificate and never was.** It ranks the estimation
+component. The specification component — the one behind the worst failures — is
+invisible before transport to the index, to P_est, and to anything else that does
+not know the target's own β. And a target large enough to estimate its own β is
+one that does not need a transported correction in the first place.
+
+### What survives as practical advice
+
+Only the penalty, if it holds — and stage 23's "twelve of twelve pairs" for ridge
+at α = 3 was *also* a median over clocks. Stage 27 asks whether it holds per clock,
+with the criterion written before the numbers.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2226,6 +2288,8 @@ is the seventh check in this project revisited after failing.
 | the transport index modelled as the whole of the transport error | stage 24's P1 failing 0 of 10, and the real fit leaving +4.5% at n = 656 where estimation error is negligible | the index now covers one of two components; the second is n-independent specification error |
 | stage 25's metadata check demanding over 100 current smokers in GSE50660 | the cohort having 22; join intact, run stopped on an assumption | a rerun; the smoking contrast became ever vs never, the weaker one |
 | **reading stage 21's worst case, +15.9% for 61151 → 42861, as the transport index's failure mode** | stage 25's specification term predicting it (+26.6% / +51.8% against +30.8% / +30.5%) | the worst case is model shift, not covariate shift, and the index cannot see it |
+| **the index's safety floor at 0.05 (0 of 21, then 1 of 20 harmful)** | stage 26 counting per clock: 12 of 40 harmful — the earlier counts took medians over clocks, so a harmed clock was outvoted by a helped one | the floor, withdrawn; the index ranks the estimation component and certifies nothing |
+| the reviewer's pre-transport net-damage predictor as a usable safety tool | stage 26: sign 71%, rho 0.633, and 30 of the 73 configurations it calls safe are harmful | not adopted; it errs in the reassuring direction, where model shift lives |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
