@@ -181,10 +181,17 @@ independently, found 16.0 / 35.4 / 37.0 on the same design.
 Searched before stage 18 was written rather than after, which is the whole point
 of the note below.
 
-**Houseman EA, et al. / Teschendorff AE, et al. (2016).** An evaluation of
-methods correcting for cell-type heterogeneity in DNA methylation studies.
-*Genome Biology* 17:84. [full] —
+**McGregor K, Bernatsky S, Colmegna I, Hudson M, Pastinen T, Labbe A,
+Greenwood CMT (2016).** An evaluation of methods correcting for cell-type
+heterogeneity in DNA methylation studies. *Genome Biology* 17:84. [full] —
 <https://pmc.ncbi.nlm.nih.gov/articles/PMC4855979/>
+
+> **This entry was mis-attributed.** It first read "Houseman EA, et al. /
+> Teschendorff AE, et al." — a guess, recorded as if it were a citation. The
+> authors are McGregor and colleagues, confirmed against the journal. And it is a
+> simulation study of EWAS with binary and continuous phenotypes, not of
+> epigenetic clocks; calling it "the field's own benchmark" for this project's
+> question overstated it.
 
 The field's own benchmark: eight methods compared — reference-based,
 reference-free, SVA, ISVA, EWASher, CellCDec, Deconf, RUV — with SVA
@@ -239,8 +246,10 @@ coefficient at any sample size.
 Stage 20 derives the transport index and then does not claim it. These are the
 sources that already had it, found before the stage was written.
 
-**Out of the Ordinary: Spectrally Adapting Regression for Covariate Shift.**
-[abstract] — <https://arxiv.org/html/2312.17463>
+**Eyre B, Creager E, Madras D, Papyan V, Zemel R (2024).** Out of the
+Ordinary: Spectrally Adapting Regression for Covariate Shift. *Proceedings of
+the 41st International Conference on Machine Learning*, PMLR 235:12701–12722.
+[abstract] — <https://proceedings.mlr.press/v235/eyre24a.html>
 
 Names the failure mode: **spectral inflation**, where spectral subspaces with
 small variation during training see increased variation upon evaluation, and the
@@ -248,8 +257,14 @@ out-of-distribution risk of least squares is characterised by the eigenspectra
 of source and target. That is tr(Σ_fit⁻¹ Σ_test) in words, and it is precisely
 what stage 20 measures on blood composition.
 
-**Patil P, et al. Optimal Ridge Regularization for Out-of-Distribution
-Prediction.** [abstract] — <https://pratikpatil.io/papers/ridge-ood.pdf>
+**Patil P, Du J-H, Tibshirani RJ (2024).** Optimal Ridge Regularization for
+Out-of-Distribution Prediction. *ICML 2024*; arXiv:2404.01233. [abstract] —
+<https://arxiv.org/abs/2404.01233>
+
+One result bears directly on stage 27: under covariate or regression shift the
+optimal ridge penalty can be **negative**, even for isotropic features. Positive
+shrinkage toward "no correction" is therefore a safe default here, not a
+theoretical optimum.
 
 Characterises ridge risk out of distribution without assuming a model for
 either, and the conditions determining optimal regularisation under covariate
@@ -263,6 +278,47 @@ is the theory that says such an alpha should exist.
 > transported across cohorts with different composition covariance — and is
 > therefore exposed to all of it. The contribution is the identification and the
 > measurement, not the theory.
+
+---
+
+## Model shift, clock training sets, and dependence — stages 23 to 28
+
+**Lei Q, Hu W, Lee J (2021).** Near-Optimal Linear Regression under Distribution
+Shift. *Proceedings of the 38th International Conference on Machine Learning*,
+PMLR 139:6164–6174. [abstract] — <https://proceedings.mlr.press/v139/lei21a.html>
+
+Treats covariate shift — inputs move, the map from inputs to output is shared —
+and **model shift**, where the map itself differs between source and target.
+Stages 17 to 22 measured only the first; stage 24 found an n-independent floor
+and stage 25 identified it as the second.
+
+**Horvath S (2013).** DNA methylation age of human tissues and cell types.
+*Genome Biology* 14:R115; Additional file 1. [full, supplementary table read] —
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC4015143/>
+
+The 82-dataset table lists **GSE40279 as training set 3** and GSE42861 as test set
+44. Horvath 2013 is in-sample on GSE40279 — which nobody had checked until a
+reviewer asked. Stage 23.
+
+**Horvath S, et al. (2018).** Epigenetic clock for skin and blood cells applied to
+Hutchinson Gilford Progeria Syndrome and ex vivo studies. *Aging* 10:1758–1775.
+[full] — <https://pmc.ncbi.nlm.nih.gov/articles/PMC6075434/>
+
+Training sets GSE80261, GSE50759, GSE104471, GSE77136, GSE52026, E-MTAB-4385,
+GSE79056 and unpublished data: none of the four cohorts here.
+
+**Levine ME, et al. (2018).** An epigenetic biomarker of aging for lifespan and
+healthspan. *Aging* 10:573–591. [full] —
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC5940111/>
+
+DNAm PhenoAge was trained on InCHIANTI (n = 456): none of the four cohorts here.
+
+**Winkler AM, Webster MA, Vidaurre D, Nichols TE, Smith SM (2015).** Multi-level
+block permutation. *NeuroImage* 123:253–268. [abstract] —
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC4644991/>
+
+Restricted permutation that swaps whole blocks to preserve dependence. Stage 28
+uses it to replace a p-value of 2×10⁻²⁴ with 0.036.
 
 ---
 
