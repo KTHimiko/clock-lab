@@ -8,7 +8,7 @@ lymphocytes fall, myeloid cells rise — and each cell type carries its own
 methylation pattern. A clock fitted on whole blood may be reading **who is in
 the sample** rather than **how old those cells are**.
 
-## The answer, after twenty-nine stages
+## The answer, after thirty stages
 
 **Both, and the proportions matter more than either camp says.**
 

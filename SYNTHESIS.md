@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-nine stages
+## The answer, after thirty stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2361,6 +2361,44 @@ three to four**; every curve built on it is conservative.
 At full fitting size the three measurements agree, as they should once estimation
 noise is small. And the penalty holds on all three: no harmful cell at α = 3
 measured on twelve types or on the naive/memory axis alone.
+
+---
+
+## Stage 30 — re-auditing the two claims that predate the audit
+
+Stages 23–29 changed the protocol: Horvath 2013 is out of every pair touching
+GSE40279, and damage is counted per clock, never as a median over clocks. Two
+claims the manuscript still made had been computed the old way — stage 19's
+"cross-validation does not size the penalty" and stage 22's "the penalty holds
+when the two cohorts come from different reference panels". Both were recomputed
+before being quoted again, with survival criteria set first.
+
+### Cross-validation does not size the penalty — now across thirty cells
+
+The penalty chosen by leave-one-out on each fitting subsample, over α in {0, 0.1,
+0.3, 1, 3, 10}, per (directed pair × clean clock) cell at matched n:
+
+| penalty | cells harmful |
+|---|---|
+| none | 47% |
+| **chosen by cross-validation** | **30%** |
+| fixed α = 3 | **3%** |
+
+Cross-validation picks α = 0.3 in the median cell, and 0 in seven of thirty. It
+leaves ten times as many harmful transports as the fixed penalty — 27 points
+against a survival bar of ten. **Survives**, and stronger than stage 19 had it:
+that was one cohort; this is systematic. The worst case is again GSE61151 → the
+arthritis cohort, where cross-validation's α = 0.3 leaves +4.9% and α = 3 gives
+−2.8%. Cross-validation minimises error inside the fitting cohort; nothing in that
+objective knows the coefficients are about to travel.
+
+### The penalty under two reference panels
+
+Fitting cohort deconvolved from the Salas reference collapsed to six labels, test
+cohort from the Reinius reference, measured on the test cohort's twelve-type
+composition: 14 of 30 cells harmful unpenalised, **1** at α = 3 (GSE42861 →
+GSE61151 for Levine, +7.5% → +0.5%). The pre-set bar was at most one.
+**Survives.**
 
 ---
 
