@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-seven stages
+## The answer, after twenty-eight stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2287,6 +2287,46 @@ certainly safe and free. What the data support is a choice with its price stated
 
 ---
 
+## Stage 28 — most of the index's correlation was the fitting size
+
+The manuscript quoted the transport index ranking configurations at p = 2×10⁻²⁴.
+A reviewer objected that configurations share cohorts and are not independent. The
+problem is deeper than the p-value. The index carries 1/n by construction, and the
+damage falls with n too — so across fitting sizes, *any* quantity proportional to
+1/n would correlate with the damage whatever it knew about the cohorts. The
+question is what the index knows beyond n.
+
+On stage 26's per-clock net damage, at the three fitting sizes every directed pair
+has (40, 80, 160): 72 configurations, 12 pairs, the pair as the block.
+
+| test | ρ | p |
+|---|---|---|
+| pooled over sizes, naive | 0.579 | 1×10⁻⁷ |
+| **n alone** (median of the block-permutation null) | **0.418** | — |
+| **pooled, block permutation** — index profiles swapped between pairs | 0.579 | **0.036** |
+| within n = 40 | 0.408 | 0.048 |
+| within n = 80 | 0.364 | 0.08 |
+| within n = 160 | 0.326 | 0.12 |
+
+**Fitting size alone produces ρ ≈ 0.42.** The index adds something on top — the
+block-permutation p is 0.036 against a bar of 0.05, and the within-n median is 0.364
+against a bar of 0.3, so both pre-set criteria pass — but not much. Of the
+correlation this project has been quoting, most was the n in the index's
+denominator. The honest p-value is 0.036, not 2×10⁻²⁴.
+
+Leaving one cohort out moves the pooled ρ between 0.447 (without GSE61151) and 0.727
+(without GSE40279): the small cohort carries a good share of what the index knows.
+
+### What the index is, after stages 23 to 28
+
+A quantity that grows as 1/n — which is most of what it measures — and that adds a
+modest, real ranking of which cohort pairs amplify estimation error. It certifies
+nothing (stage 26), it cannot see the specification error behind the worst failures
+(stages 25–26), and its between-pair information survives a dependence-respecting
+test at p = 0.036. That is a diagnostic worth reporting and not one to lead a paper.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2340,6 +2380,7 @@ certainly safe and free. What the data support is a choice with its price stated
 | **the index's safety floor at 0.05 (0 of 21, then 1 of 20 harmful)** | stage 26 counting per clock: 12 of 40 harmful — the earlier counts took medians over clocks, so a harmed clock was outvoted by a helped one | the floor, withdrawn; the index ranks the estimation component and certifies nothing |
 | the reviewer's pre-transport net-damage predictor as a usable safety tool | stage 26: sign 71%, rho 0.633, and 30 of the 73 configurations it calls safe are harmful | not adopted; it errs in the reassuring direction, where model shift lives |
 | **'ridge at α = 3 holds all twelve pairs'** (stages 21, 23) | stage 27 counting per clock: 29 of 30 cells, one left at +0.2%; and 15 of 30 harmful without a penalty where the pooled count said 3 of 12 | the claim becomes 'reduces 50% to 3%'; α = 10 holds all at the cost of most of the benefit |
+| **the index ranking configurations at ρ = 0.907, p = 2×10⁻²⁴** | a reviewer on dependence; stage 28 showing fitting size alone yields ρ ≈ 0.42, and a block permutation giving p = 0.036 | the index's headline strength — real between-pair information, modest, mostly 1/n |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
