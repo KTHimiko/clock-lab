@@ -8,7 +8,7 @@ lymphocytes fall, myeloid cells rise — and each cell type carries its own
 methylation pattern. A clock fitted on whole blood may be reading **who is in
 the sample** rather than **how old those cells are**.
 
-## The answer, after twenty stages
+## The answer, after twenty-nine stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -23,27 +23,26 @@ acceleration**, depending on the clock, which lands on the published figures.
 
 It can be **partly designed away**: excluding CpGs that correlate with naive-CD8
 identity cuts a clock's cell-type displacement by 41% while slightly improving
-its accuracy on an external cohort. It can be **subtracted** away after the fact
-only with a fine panel and a large fitting cohort: fitted on 656 samples the
-correction removes 61% of the composition signal in a cohort it has never seen,
-while the same correction fitted on forty *adds* nearly three times what was
-there, and is worse than doing nothing in 89% of draws. Coefficients carrying no
-information at all do nearly as much damage at the same fitting size, so most of
-the small-n harm is estimation noise — and real coefficients add a second,
-n-independent error on top, because the composition effect differs between
-cohorts.
+its accuracy on an external cohort.
 
-**And it is a known statistical failure mode nobody had looked for here.** The
-damage is the excess-risk term for least squares under covariate shift,
-(σ²/n)·tr(Σ_fit⁻¹ Σ_test): a joint, asymmetric property of the two cohorts that
-ranks 27 configurations at ρ = 0.897 and predicts the cohort pair that broke the
-transport to within half a point.
+It can be **subtracted** inside the cohort where the correction is fitted — the
+usual practice, and one that does what it claims. **Carried to another cohort,
+the correction can add the confounding it was meant to remove.** Fitted on forty
+samples and transported, it is worse than doing nothing in 88% of draws, and the
+damage measured on the naive/memory axis is three to four times what a six-type
+panel registers.
 
-**The fix is the same object from the other side.** Ridge bounds the
-amplification — the catastrophe at forty samples becomes −1.6% and the benefit
-at full size survives. None of the eight methods this field benchmarks for
-cell-type adjustment uses a penalty, and cross-validation alone does not size
-it correctly on the cohort that fails.
+The harm has two parts. Estimation noise, amplified by the difference between
+the two cohorts' composition covariance — a textbook covariate-shift term, which
+coefficients carrying no information reproduce almost exactly. And **model
+shift**: the composition effect itself differs between cohorts, does not shrink
+with more fitting data, and is behind the worst transports found.
+
+**No quantity computed in advance certifies a transport as safe**, because the
+second part needs the target cohort's own coefficients. **What works is a
+penalty**: ridge-shrinking the coefficients takes harmful transports from half of
+all (pair × clock) cells to 3%, at the cost of some benefit where none was at
+risk.
 
 Full argument, every number and every correction:
 [`SYNTHESIS.md`](SYNTHESIS.md).

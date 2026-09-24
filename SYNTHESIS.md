@@ -25,34 +25,42 @@ its accuracy on an external cohort. What defeated the earlier attempts was
 filtering on overall cell-type variance instead of on the naive-versus-memory
 axis, where the effect actually lives.
 
-It can also be *subtracted* away after the fact, but only under conditions
-narrow enough to matter. With a twelve-type panel and the full 656-sample
-fitting cohort, the correction removes 61% of the composition signal out of
-cohort. Fitted on forty samples it **adds 2.7 times what was there**, and is worse than
-doing nothing in 89% of draws — while composition coefficients carrying no
-information at all do nearly as much damage at the same fitting size — +15.6%
-at n = 40 — so most of the small-n harm is estimation noise, and what real
-coefficients add on top is a transfer error that no fitting size cures. The median turns beneficial
-somewhere around 160 to 184 samples and an unlucky draw keeps hurting to about
-320. Sample size is not the whole story: 184 samples of one cohort help while
-184 of another did the damage that stage 15 blamed on size — and conditioning,
-the other candidate, turned out to carry no information about it at all.
+It can also be *subtracted* after the fact — inside the cohort where the
+correction is fitted, which is how it is almost always used, and where it does
+what it claims. **Carried to another cohort, it can add the confounding it was
+meant to remove.** Fitted on forty samples and transported, it leaves +14.2% of
+age-acceleration variance in composition signal and is worse than doing nothing
+in 88% of draws; measured on the naive/memory axis, which the six-type panel used
+throughout cannot see, the same transport leaves +30.6%, so every curve here is
+conservative. The median turns roughly neutral between 160 and 240 fitting
+samples.
 
-**And it is explained, by a result that was never ours.** The damage is the
-standard excess-risk term for least squares under covariate shift,
-(σ²/n)·tr(Σ_fit⁻¹ Σ_test) — a joint, asymmetric property of the two cohorts that
-ranks 27 configurations at ρ = 0.897 and predicts the cohort pair that defeated
-two stages to within half a point. The failure mode has a name in that
-literature, **spectral inflation**, and none of it appears among the eight
-methods this field benchmarks for cell-type adjustment.
+**The harm has two components** (stages 24–25):
 
-**The fix is the same object from the other side.** Ridge replaces Σ_fit⁻¹ with
-(Σ_fit + λI)⁻¹ and bounds the amplification directly: the +12.2% catastrophe at
-n = 40 becomes −1.6%, the benefit at full n is kept, and the penalty found by
-trial in two independent stages is the one that drops the index below its
-threshold. Cross-validation on the fitting cohort is **not** enough to size it —
-on the cohort that actually failed, it picks a penalty that leaves most of the
-damage standing.
+- **estimation noise**, amplified where the target cohort varies in directions
+  the fitting cohort barely did — the standard excess-risk term for least squares
+  under covariate shift, (σ²/n)·tr(Σ_fit⁻¹ Σ_test). It falls as 1/n, and
+  coefficients carrying no information reproduce it almost point for point:
+  +15.6% at n = 40. Most of the small-n harm *is* noise.
+- **model shift**: the composition effect itself differs between cohorts, so
+  even a perfectly estimated correction from one damages another. It does not
+  shrink with fitting size, and it is behind the worst transport in the project,
+  GSE61151 → the rheumatoid arthritis cohort at +15.9%.
+
+**No quantity computed in advance certifies a transport as safe** (stages 26,
+28). The transport index sees only the first component; it adds modest
+information beyond fitting size (within-n ρ ≈ 0.36, block-permutation p = 0.036),
+and counted per clock, 12 of 40 transports below its old "safe" threshold were
+harmful. A closed-form net-damage predictor calls 30 of 73 harmful transports
+safe. The second component needs the target's own coefficients, and a target
+large enough to estimate them does not need a transported correction.
+
+**What works is penalising** (stage 27). Ridge shrinks the coefficients toward
+"no correction", which bounds the damage from noise and from a wrong β alike.
+Counted per clock, harmful transports go from 50% unpenalised to 3% at α = 3 —
+one cell left, at +0.2% — and to none at α = 10, which gives up most of the
+benefit where none was at risk. Cross-validation on the fitting cohort does not
+size the penalty on the cohort that fails.
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
