@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-three stages
+## The answer, after twenty-four stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -30,8 +30,9 @@ narrow enough to matter. With a twelve-type panel and the full 656-sample
 fitting cohort, the correction removes 61% of the composition signal out of
 cohort. Fitted on forty samples it **adds 2.7 times what was there**, and is worse than
 doing nothing in 89% of draws — while composition coefficients carrying no
-information at all sit at +0.5% with an interquartile range straddling zero.
-Noise is harmless here; a badly estimated real correction is not. The median turns beneficial
+information at all do nearly as much damage at the same fitting size — +15.6%
+at n = 40 — so most of the small-n harm is estimation noise, and what real
+coefficients add on top is a transfer error that no fitting size cures. The median turns beneficial
 somewhere around 160 to 184 samples and an unlucky draw keeps hurting to about
 320. Sample size is not the whole story: 184 samples of one cohort help while
 184 of another did the damage that stage 15 blamed on size — and conditioning,
@@ -1106,6 +1107,11 @@ was there**.
 
 ### Meaningless coefficients are nearly harmless; badly estimated ones are not
 
+> **Stage 24 retracted this section.** The permuted reference below was measured
+> only at n = 656 and compared with real coefficients at n = 40. Measured at
+> every n it falls as 1/n and reaches **+15.6% at n = 40**: coefficients with no
+> information do nearly as much damage as real ones. See stage 24.
+
 The stage carries a reference line: the same transport, with composition
 coefficients fitted at full n on **permuted** composition. Those coefficients
 carry no information by construction.
@@ -1986,6 +1992,88 @@ GSE42861 at +15.9%, involves no GSE40279 and does not move.
 
 ---
 
+## Stage 24 — the permuted reference at every n, and a second component
+
+Stage 17's reference line — composition coefficients fitted on permuted
+composition — was only ever measured at n = 656, and was drawn as a flat line
+across a plot whose other curve started at n = 40. Every claim built on it
+("seven times", "twenty times", "noise is harmless") compared real coefficients
+at n = 40 against permuted ones at n = 656. A reviewer caught it.
+
+Measured at every n, with the two clocks that stage 23 left clean on GSE40279,
+30 draws per size, rows of the composition matrix shuffled whole so collinearity
+survives:
+
+| fitting n | 40 | 60 | 80 | 120 | 184 | 240 | 320 | 656 |
+|---|---|---|---|---|---|---|---|---|
+| real fit, Δ | +18.9% | +6.7% | +4.7% | +1.7% | +0.1% | −0.7% | −1.1% | −1.6% |
+| real fit, error left | +25.5% | +14.1% | +11.8% | +7.6% | +6.6% | +5.7% | +5.1% | +4.5% |
+| **permuted, Δ** | **+15.6%** | +9.6% | +5.0% | +3.1% | +2.6% | +1.3% | +2.1% | +1.0% |
+
+**Coefficients carrying no information at all do +15.6% of damage at n = 40.**
+"Noise is harmless" is false, and so is every ratio built on it. The permuted
+reference falls with n at a log-log slope of **−0.93** — the 1/n the transport
+index predicts (P2, confirmed). The old flat line was one point of a steep curve.
+
+### The prediction that failed, and what it found
+
+P1 predicted that at the same n the permuted coefficients would do at least as
+much damage as the real fit's error term, because their error is the whole of
+what they carry. **Refuted, 0 of 10.** The real fit's leftover error is larger
+at every n — and at n = 656 it is still +4.5%, where the permuted reference is
++1.0%. With 656 fitting samples that cannot be estimation noise.
+
+Subtract that n = 656 floor from the real fit's error and what remains tracks the
+permuted reference almost exactly:
+
+| fitting n | 60 | 80 | 120 | 160 | 184 | 240 |
+|---|---|---|---|---|---|---|
+| real error minus its n = 656 floor | 9.6 | 7.3 | 3.1 | 2.6 | 2.1 | 1.2 |
+| permuted Δ | 9.6 | 5.0 | 3.1 | 3.5 | 2.6 | 1.3 |
+
+So the real fit's error has **two components**, and the algebra only had one:
+
+1. **estimation noise amplified by covariance mismatch** — steep in n, reproduced
+   point for point by coefficients that know nothing, and what the transport
+   index measures
+2. **an n-independent transfer error** that more fitting data does not remove
+
+### The floor is transport, not measurement (post hoc)
+
+Written after P1 failed, to tell the two readings apart: the full-cohort
+correction applied to GSE40279 *itself*, measured with the other panel.
+
+| clock | removed at home, cross-panel | removed after transport, full n |
+|---|---|---|
+| Levine 2018 | **95%** | 92% (→ 50660), 69% (→ 42861), **−23%** (→ 61151) |
+| Horvath 2018 | **85%** | 46% (→ 61151), 16% (→ 50660), **−109%** (→ 42861) |
+
+At home the twelve-type correction removes almost everything the six-type panel
+can see, so the cross-panel measurement is not what leaves the floor. Carried to
+another cohort at full fitting size, it can remove most of the signal, none of
+it, or **double** it — Horvath 2018 into the rheumatoid arthritis cohort. That
+pattern is what the reviewer's fourth point predicted: the true composition
+coefficients differ between cohorts, and a disease that reshapes blood may also
+reshape how composition maps onto a clock. Stage 26 tests it directly.
+
+### What this does to the paper
+
+- the n-curve stands, and gets an honest reference that falls with it
+- the transport index stands as a measure of the **first** component only; it
+  cannot see the second, which is why its floor was never absolute
+- ridge works on both: shrinking toward no correction bounds the damage of a
+  noisy β and of a wrong one alike
+- the headline "the damage comes from real coefficients estimated badly, not
+  from noise" is retracted. The corrected statement is the reverse of it: most of
+  the small-n damage *is* estimation noise; what real coefficients add on top is
+  a specification error that no fitting size cures
+
+The retraction rule written into this stage named P1 as its vehicle. P1 failed,
+and the retraction comes anyway — from the permuted column of the table, which
+is the direct measurement the old claim never made.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2032,6 +2120,8 @@ GSE42861 at +15.9%, involves no GSE40279 and does not move.
 | **reading stage 22's +0.5% as the cost of panel mismatch** | the sign flipping in four pairs: the mismatched arm also fits with the better panel, so it mixes a mismatch penalty with a panel-quality benefit | the magnitude, which is a mixture and is not quoted as a penalty; the ranking result in check 5 is unaffected |
 | **stage 17's permuted reference line, +1.8% from four permutations, and the seven-fold ratio quoted off it** | recomputing it for the paper figure with twenty draws per cohort: median +0.5%, IQR −0.8% to +2.1% | the ratio, replaced by a better statement — meaningless coefficients are harmless, and it is the badly estimated real ones that do the damage |
 | **assuming Horvath 2013 had not been trained on any of the four cohorts** | a reviewer asking, and Horvath 2013's Additional file 1 listing GSE40279 as training set 3 | every GSE40279 result carried an in-sample verdict clock since stage 17; corrected in stage 23 — all four headlines survive, the numbers move (n=40 +12.2%→+14.2%, ρ 0.907→0.837, anchor +5.0%→+3.5%, floor 0 of 21→1 of 20) |
+| **the permuted reference measured at one n and drawn as a flat line, with 'noise is harmless' and two ratios built on it** | a reviewer; stage 24 measuring it at every n: +15.6% at n = 40, slope −0.93 in log-log | three claims in the synthesis, README and both manuscripts — retracted |
+| the transport index modelled as the whole of the transport error | stage 24's P1 failing 0 of 10, and the real fit leaving +4.5% at n = 656 where estimation error is negligible | the index now covers one of two components; the second is n-independent specification error |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
