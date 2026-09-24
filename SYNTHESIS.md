@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-two stages
+## The answer, after twenty-three stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -1908,6 +1908,84 @@ none of which look at whether the rows they summarise exist.
 
 ---
 
+## Stage 23 — one of the verdict clocks was trained on the fitting cohort
+
+A reviewer of the manuscript draft asked whether Horvath 2013 or 2018 had been
+trained on any of the four cohorts. Nobody had checked. Hannum was excluded from
+the start for having been trained on GSE40279; the other three were assumed
+clean. The assumption was wrong for one of them.
+
+### The primary source
+
+Horvath 2013, Additional file 1 — the 82-dataset table with its *Data Use*
+column, fetched through Europe PMC:
+
+| data set | tissue | array | use | n | source |
+|---|---|---|---|---|---|
+| 3 | blood WB | 450K | **Training** | 656 | Hannum 2012, **GSE40279** |
+| 44 | blood WB | 450K | Test | 689 | Liu 2013, GSE42861 |
+
+**GSE40279 is a training set of Horvath 2013.** GSE42861 was only a test set,
+which does not make the clock in-sample there; GSE61151 and GSE50660 do not
+appear. Horvath 2018 was trained on GSE80261, GSE50759, GSE104471, GSE77136,
+GSE52026, E-MTAB-4385, GSE79056 and unpublished data — none of the four. Levine
+2018 was trained on InCHIANTI (n = 456) — none of the four.
+
+Horvath 2013 therefore falls under the rule Hannum was under all along: out of
+every pair in which GSE40279 appears, at either end of the transport.
+
+### Does the training show in the data?
+
+Standard deviation of each clock's age residual, GSE40279 against the mean of the
+other three cohorts: Hannum **1.07**, Horvath 2013 **1.08**, Horvath 2018 1.23,
+Levine 1.29. Every clock has a larger residual on GSE40279 — it is the widest age
+range in the set, 19 to 101 — so the absolute ratio says nothing. The *relative*
+one does: the two clocks trained there are 15–20% tighter on it than the two that
+were not. The contamination is visible, and modest, which fits Horvath 2013
+having seen 656 of roughly four thousand training samples.
+
+*(The stage printed a criterion of "ratio below one" for detecting this. That was
+naive — a cohort effect swamps it — and it is recorded here rather than silently
+dropped.)*
+
+### What survives, and what moves
+
+Each headline carried a survival criterion written before the run. All four
+survive. Several numbers do not.
+
+| headline | before | corrected | criterion |
+|---|---|---|---|
+| damage at n = 40 | +12.2% | **+14.2%** (harmful in 88%) | > +5%: survives |
+| median crosses zero | 160–184 | 160–184, then +0.1% at 240 | 120–240: survives |
+| benefit at n = 656 | −2.3% | **−1.6%** | — |
+| index ranks configurations | ρ = 0.907 | **ρ = 0.837** | > 0.70: survives |
+| harmful below index 0.05 | 0 of 21 | **1 of 20** | — |
+| asymmetry, matched n | 5 of 6 | 6 of 6 | ≥ 5: survives |
+| ridge α = 3, twelve pairs | 12 of 12 | 12 of 12 | all ≤ 0: survives |
+| stage 15's direction, 61151 → 40279 | +5.0% | **+3.5%** | — |
+
+**The curve got stronger, not weaker.** Horvath 2013 was the mildest of the three
+verdict clocks at n = 40 (+9.2% on its own), so including it had *understated* the
+damage. At large n the benefit shrinks, and the median hovers around zero from
+160 to 240 before turning clearly negative at 320 — so "crosses zero between 160
+and 184" was the first negative point of a curve that is really flat there, and
+the manuscript should say so.
+
+**The floor loses its absolute form.** "None of the configurations below 0.05 was
+harmful" is now one of twenty. It stays a useful threshold and stops being a
+guarantee, which it should never have been phrased as.
+
+**The asymmetry going to six of six is not evidence.** The pair that flipped is
+the tied one — indices 0.0275 and 0.0270 — and its call is a coin whichever way
+it lands. The honest count is five of five informative pairs.
+
+**Stage 15's direction drops to +3.5%.** Stage 20's claim that an index near 0.18
+"predicts it to within half a point" was made against the contaminated +5.0%, and
+has to be re-read against +3.5%. The worst case in the project, GSE61151 →
+GSE42861 at +15.9%, involves no GSE40279 and does not move.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -1953,6 +2031,7 @@ none of which look at whether the rows they summarise exist.
 | stage 22's matched-n table selecting its rows out of the grid, when the matched n is almost never on the fitting cohort's grid | five of twelve rows printing NaN — arithmetic on empty frames, caught by the output and by none of the seven pre-specified checks | a rerun; none of the checks verify that the rows they summarise exist |
 | **reading stage 22's +0.5% as the cost of panel mismatch** | the sign flipping in four pairs: the mismatched arm also fits with the better panel, so it mixes a mismatch penalty with a panel-quality benefit | the magnitude, which is a mixture and is not quoted as a penalty; the ranking result in check 5 is unaffected |
 | **stage 17's permuted reference line, +1.8% from four permutations, and the seven-fold ratio quoted off it** | recomputing it for the paper figure with twenty draws per cohort: median +0.5%, IQR −0.8% to +2.1% | the ratio, replaced by a better statement — meaningless coefficients are harmless, and it is the badly estimated real ones that do the damage |
+| **assuming Horvath 2013 had not been trained on any of the four cohorts** | a reviewer asking, and Horvath 2013's Additional file 1 listing GSE40279 as training set 3 | every GSE40279 result carried an in-sample verdict clock since stage 17; corrected in stage 23 — all four headlines survive, the numbers move (n=40 +12.2%→+14.2%, ρ 0.907→0.837, anchor +5.0%→+3.5%, floor 0 of 21→1 of 20) |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
