@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-eight stages
+## The answer, after twenty-nine stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2327,6 +2327,35 @@ test at p = 0.036. That is a diagnostic worth reporting and not one to lead a pa
 
 ---
 
+## Stage 29 — measured on the naive/memory axis, the harm is larger
+
+Since stage 15 the correction is fitted with twelve cell types and what it leaves
+is measured with six, so it is never scored against its own representation. A
+reviewer named the cost: six types cannot see the naive/memory split, which is
+where the largest composition effect lives. The only panel here that can see it is
+the one the correction is fitted with, and measuring with it is self-scoring —
+biased toward making the correction look good. So the reading was fixed in advance
+and is one-sided: harm that **persists** is robust; harm that vanishes would say
+nothing.
+
+| measured with | net damage at n = 40 | at n = 656 | per-clock cells harmful, OLS | at α = 3 |
+|---|---|---|---|---|
+| six types | +11.8% | −1.6% | 54% | 4% |
+| **twelve types** | **+48.1%** | −1.4% | 58% | 0% |
+| **naive/memory columns only** | **+30.6%** | −2.5% | 50% | 0% |
+
+**It persists, and it grows** — against a bias pulling the other way. At n = 40 the
+transported correction leaves four times more composition signal than six types
+could register, and most of that sits on the naive/memory axis. The six-type
+measurement used throughout this project **understated the damage by a factor of
+three to four**; every curve built on it is conservative.
+
+At full fitting size the three measurements agree, as they should once estimation
+noise is small. And the penalty holds on all three: no harmful cell at α = 3
+measured on twelve types or on the naive/memory axis alone.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2381,6 +2410,7 @@ test at p = 0.036. That is a diagnostic worth reporting and not one to lead a pa
 | the reviewer's pre-transport net-damage predictor as a usable safety tool | stage 26: sign 71%, rho 0.633, and 30 of the 73 configurations it calls safe are harmful | not adopted; it errs in the reassuring direction, where model shift lives |
 | **'ridge at α = 3 holds all twelve pairs'** (stages 21, 23) | stage 27 counting per clock: 29 of 30 cells, one left at +0.2%; and 15 of 30 harmful without a penalty where the pooled count said 3 of 12 | the claim becomes 'reduces 50% to 3%'; α = 10 holds all at the cost of most of the benefit |
 | **the index ranking configurations at ρ = 0.907, p = 2×10⁻²⁴** | a reviewer on dependence; stage 28 showing fitting size alone yields ρ ≈ 0.42, and a block permutation giving p = 0.036 | the index's headline strength — real between-pair information, modest, mostly 1/n |
+| measuring every transport with the six-type panel, blind to the naive/memory axis | a reviewer; stage 29 measuring on twelve types and on the naive/memory columns: +48.1% and +30.6% at n = 40 where six types saw +11.8% | nothing overturned — the six-type curves understated the damage three- to four-fold |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
