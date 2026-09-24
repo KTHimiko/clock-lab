@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-four stages
+## The answer, after twenty-five stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2074,6 +2074,108 @@ is the direct measurement the old claim never made.
 
 ---
 
+## Stage 25 — the composition effect differs between cohorts, and that is the worst case
+
+Stage 24 found a floor: a correction fitted on all 656 samples of GSE40279, where
+estimation noise is negligible, still leaves +4.5% of composition in other
+cohorts. The reviewer's fourth point named the candidate — the true composition
+coefficients differ between cohorts. In the linear-regression literature this is
+**model shift** (also regression shift, posterior drift), as opposed to the
+covariate shift the transport index measures; the two are treated together by
+Lei et al. (ICML 2021) and by Patil, Du & Tibshirani (ICML 2024).
+
+Full-cohort fits for Levine 2018 and Horvath 2018, the two clocks clean in all
+four cohorts.
+
+### Pairwise heterogeneity — not established at the bar set
+
+Wald tests of β_A = β_B, 11 degrees of freedom:
+
+| pair | Levine 2018 | Horvath 2018 |
+|---|---|---|
+| 40279 / 61151 | **p = 8×10⁻⁴** | p = 0.24 |
+| 40279 / 50660 | p = 0.028 | p = 0.015 |
+| 40279 / 42861 | p = 0.042 | **p = 8×10⁻⁴** |
+| 61151 / 50660 | p = 0.023 | p = 0.61 |
+| 61151 / 42861 | **p = 1×10⁻³** | p = 0.11 |
+| 50660 / 42861 | p = 0.018 | **p = 1×10⁻⁴** |
+
+Four of twelve reject at Bonferroni against a pre-set bar of six. **Not
+established**, and reported that way. Nine of twelve sit below a nominal 0.05,
+which is suggestive and is not the criterion.
+
+### The specification term ranks the floor — including the worst case
+
+If estimation were perfect, a correction fitted on A and applied in B leaves
+(β_A − β_B)′ S_B (β_A − β_B). Bias-corrected for the noise of both fits and
+scaled to B's age-acceleration variance, it ranks the observed full-n leftover
+across 24 directed configurations at **ρ = 0.633** (p = 0.0009), against a bar of
+0.5. **Passes.**
+
+| configuration | predicted | observed leftover |
+|---|---|---|
+| **61151 → 42861, Horvath 2018** | +51.8% | **+30.5%** |
+| **61151 → 42861, Levine 2018** | +26.6% | **+30.8%** |
+| 40279 → 42861, Horvath 2018 | +20.4% | +10.0% |
+| 61151 → 40279, Levine 2018 | +18.1% | +14.1% |
+
+**The worst transport in the project — the +15.9% that stage 21 found — is a
+specification failure, not an estimation one.** The composition effect in
+GSE61151 and in the rheumatoid arthritis cohort are different enough that a
+perfectly estimated correction from one would still damage the other.
+
+The bias correction overshoots in two configurations fitted on GSE61151, the
+smallest cohort, where it predicts a negative leftover (−2.2%, −4.6%) against
++6.0% and +7.3% observed. Subtracting the fit's own noise is least reliable
+exactly where that noise is largest.
+
+### Why the Wald tests and the specification term disagree
+
+They weigh the same β difference in different directions. The Wald statistic
+weighs it by the **precision of the estimates** — directions that are poorly
+estimated count for little. The specification term weighs it by the **variance
+of the test cohort** — directions the test cohort varies in count for a lot. A
+difference can sit where the fits are imprecise and the test cohort is wide, and
+then it does damage while no test can see it. It is the same covariance mismatch
+as stage 20, applied to the coefficients rather than to their errors.
+
+### Inside the cohorts
+
+| contrast | Levine 2018 | Horvath 2018 |
+|---|---|---|
+| RA cases vs controls (GSE42861) | p = 0.013 | p = 0.61 |
+| ever vs never smokers (GSE50660) | p = 0.013 | p = 0.48 |
+
+The composition coefficients of Levine 2018 shift with disease and with smoking;
+those of Horvath 2018 do not. That fits what each clock was trained on: PhenoAge
+was fitted to a phenotypic age built partly from inflammatory markers, Horvath
+2018 to chronological age. Reported, with no bar.
+
+Carrying RA and smoking as covariates in the fits barely moves the between-cohort
+heterogeneity (median change in the Wald statistic −0.2). Whatever differs
+between cohorts is not an additive effect of those two conditions.
+
+### What it means for anyone using the correction
+
+The two components are not equally predictable in practice. The transport index
+needs only the **target's composition** — no clock values, no outcome — and so can
+be computed before transporting. The specification term needs a good estimate of
+the **target's own β**, and transport is only needed when the target is too small
+to fit one. **The component that caused the worst failure is the one a user
+cannot see in advance.** Ridge limits both, which is the argument for penalising
+by default rather than only when the index is high.
+
+### A check written wrong
+
+The metadata check demanded over 100 current smokers in GSE50660, a number
+assumed rather than looked up. The cohort has 22 current, 263 former and 179
+never smokers; the join was intact, and the run stopped on a false belief about
+the data. Join integrity and group size had been folded into one check and are
+now separate; the smoking contrast became ever versus never, the weaker one. It
+is the seventh check in this project revisited after failing.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2122,6 +2224,8 @@ is the direct measurement the old claim never made.
 | **assuming Horvath 2013 had not been trained on any of the four cohorts** | a reviewer asking, and Horvath 2013's Additional file 1 listing GSE40279 as training set 3 | every GSE40279 result carried an in-sample verdict clock since stage 17; corrected in stage 23 — all four headlines survive, the numbers move (n=40 +12.2%→+14.2%, ρ 0.907→0.837, anchor +5.0%→+3.5%, floor 0 of 21→1 of 20) |
 | **the permuted reference measured at one n and drawn as a flat line, with 'noise is harmless' and two ratios built on it** | a reviewer; stage 24 measuring it at every n: +15.6% at n = 40, slope −0.93 in log-log | three claims in the synthesis, README and both manuscripts — retracted |
 | the transport index modelled as the whole of the transport error | stage 24's P1 failing 0 of 10, and the real fit leaving +4.5% at n = 656 where estimation error is negligible | the index now covers one of two components; the second is n-independent specification error |
+| stage 25's metadata check demanding over 100 current smokers in GSE50660 | the cohort having 22; join intact, run stopped on an assumption | a rerun; the smoking contrast became ever vs never, the weaker one |
+| **reading stage 21's worst case, +15.9% for 61151 → 42861, as the transport index's failure mode** | stage 25's specification term predicting it (+26.6% / +51.8% against +30.8% / +30.5%) | the worst case is model shift, not covariate shift, and the index cannot see it |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
