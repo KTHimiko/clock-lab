@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after twenty-six stages
+## The answer, after twenty-seven stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2238,6 +2238,55 @@ with the criterion written before the numbers.
 
 ---
 
+## Stage 27 — the penalty, recounted clock by clock
+
+Stage 26 showed the index's floor had been an artefact of taking medians over
+clocks. Stage 23's "ridge at α = 3 holds all twelve directed pairs" was counted the
+same way, and was recounted here with each clock kept separate: 30 (directed pair ×
+clock) cells at matched n.
+
+Under model shift a fully shrunk correction does nothing, so its net damage is zero
+by construction; penalising moves toward that point but a finite penalty need not
+reach it. And under shift the optimal penalty can even be negative (Patil, Du &
+Tibshirani, ICML 2024). Positive shrinkage is a safe default, not an optimum.
+
+### It does not hold every cell. It comes close.
+
+| | cells | harmful, no penalty | harmful, α = 3 | harmful, α = 10 |
+|---|---|---|---|---|
+| Horvath 2013 | 6 | 33% | 0% | 0% |
+| Horvath 2018 | 12 | **67%** | 8% | 0% |
+| Levine 2018 | 12 | 42% | 0% | 0% |
+| **all** | **30** | **50%** | **3%** | 0% |
+
+**Twenty-nine of thirty.** The pre-set criterion was all thirty, so the claim is now
+"reduces", not "holds". The one cell left is Horvath 2018 carried from GSE61151 into
+GSE40279: +5.0% unpenalised, **+0.2%** at α = 3.
+
+**Without a penalty, half of all transports are harmful.** Stage 23 counted three
+harmful pairs of twelve. Per clock it is fifteen cells of thirty — the aggregation
+had been hiding exactly the harm this project is about. Horvath 2018 is the fragile
+clock: two of every three of its transports hurt.
+
+### The failure is not where the prediction said
+
+The pre-set expectation was that any failing cell would sit where stage 25's
+specification term is large. **Refuted**: the failing cell's term is −2.2% against a
+median of +4.3% elsewhere. It is one of the two configurations fitted on GSE61151,
+the smallest cohort, where stage 25 had already flagged that the bias correction
+overshoots — so the number attached to it is unreliable. That is a reason to
+distrust the estimate, not to re-read the refutation, and it is left standing.
+
+### The price of certainty
+
+α = 10 holds all thirty. It costs what it saves: where the unpenalised correction
+already helped, the median benefit goes from −4.0% to −3.3% at α = 3 and to
+**−1.5%** at α = 10 — most of the correction's value, given up to insure against
+the minority of transports that would have hurt. There is no penalty that is both
+certainly safe and free. What the data support is a choice with its price stated.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2290,6 +2339,7 @@ with the criterion written before the numbers.
 | **reading stage 21's worst case, +15.9% for 61151 → 42861, as the transport index's failure mode** | stage 25's specification term predicting it (+26.6% / +51.8% against +30.8% / +30.5%) | the worst case is model shift, not covariate shift, and the index cannot see it |
 | **the index's safety floor at 0.05 (0 of 21, then 1 of 20 harmful)** | stage 26 counting per clock: 12 of 40 harmful — the earlier counts took medians over clocks, so a harmed clock was outvoted by a helped one | the floor, withdrawn; the index ranks the estimation component and certifies nothing |
 | the reviewer's pre-transport net-damage predictor as a usable safety tool | stage 26: sign 71%, rho 0.633, and 30 of the 73 configurations it calls safe are harmful | not adopted; it errs in the reassuring direction, where model shift lives |
+| **'ridge at α = 3 holds all twelve pairs'** (stages 21, 23) | stage 27 counting per clock: 29 of 30 cells, one left at +0.2%; and 15 of 30 harmful without a penalty where the pooled count said 3 of 12 | the claim becomes 'reduces 50% to 3%'; α = 10 holds all at the cost of most of the benefit |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
