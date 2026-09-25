@@ -22,7 +22,9 @@
   #v(0.2em)
   #block(text(size: 11.5pt)[Estimation noise, model shift, and the reach of a penalty])
   #v(1.1em)
-  #text(size: 10.5pt)[Luan Ivepe]
+  #text(size: 10.5pt)[Luan Ive Pereira]
+  #v(0.2em)
+  #text(size: 9pt)[#link("https://orcid.org/0009-0000-9343-3742")[ORCID 0009-0000-9343-3742]]
   #v(0.2em)
   #text(size: 9.5pt, style: "italic")[Independent researcher]
   #v(0.2em)

@@ -25,7 +25,9 @@
   #v(0.2em)
   #block(text(size: 11.5pt)[Ruído de estimação, model shift, e o alcance de uma penalidade])
   #v(1.1em)
-  #text(size: 10.5pt)[Luan Ivepe]
+  #text(size: 10.5pt)[Luan Ive Pereira]
+  #v(0.2em)
+  #text(size: 9pt)[#link("https://orcid.org/0009-0000-9343-3742")[ORCID 0009-0000-9343-3742]]
   #v(0.2em)
   #text(size: 9.5pt, style: "italic")[Pesquisador independente]
   #v(0.2em)
