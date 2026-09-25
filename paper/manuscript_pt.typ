@@ -46,9 +46,11 @@
   promete. Estudamos o caso em que seus coeficientes são aplicados a outra coorte.
   Em quatro coortes públicas de sangue total, pontuando só relógios que nunca
   treinaram nas coortes envolvidas, uma correção ajustada em quarenta amostras e
-  transportada aumentou o sinal de composição em 93% dos sorteios, e no eixo
-  naive/memória dos linfócitos o aumento foi três a quatro vezes o que um painel de
-  seis tipos mostra. O erro tem duas partes. O ruído de estimação, amplificado
+  transportada aumentou o sinal de composição em 93% dos sorteios nos relógios
+  que estimam idade, e no eixo naive/memória dos linfócitos o aumento foi três a
+  quatro vezes o que um painel de seis tipos mostra; num relógio de ritmo de
+  envelhecimento, o DunedinPACE, o mesmo transporte em amostra pequena foi
+  neutro. O erro tem duas partes. O ruído de estimação, amplificado
   pelas diferenças de covariância de composição entre as coortes, cai com $1\/n$ e
   é reproduzido quase exatamente por coeficientes sem informação. O model shift —
   um efeito de composição que difere entre coortes — não cai com o tamanho de
@@ -103,7 +105,11 @@ Relógios: Horvath 2013 @horvath2013, Levine 2018 @levine2018 e Horvath 2018
 treinou. Hannum 2013 e Horvath 2013 treinaram no GSE40279 (o Horvath 2013 o lista
 como conjunto de treino 3; o GSE42861 foi só de teste). Levine 2018 (InCHIANTI) e
 Horvath 2018 não treinaram em nenhuma das quatro. Os pares com GSE40279 são
-pontuados só com Levine 2018 e Horvath 2018.
+pontuados só com Levine 2018 e Horvath 2018. Como relógio de outro tipo,
+acrescentamos o DunedinPACE @belsky2022, que estima o ritmo de envelhecimento e
+foi treinado numa coorte fora do GEO; nós o reimplementamos a partir dos dados de
+modelo publicados no pacote e o validamos (médias por coorte de 0,93 a 1,05;
+fumantes atuais 0,14 mais rápidos que quem nunca fumou, $p = 3 times 10^(-11)$).
 
 == Correção e pontuação
 
@@ -277,6 +283,19 @@ não funcionou tão bem: ela escolheu $alpha$ de 0,3 na célula mediana e deixou
 das células nocivas, contra 3% com $alpha = 3$ fixo. A validação cruzada otimiza o
 ajuste dentro da coorte de ajuste e não enxerga onde os coeficientes serão usados.
 
+== Um relógio de ritmo de envelhecimento
+
+No DunedinPACE, a correção transportada ajustada em 40 amostras do GSE40279 foi
+neutra (mediana de +0,3%, nociva em 51% dos sorteios), embora os coeficientes
+embaralhados ainda tenham causado +4,9% de dano: o componente de ruído estava
+presente, mas os coeficientes reais removeram sinal genuíno suficiente para
+compensá-lo, porque o efeito de composição do DunedinPACE transporta bem a partir
+dessa coorte. O dano em amostra pequena é, portanto, propriedade do relógio e do
+par de coortes, não uma constante. O resto se repetiu: em tamanhos casados, 6 de
+12 pares direcionados foram nocivos sem penalidade e nenhum com $alpha = 3$, e
+uma correção ajustada em controles deixou 10,5 pontos a mais de composição em
+casos de artrite do que em outros controles.
+
 = Discussão
 
 A correção de composição dentro da coorte não pode ser validada dentro dela; isso
@@ -302,7 +321,9 @@ Quatro coortes adultas de sangue total num só array, duas definidas por doença
 exposição; outros tecidos, idades e plataformas não foram testados. Os painéis de
 referência foram construídos aqui com seleção de sondas mais simples que as
 bibliotecas publicadas. As medianas em tamanhos pequenos variam entre conjuntos
-independentes de sorteios (de +11,8% a +18,9% em 40 amostras). O valor da
+independentes de sorteios (de +11,8% a +18,9% em 40 amostras), e o próprio dano
+em amostra pequena depende do relógio e da coorte de ajuste (neutro para o
+DunedinPACE a partir do GSE40279). O valor da
 penalidade é específico deste painel e destes relógios. A decomposição supõe um
 efeito linear da composição. A pontuação de sensibilidade com doze tipos usa o
 mesmo painel do ajuste. Nada disso diz respeito a se relógios epigenéticos medem

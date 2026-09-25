@@ -41,8 +41,10 @@
   where its coefficients are applied to a different cohort. Across four public
   whole-blood cohorts, scoring only clocks never trained on the cohorts involved,
   a correction fitted on forty samples and transported increased the composition
-  signal in 93% of draws, and on the naive/memory lymphocyte axis the increase was
-  three to four times what a six-type panel shows. The error has two parts.
+  signal in 93% of draws for the age-estimating clocks, and on the naive/memory
+  lymphocyte axis the increase was three to four times what a six-type panel
+  shows; for a pace-of-ageing clock, DunedinPACE, the same small-sample transport
+  was neutral. The error has two parts.
   Estimation noise, amplified by differences between the cohorts' composition
   covariance, falls as $1\/n$ and is reproduced almost exactly by coefficients
   that carry no information. Model shift — a composition effect that differs
@@ -95,7 +97,11 @@ Clocks: Horvath 2013 @horvath2013, Levine 2018 @levine2018 and Horvath 2018
 on. Hannum 2013 and Horvath 2013 were both trained on GSE40279 (Horvath 2013 lists
 it as training set 3; GSE42861 was a test set only). Levine 2018 (InCHIANTI) and
 Horvath 2018 were trained on none of the four. Pairs involving GSE40279 are
-therefore scored with Levine 2018 and Horvath 2018 only.
+therefore scored with Levine 2018 and Horvath 2018 only. As a clock of a different
+kind we add DunedinPACE @belsky2022, which estimates the pace of ageing and was
+trained on a cohort not in GEO; we reimplemented it from its package's published
+model data and validated it (cohort means 0.93–1.05; current smokers +0.14 faster
+than never smokers, $p = 3 times 10^(-11)$).
 
 == Correction and scoring
 
@@ -265,6 +271,18 @@ cells harmful, against 3% at fixed $alpha = 3$. Cross-validation optimises fit
 within the fitting cohort and cannot account for where the coefficients will be
 used.
 
+== A pace-of-ageing clock
+
+For DunedinPACE, the transported correction fitted on 40 samples of GSE40279 was
+neutral (median +0.3%, harmful in 51% of draws), although shuffled coefficients
+still did +4.9% of damage: the noise component was present, but real
+coefficients removed enough genuine signal to offset it, because DunedinPACE's
+composition effect transports well from that cohort. The small-sample harm is
+therefore a property of the clock and the cohort pair, not a constant. What
+replicated was the rest: at matched sizes, 6 of 12 directed pairs were harmful
+unpenalised and none at $alpha = 3$, and a correction fitted on controls left
+10.5 more points of composition in arthritis cases than in other controls.
+
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
@@ -290,7 +308,8 @@ Four adult whole-blood cohorts on one array, two of them defined by disease or
 exposure; results for other tissues, ages or platforms are untested. Reference
 panels were built here with simpler probe selection than published libraries.
 Medians at small fitting sizes vary between independent sets of draws (+11.8% to
-+18.9% at $n = 40$). The penalty value is specific to this panel and these
++18.9% at $n = 40$), and the small-sample harm itself depends on the clock and the
+fitting cohort (neutral for DunedinPACE from GSE40279). The penalty value is specific to this panel and these
 clocks. The decomposition assumes a linear composition effect. Sensitivity
 scoring on twelve types shares the fitting panel. None of this bears on whether
 epigenetic clocks measure biological ageing; it concerns one correction applied
