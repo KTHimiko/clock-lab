@@ -3293,6 +3293,65 @@ whether the corrected clock is more trustworthy, and Sehgal et al. give evidence
 that it is less reliable. The comparator is a reference, not a truth, which
 stage 43 already said; the manuscript now says why.
 
+## Stage 47 — reliability is the wrong criterion, and the failed checks show why
+
+Sehgal et al. (2026) found that adjusting for immune fractions inside a dataset
+lowers the biological reliability of nearly every clock. GSE55763 measured 36
+people twice; stage 35 dropped those 72 arrays so nobody was counted twice, and
+47a brought them back. They allow the question Sehgal et al. did not ask: does a
+*transported* correction make a clock less repeatable?
+
+ICC(2,1) on age acceleration, 36 replicate pairs, same study and laboratory:
+
+| clock | no correction | within-study (2,639) | transported n = 40 | α = 3 | transported, full |
+|---|---|---|---|---|---|
+| Horvath 2013 | 0.817 | 0.769 | 0.842 | 0.797 | 0.781 |
+| Hannum 2013 | 0.853 | 0.848 | 0.864 | 0.843 | 0.809 |
+| Levine 2018 | 0.755 | 0.723 | 0.774 | 0.744 | 0.706 |
+| Horvath 2018 | 0.886 | 0.859 | 0.867 | 0.878 | 0.874 |
+| DunedinPACE | 0.963 | 0.945 | 0.945 | 0.961 | 0.943 |
+
+- **Criterion 2 passed:** the within-study correction lowers ICC in 4 of 4 age
+  clocks. Sehgal et al. replicate here, in a dataset they did not use.
+- **Criterion 3 failed, 0 of 4.** The transported correction does not lower ICC
+  below the within-study one — it *raises* it, to above the uncorrected value in
+  three clocks, and consistently so from every source cohort (0.836–0.842 for
+  Horvath 2013).
+- **Criterion 4 failed, 1 of 4**, for the same reason: with nothing to recover,
+  the penalty has nothing to do.
+
+### Why, and why it matters
+
+ICC is between-person variance over total. Decomposing Horvath 2013:
+
+| | between-person | within-pair error |
+|---|---|---|
+| no correction | 18.32 | 3.68 |
+| within-study correction | **13.56** | 3.53 |
+
+The correction barely touches the measurement error — the two arrays of one
+person agree just as well. It lowers ICC by **removing between-person variance**,
+which is exactly what a composition correction is for: that spread is partly
+composition, and taking it out is the point. A worse correction removes less of
+it and therefore scores *higher* on reliability.
+
+So a drop in ICC after composition adjustment is not evidence that the adjustment
+damaged anything, and a transported correction that is demonstrably wrong by
+every other measure in this project looks better by this one. Reliability cannot
+rank composition corrections. Stage 43's metric — how far the reported
+association moves — can.
+
+This does not contradict Sehgal et al., whose point is that adjusted clocks are
+less reproducible and that users should know it. It does say the drop they
+measure is the expected arithmetic of removing variance, not damage, and that
+reliability should not be used to choose between corrections.
+
+### What this changes
+
+Nothing in the paper's claims; it adds the argument for why stage 43's metric is
+the right one, and answers in advance a reviewer who cites Sehgal et al. to ask
+whether transport hurts reliability. It does not.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -3358,6 +3417,7 @@ stage 43 already said; the manuscript now says why.
 | **α = 3 as a general safeguard for transported corrections** | stage 38 in saliva: 7 of 8 cells still harmful at α = 3 (up to +35%), unpenalised up to +152%, while the correction works at home | the penalty is a blood result; in a tissue whose composition axis dominates it does not hold |
 | stage 38 reading the saliva penalty failure as collinearity of the nine-type fit | stage 39: a three-type fit (condition ≈ 1) fails the same way; the immune slope of Horvath 2018 changes sign between cohorts | the mechanism — it is model shift on the dominant axis, which shrinkage cannot reverse |
 | **stage 42's 'the difference is the sign'** | a reader: normalised, Horvath 2018's saliva slope loses its opposite sign and 7 of 8 cells stay harmful; Levine 2018 keeps its sign and is still harmful at α = 3 | the sign framing, replaced by spread relative to the mean effect (τ/\|mean\| 0.09–0.55 in blood, 0.91–5.34 in saliva) |
+| stage 47's check 1 requiring technical ICC above 0.90 for every clock | the run stopping at 0.755–0.886; the 0.90 headline in Sehgal et al. is for principal-component clocks, and their own first-generation figures are 0.7–0.8 | the threshold, rewritten at 0.70 with the reason on the page |
 | reading 'composition accounts for 10.8–51.6% of age acceleration in saliva' as an immune-composition figure | stage 46: on the immune axis alone the EPIC cohorts give 0–12 p.p., and only GSE78874 gives 50 | the attribution — most of it is the epithelial/fibroblast axes in the EPIC cohorts |
 | **the n = 40 median quoted as +18.9 p.p.**, the largest of three sets of 30 draws | stage 24b with 100 draws: +16.1 p.p., harmful in 88% | the headline number; small draw sets are unstable at this size |
 | **the floor called 4.5 p.p. and the remainder said to match the shuffled reference 'almost exactly'** | a reader: 4.5 includes the 0.8 the shuffled fit still does at n = 656, and the match fails at n = 40 (20.9 vs 15.6) and n = 80 | floor restated as 3.8 p.p.; agreement quoted with its error (0.6 p.p. from n = 60, 1.2 at n = 40) |
