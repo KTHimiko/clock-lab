@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-one stages
+## The answer, after thirty-two stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2454,6 +2454,60 @@ nearly a factor of two.
 
 ---
 
+## Stage 32 — a pace-of-ageing clock: what generalises and what does not
+
+Every result so far came from three clocks that estimate age. DunedinPACE
+estimates the pace of ageing, was trained on the Dunedin Study (not on GEO, so
+none of the four cohorts is in its training), and tracks monocyte subsets. It was
+reimplemented from the published model data of its R package (GPL-3):
+quantile normalisation of each sample to a 20,000-probe reference, then a
+173-CpG weighted sum.
+
+**Validation (32a) passed on all three pre-set checks.** Coverage 99.6–100%;
+cohort means 0.93–1.05 with SD 0.11–0.13, on the published scale of about one
+year of biological ageing per calendar year; and the positive control — current
+smokers faster than never smokers in GSE50660 — came out at **+0.140** (one-sided
+p = 3×10⁻¹¹).
+
+### The results (32b)
+
+| pre-set criterion | result | |
+|---|---|---|
+| n = 40 transport harmful in > 60% of draws | median +0.3%, harmful in **51%** | **failed** |
+| per pair at matched n: ≥ 3 harmful unpenalised, ≤ 1 at α = 3 | **6** of 12, **0** of 12 | passed |
+| controls → cases inside GSE42861: excess > +1 point | **+10.5%** (IQR +7.0 to +14.3) | passed |
+
+The permuted reference at n = 40 was +4.9%: the estimation-noise component is
+there for DunedinPACE too. What differs is that real coefficients do *better*
+than permuted ones (+0.3% against +4.9%), where for the age clocks they did
+worse.
+
+### Why the small-n curve did not generalise (post hoc)
+
+The first guess — that DunedinPACE carries more composition signal, so even a
+noisy correction removes enough real signal to break even — is **only partly
+supported**: its median composition share in the test cohorts is 8.5%, about the
+same as Levine's 8.3%, and Levine was harmed at n = 40 in stage 17. Signal size
+alone does not explain it.
+
+What the per-pair table shows instead is that the n-curve has a single fitting
+cohort, GSE40279, and that DunedinPACE's composition effect transports well *from
+that cohort*: at full size its correction removes 19.4 points into the arthritis
+cohort. The harmful DunedinPACE cells are fits on the other three cohorts. The
+small-n headline is a property of the clock and the pair, not a constant.
+
+### What generalises
+
+- the penalty: 6 harmful pairs of 12 unpenalised, **none** at α = 3
+- model shift inside one study, and larger than for the age clocks: +10.5 points
+  when a controls-fitted correction is applied to arthritis patients
+- the estimation-noise component, visible in the permuted reference
+
+What does not: the claim that a small transported correction is harmful in most
+draws. For one clock from one fitting cohort, it is a coin flip.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2510,6 +2564,7 @@ nearly a factor of two.
 | **the index ranking configurations at ρ = 0.907, p = 2×10⁻²⁴** | a reviewer on dependence; stage 28 showing fitting size alone yields ρ ≈ 0.42, and a block permutation giving p = 0.036 | the index's headline strength — real between-pair information, modest, mostly 1/n |
 | measuring every transport with the six-type panel, blind to the naive/memory axis | a reviewer; stage 29 measuring on twelve types and on the naive/memory columns: +48.1% and +30.6% at n = 40 where six types saw +11.8% | nothing overturned — the six-type curves understated the damage three- to four-fold |
 | reading stage 25's non-significant Wald test (p = 0.61) as Horvath 2018 having no disease-driven model shift | stage 31: within GSE42861, controls → cases leaves +6.3 points beyond the noise term for Horvath 2018 | the differential prediction; model shift is present for all three clocks inside one study |
+| treating 'harmful in 93% of draws at n = 40' as a general property of the transported correction | stage 32: for DunedinPACE, fitted on the same cohort, 51% — a coin flip | the small-n headline is clock- and pair-dependent; the penalty and the within-study model shift generalise |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
