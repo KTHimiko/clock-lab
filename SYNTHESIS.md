@@ -2558,6 +2558,25 @@ clock tolerates a noisy transported correction where age clocks do not is open.
 
 ---
 
+## Stage 34 — a paediatric cohort: none usable in public data
+
+Childhood is where blood composition changes fastest, so it would be the
+strongest test of transport. A GEO search (series on the 450k or EPIC platforms,
+whole blood, children or adolescents) returned seventeen candidates. None fits:
+
+| candidate | n | why not |
+|---|---|---|
+| GSE154566 (E-Risk twins) | 1,177 | everyone is 18 — no age variance to residualise |
+| GSE99863 (children, The Gambia) | 257 | **no age field** in the series metadata |
+| GSE118144, GSE193879, GSE64495, … | 34–145 | disease-defined, and below the ~200 needed for the n-grid |
+
+Other tissues are out of scope for a different reason: both deconvolution panels
+are blood references, and a composition correction in buccal cells or saliva is a
+different correction. **Recorded as a limit of the evidence, not a test run**:
+every result here is adult blood.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
