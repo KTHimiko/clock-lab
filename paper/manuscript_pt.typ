@@ -23,7 +23,7 @@
     quando transportadas, adicionar o confundimento que deveriam remover
   ])
   #v(0.2em)
-  #block(text(size: 11.5pt)[Ruído de estimação, model shift, e uma penalidade como salvaguarda])
+  #block(text(size: 11.5pt)[Ruído de estimação, model shift, e o alcance de uma penalidade])
   #v(1.1em)
   #text(size: 10.5pt)[Luan Ivepe]
   #v(0.2em)
@@ -64,9 +64,12 @@
   torno de 0,36; permutação em blocos com $p$ = 0,036). Uma penalidade ridge nos
   coeficientes de composição reduziu os transportes nocivos (par × relógio) de
   metade para 3%, em diferentes painéis de medição e de referência, e de 23 de 72
-  para 1 em seis coortes. Uma penalidade que diminui com o tamanho amostral deixou
-  o model shift passar (11 de 72), e a validação cruzada na coorte de ajuste
-  escolheu penalidades fracas demais para o mesmo.
+  para 1 em seis coortes de sangue. Uma penalidade que diminui com o tamanho
+  amostral deixou o model shift passar (11 de 72), e a validação cruzada na coorte
+  de ajuste escolheu penalidades fracas demais para o mesmo. Na saliva, onde a
+  composição domina, os transportes entre três coortes foram nocivos em 7 de 8
+  células com ou sem penalidade (até +152%), embora a correção funcionasse dentro
+  de cada coorte.
 ])
 
 = Introdução
@@ -121,6 +124,18 @@ Uma sexta coorte, GSE55763 @lehne2015 (450k, Londres), serve de coorte de ajuste
 grande: sem os 72 arrays de réplica técnica, tem 2.639 adultos não aparentados
 (24 a 75 anos); é posterior ao Horvath 2013, não está no treino de nenhum relógio
 e os quatro relógios de idade passaram nela nas checagens de cobertura e idade.
+
+A saliva, mistura de epitélio bucal e leucócitos, foi testada em três coortes
+adultas: GSE232891 (EPIC, 552 pessoas; doença inflamatória intestinal e
+controles), GSE232332 (EPIC, 265 após remover réplicas técnicas; câncer de esôfago
+e controles) e GSE78874 (450k, 259; betas calculados do sinal bruto). As
+proporções vieram das referências do EpiDISH @teschendorff2017 @zheng2018: um
+ajuste hierárquico de nove tipos (epitélio, fibroblasto, sete subtipos imunes) e
+uma medição de três tipos (epitélio, fibroblasto, imune), que compartilham o
+primeiro passo e por isso favorecem a correção na medição. As duas primeiras
+coortes vêm do mesmo grupo e seus arquivos não trazem sondas de genotipagem, então
+não foi possível excluir pessoas em comum e elas nunca foram pareadas. Levine 2018
+e Horvath 2018 passaram nas checagens de cobertura e idade nas três.
 
 == Correção e pontuação
 
@@ -346,6 +361,24 @@ na metade de ancestralidade europeia da coorte (+4,3 e +3,9 pontos, contra −0,
 −0,2 na metade hispânica), que nessa coorte também foi processada em placas
 separadas; centrar por placa não o removeu.
 
+== Saliva
+
+Antes da correção, a composição respondia por 10,8% a 51,6% da variância da
+aceleração nos relógios de idade na saliva, e por 42% a 56% no DunedinPACE.
+Ajustada em 40 amostras e transportada entre coortes de saliva, a correção foi
+nociva em 67% dos sorteios (mediana de +20,9%; embaralhada, +6,4%). Em tamanho
+pareado (259 amostras), 7 de 8 células (par × relógio) foram nocivas sem
+penalidade, 7 de 8 com $alpha = 3$ e 6 de 8 com a penalidade que diminui; no
+Horvath 2018 transportado para o GSE78874, a correção sem penalidade deixou +116%
+e +152% a mais de sinal de composição do que encontrou. Dentro de cada coorte,
+ajustar numa metade aleatória e aplicar na outra foi benéfico em 5 de 6 células
+de relógios de idade (de −15% a −48%); a exceção tinha 132 amostras de ajuste e
+pouco sinal inicial. A falha está, portanto, no transporte. Todo par de saliva
+também cruza array e pré-processamento, então diferenças técnicas e biológicas
+não se separam. A composição de nove tipos na saliva é muito mais colinear que no
+sangue (número de condição de 872 a 1.317, contra 13 a 178), e o ridge encolhe as
+direções fracas; um erro no eixo dominante epitélio–leucócito passa por ele.
+
 = Discussão
 
 A correção de composição dentro da coorte não pode ser validada dentro dela; isso
@@ -361,21 +394,25 @@ bastante, ajuste a correção dentro dela. Quando os coeficientes precisam ser
 transportados, penalize-os com uma penalidade fixa e substancial, em vez de uma
 escolhida por validação cruzada na coorte de origem. Com milhares de amostras de
 ajuste ela custa cerca de um ponto de benefício, mas uma penalidade que diminui
-com $n$ para evitar esse custo deixa o model shift passar. E trate qualquer diagnóstico
+com $n$ para evitar esse custo deixa o model shift passar. Isso vale só para o
+sangue: na saliva nenhuma penalidade que testamos tornou seguro um transporte, e
+lá a correção não deveria ser transportada. E trate qualquer diagnóstico
 prévio, inclusive o índice de transporte, como ordenação de risco, não como
 garantia. O transporte já é prática publicada fora do sangue: uma adaptação de um relógio
 de sangue para saliva ajusta termos de composição em cerca de 960 amostras
-reunidas e os aplica a estudos separados @galkin2021. É o regime grande e
-reunido em que achamos o transporte menos arriscado, mas foi julgado pela
-acurácia contra a idade cronológica, que não mostra a composição que sobra na
-aceleração. A mesma cautela vale dentro de um único estudo: uma correção
+reunidas e os aplica a estudos separados @galkin2021. Foi julgado pela acurácia
+contra a idade cronológica, que não mostra a composição que sobra na aceleração,
+e entre coortes de saliva achamos o transporte mais nocivo que em qualquer ponto
+do sangue; reunir muitos estudos pode diluir o model shift, o que não testamos. A mesma cautela vale dentro de um único estudo: uma correção
 ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
 efeito estimado da doença em até duas vezes.
 
 = Limitações
 
 Seis coortes adultas de sangue total, cinco em 450k e uma em EPIC, duas
-definidas por doença ou exposição; outros tecidos e idades não foram testados. Os painéis de
+definidas por doença ou exposição, e três coortes adultas de saliva cujos pares
+todos cruzam array e pré-processamento; outros tecidos e crianças não foram
+testados, e a medição na saliva compartilha a referência com o ajuste. Os painéis de
 referência foram construídos aqui com seleção de sondas mais simples que as
 bibliotecas publicadas. As medianas em tamanhos pequenos variam entre conjuntos
 independentes de sorteios (de +11,8% a +18,9% em 40 amostras), e o próprio dano
@@ -389,7 +426,7 @@ envelhecimento biológico; trata de uma correção aplicada a eles.
 = Disponibilidade de dados e código
 
 Todas as séries são públicas (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
-GSE55763, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
+GSE55763, GSE232891, GSE232332, GSE78874, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
 derrubada e os scripts das figuras estão em
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
 (a ser tornado público antes da submissão).

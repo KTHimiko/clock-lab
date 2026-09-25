@@ -343,6 +343,26 @@ chronological age: MAE falls from 20.9 to 4.7 years, and 5% of samples get
 worse. That is the regime stages 35–36 found safest (a large pooled fit), and a
 metric that cannot see the composition left in age acceleration.
 
+**Horvath S, Gurven M, Levine ME, et al. (2016).** An epigenetic clock analysis
+of race/ethnicity, sex, and coronary heart disease. *Genome Biology* 17:171.
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC4980791/>
+
+In blood, Hispanics have lower intrinsic and higher extrinsic epigenetic ageing
+than Caucasians. It was the prior behind stage 37's ancestry hypothesis, which
+the data refuted: the GSE40279 floor sits in the Caucasian half.
+
+**Teschendorff AE, Breeze CE, Zheng SC, Beck S (2017).** A comparison of
+reference-based algorithms for correcting cell-type heterogeneity in
+Epigenome-Wide Association Studies. *BMC Bioinformatics* 18:105.
+doi:10.1186/s12859-017-1511-5
+
+**Zheng SC, Webster AP, Dong D, et al. (2018).** A novel cell-type deconvolution
+algorithm reveals substantial contamination by immune cells in saliva, buccal
+and cervix. *Epigenomics* 10(7):925–940. doi:10.2217/epi-2018-0037
+
+EpiDISH and its hierarchical extension (HEpiDISH). Stage 38 uses its references
+(centEpiFibIC.m, centBloodSub.m; package version 2.28.0) for saliva.
+
 ---
 
 ## A note on method

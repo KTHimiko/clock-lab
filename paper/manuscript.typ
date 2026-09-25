@@ -20,7 +20,7 @@
     can add the confounding they are meant to remove
   ])
   #v(0.2em)
-  #block(text(size: 11.5pt)[Estimation noise, model shift, and a penalty as the safeguard])
+  #block(text(size: 11.5pt)[Estimation noise, model shift, and the reach of a penalty])
   #v(1.1em)
   #text(size: 10.5pt)[Luan Ivepe]
   #v(0.2em)
@@ -58,9 +58,11 @@
   (within-$n$ Spearman $rho approx 0.36$; block-permutation $p = 0.036$). A ridge
   penalty on the composition coefficients cut harmful (pair × clock) transports
   from half to 3%, across measurement and reference panels, and from 23 of 72 to
-  1 across six cohorts. A penalty that fades with sample size let model shift
-  through (11 of 72), and cross-validation on the fitting cohort chose penalties
-  too weak to do the same.
+  1 across six blood cohorts. A penalty that fades with sample size let model
+  shift through (11 of 72), and cross-validation on the fitting cohort chose
+  penalties too weak to do the same. In saliva, where composition dominates,
+  transports between three cohorts were harmful in 7 of 8 cells with or without
+  the penalty (up to +152%), although the correction worked within each cohort.
 ])
 
 = Introduction
@@ -113,6 +115,18 @@ than never smokers, $p = 3 times 10^(-11)$). A sixth cohort, GSE55763
 72 technical-replicate arrays it has 2,639 unrelated adults (ages 24–75); it
 postdates Horvath 2013 and is in no clock's training set, and all four age clocks
 cleared the coverage and age checks on it.
+
+Saliva, a mixture of buccal epithelium and leukocytes, was tested in three adult
+cohorts: GSE232891 (EPIC, $n = 552$; inflammatory bowel disease and controls),
+GSE232332 (EPIC, $n = 265$ after removing technical replicates; oesophageal
+cancer and controls) and GSE78874 (450k, $n = 259$; betas from raw signal).
+Proportions came from the EpiDISH references @teschendorff2017 @zheng2018: a
+nine-type hierarchical fit (epithelium, fibroblast, seven immune subtypes) and a
+three-type measurement (epithelium, fibroblast, immune), which share their first
+step and so bias measurement toward the correction. The first two cohorts come
+from one group and their files carry no genotyping probes, so shared individuals
+could not be excluded and they were never paired. Levine 2018 and Horvath 2018
+cleared coverage and age checks in all three.
 
 == Correction and scoring
 
@@ -332,6 +346,23 @@ European-ancestry half (+4.3 and +3.9 points, against −0.4 and −0.2 in its
 Hispanic half), which in this cohort was also processed on separate plates;
 centring by plate did not remove it.
 
+== Saliva
+
+Before correction, composition accounted for 10.8–51.6% of age-acceleration
+variance for the age clocks in saliva, and 42–56% for DunedinPACE. Fitted on 40
+samples and transported between saliva cohorts, the correction was harmful in 67%
+of draws (median +20.9%; shuffled +6.4%). At matched size ($n = 259$), 7 of 8
+(pair × clock) cells were harmful unpenalised, 7 of 8 at $alpha = 3$ and 6 of 8
+with the fading penalty; for Horvath 2018 into GSE78874 the unpenalised
+correction left +116% and +152% more composition signal than it found. Within each
+cohort, fitting on one random half and applying to the other was beneficial in 5
+of 6 age-clock cells (−15% to −48%); the exception had 132 fitting samples and a
+small initial signal. The failure is therefore in the transport. Every saliva pair
+also crosses array and preprocessing, so technical and biological differences
+cannot be separated. The nine-type saliva composition is far more collinear than
+blood (condition number 872–1,317 against 13–178), and ridge shrinks weak
+directions; an error on the dominant epithelium–leukocyte axis passes through it.
+
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
@@ -347,12 +378,14 @@ fit the adjustment within it. Where coefficients must be transported, penalise
 them with a fixed, substantial penalty rather than one chosen by cross-validation
 on the source cohort. With thousands of fitting samples it costs about a point of
 benefit, but a penalty that fades with $n$ to avoid that cost lets model shift
-through. And treat any pre-transport diagnostic, including the
+through. This holds in blood only: in saliva no penalty we tried made a
+transported correction safe, and there it should not be transported at all. And treat any pre-transport diagnostic, including the
 transport index, as a ranking of risk rather than a guarantee. Transport is already published practice outside blood: a saliva adaptation of a
 blood clock fits composition terms on about 960 pooled samples and applies them
-to held-out studies @galkin2021. That is the large, pooled regime in which we
-found transport least risky, but it was judged by accuracy against chronological
-age, which cannot show composition left in acceleration. The same caution applies
+to held-out studies @galkin2021. It was judged by accuracy against chronological
+age, which cannot show composition left in acceleration, and between saliva
+cohorts we found transport more harmful than anywhere in blood; pooling many
+studies may average model shift out, which we did not test. The same caution applies
 inside a single study: a correction fitted on controls and applied to patients is
 a transport, and here it changed the estimated disease effect by up to a factor
 of two.
@@ -360,7 +393,9 @@ of two.
 = Limitations
 
 Six adult whole-blood cohorts, five on the 450k array and one on EPIC, two
-defined by disease or exposure; other tissues and ages are untested. Reference
+defined by disease or exposure, and three adult saliva cohorts whose pairs all
+cross array and preprocessing; other tissues and children are untested, and the
+saliva measurement shares its reference with the fit. Reference
 panels were built here with simpler probe selection than published libraries.
 Medians at small fitting sizes vary between independent sets of draws (+11.8% to
 +18.9% at $n = 40$), and the small-sample harm itself depends on the clock and the
@@ -373,7 +408,7 @@ to them.
 = Data and code availability
 
 All series are public (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
-GSE55763, GSE35069, GSE167998). Analysis code, the stage-by-stage record including every overturned
+GSE55763, GSE232891, GSE232332, GSE78874, GSE35069, GSE167998). Analysis code, the stage-by-stage record including every overturned
 conclusion, and figure scripts are at
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
 (to be made public before submission).

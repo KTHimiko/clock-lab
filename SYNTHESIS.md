@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-seven stages
+## The answer, after thirty-eight stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -68,6 +68,10 @@ samples, the unpenalised correction is the better one on median (−4.0% against
 −3.0%, stage 35). A textbook penalty that fades as 1/n recovers that
 benefit but leaves 11 of 72 cells harmful at matched n, against 1 of 72 (stage
 36): model shift does not fade, so the penalty bounding it cannot either.
+**In saliva it does not hold at all** (stage 38): transported between saliva
+cohorts, the correction was harmful in 7 of 8 cells even at α = 3, and up to
++152% unpenalised, while the same correction works inside each cohort. The
+penalty is a blood result.
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2750,6 +2754,83 @@ to, age acceleration, which is the quantity a downstream association inherits.
 The transport is real and published; the damage measured here has not been
 measured there.
 
+## Stage 38 — saliva: the harm replicates, and the penalty does not hold
+
+Every earlier stage was blood. Saliva is buccal epithelium mixed with leukocytes,
+so its composition axis is far larger. It is also where the one published
+transport of composition coefficients was done (Galkin et al. 2021). Three adult
+cohorts were cached in 38a with the EpiDISH references: a nine-type HEpiDISH fit
+(epithelium, fibroblast, seven immune subtypes) and a three-type measurement
+(epithelium, fibroblast, immune):
+
+- GSE232891 (EPIC, 552; Crohn's disease, ulcerative colitis, controls)
+- GSE232332 (EPIC, 265 after dropping replicates; oesophageal cancer, controls)
+- GSE78874 (450k, 259; raw signal)
+
+The median immune fraction is 0.73–0.76. Levine 2018 and Horvath 2018 cleared
+coverage and age (r 0.64–0.91) in all three. GSE232891 and GSE232332 come from
+one group, and their files carry no genotyping probes, so shared people cannot
+be ruled out and they are never paired: 4 directed pairs, each with GSE78874. The
+measurement shares the fit's first step, which biases it toward the correction.
+
+Composition is a large part of age acceleration in saliva, before any
+correction: 10.8% to 51.6% for the age clocks, and 42–56% for DunedinPACE.
+
+**Criterion 2 (small-n harm) passed.** Fitted on 40 and transported, the
+correction was harmful in 67% of draws (median +20.9%). **Criterion 3 passed:**
+shuffled coefficients did +6.4%.
+
+**Criterion 4 (the penalty) failed, badly.** At matched n = 259:
+
+| pair | clock | before | unpenalised | α = 3 | fading |
+|---|---|---|---|---|---|
+| 232891 → 78874 | Levine 2018 | +51.6% | −13.6% | +2.1% | −0.7% |
+| 232891 → 78874 | Horvath 2018 | +16.2% | **+116.2%** | +27.8% | +73.0% |
+| 78874 → 232891 | Levine 2018 | +18.5% | +26.5% | +9.3% | +26.0% |
+| 78874 → 232891 | Horvath 2018 | +31.7% | +8.0% | +5.0% | +9.2% |
+| 232332 → 78874 | Levine 2018 | +51.6% | +7.6% | −6.5% | −9.5% |
+| 232332 → 78874 | Horvath 2018 | +16.2% | **+152.0%** | +35.1% | +88.9% |
+| 78874 → 232332 | Levine 2018 | +10.8% | +89.4% | +4.3% | +30.2% |
+| 78874 → 232332 | Horvath 2018 | +44.3% | +59.7% | +14.5% | +26.0% |
+
+Harmful cells: 7 of 8 unpenalised, **7 of 8 at α = 3**, 6 of 8 fading. These are
+the largest harms in the project. For Horvath 2018 into GSE78874 the correction
+leaves up to ten times the composition signal it found. DunedinPACE was helped
+in all four pairs (−36% to −44%).
+
+### Control: the correction works at home (38c, post hoc)
+
+Written after 38b, before it was run. Within each cohort, fitting on a random
+half and applying to the other half was beneficial in 5 of 6 age-clock cells
+(−15% to −48%). The pre-set bar was all six, so it formally failed. The exception
+is Levine 2018 in GSE232332: 132 fitting samples against a before-signal of only
+10.8%, which is the small-n harm again. Applied to itself, each full cohort
+removed essentially all of it (−0.4% to −0.8% left). So the saliva failure is
+transport, not the correction or the measurement.
+
+### What cannot be separated
+
+Every saliva pair crosses array (EPIC against 450k) and processing (processed
+betas against raw signal), so the shift may be technical as much as biological.
+That is the realistic case: Galkin et al. pooled studies of mixed processing.
+
+### Why the penalty fails here (reading, not tested)
+
+The nine-type composition is highly collinear in saliva (condition number 872 to
+1,317; the twelve-type blood matrices measure 13 to 31, and 178 in the EPIC
+blood cohort). Ridge shrinks the weak directions of the
+composition matrix. The dominant one here, epithelium against leukocytes, is
+barely touched, and a coefficient that differs between cohorts on that axis
+passes straight through. In blood the harmful error sat on weak directions,
+which is why α = 3 worked there.
+
+### What this changes
+
+The penalty result is a **blood** result, and the manuscript has to say so. In a
+tissue where composition dominates, a transported correction can be far worse
+than none, and neither a fixed nor a fading penalty rescues it. The within-study
+correction still works.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2812,6 +2893,7 @@ measured there.
 | **stage 24's floor read as a general property of transport, from one cohort's top end (n = 656)** | stage 35 fitting on 2,639: the floor persists on median (ratio 0.72), but it is +4.6 into the arthritis cohort and zero into two others; 8 of 13 cells, the pre-set bar was 9 | 'n-independent' stands; 'everywhere' does not — model shift is a property of the pair |
 | ridge α = 3 recommended with its cost measured only at matched n (at most 656) | stage 35 at n = 2,639: median −3.0% against −4.0% unpenalised, −7.9% against −12.5% in the best cell | the penalty is a small-n safeguard; at large n it has a price |
 | stage 35's reading of the GSE40279 floor as age extrapolation (that cohort runs to 101, the fitting one stops at 75) | stage 36 restricting GSE40279 to 24–75: +3.5 → +3.3 | the hypothesis; the cause of that floor is unknown |
+| **α = 3 as a general safeguard for transported corrections** | stage 38 in saliva: 7 of 8 cells still harmful at α = 3 (up to +35%), unpenalised up to +152%, while the correction works at home | the penalty is a blood result; in a tissue whose composition axis dominates it does not hold |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
