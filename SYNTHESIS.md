@@ -3213,6 +3213,69 @@ The cell counts differ (60 against 72) because this run scored the two age clock
 on every directed pair among six cohorts, without Horvath 2013, which the earlier
 count included where it was clean.
 
+## Stage 46 — the saliva harm, measured with an independent panel
+
+The largest remaining weakness of the saliva block was that its measurement used
+the first step of the same EpiDISH reference the correction was fitted on, which
+flatters the correction and makes every saliva figure a floor.
+
+GSE147318 (Middleton et al. 2022) sorts children's saliva into CD45-positive
+(immune) and large-cell (epithelial) fractions on EPIC. 46a built a two-type
+panel from it — the 300 most discriminating probes, restricted to probes the 450k
+array also carries, **3.3% of them shared with EpiDISH** — which separates its own
+sorted fractions without overlap.
+
+It does not transfer as a proportion. Deconvolved, it reads 0.93 immune on
+average in adult saliva where EpiDISH reads 0.73, because the absolute scale does
+not carry from sorted children's cells to another study's processed betas — an
+instance of this paper's own subject. The ordering does transfer, so it is used
+as a relative immune score, which is all the metric needs.
+
+**The measurement was not the problem.** The independent score correlates
+0.951–0.997 with the EpiDISH immune fraction, and the composition signal it sees
+before correction is nearly identical to what EpiDISH's own immune column sees:
+
+| cohort | clock | EpiDISH, 3 types | EpiDISH, immune only | independent score |
+|---|---|---|---|---|
+| GSE232891 | Levine 2018 | +18.5 | −0.1 | +1.5 |
+| GSE232891 | Horvath 2018 | +31.8 | +2.1 | +0.0 |
+| GSE232332 | Levine 2018 | +10.8 | +3.7 | +4.8 |
+| GSE232332 | Horvath 2018 | +44.4 | +11.8 | +8.8 |
+| GSE78874 | Levine 2018 | +51.5 | +50.6 | +50.6 |
+| GSE78874 | Horvath 2018 | +16.1 | +14.8 | +14.3 |
+
+(p.p. of age-acceleration variance.) The gap between the first column and the
+other two is not the shared reference: it is **the number of axes**. On one axis
+the two panels agree, independent or not. So the earlier "composition accounts
+for 10.8–51.6% of age acceleration in saliva" is right but needs its source
+named: in the EPIC cohorts most of it sits on the epithelial/fibroblast axes, not
+the immune one; in GSE78874 it is on the immune axis.
+
+**The harm survives the independent measurement** (criteria 2 and 3, both
+passed), scored on the immune axis alone:
+
+| pair | clock | unpenalised | α = 3 |
+|---|---|---|---|
+| 232891 → 78874 | Horvath 2018 | +43.9 | +5.8 |
+| 232332 → 78874 | Horvath 2018 | **+78.5** | +20.1 |
+| 78874 → 232332 | Levine 2018 | +35.4 | −2.9 |
+| 78874 → 232332 | Horvath 2018 | +29.8 | +9.5 |
+| 78874 → 232891 | Levine 2018 | +7.8 | +0.5 |
+| 78874 → 232891 | Horvath 2018 | +0.9 | +0.2 |
+| 232891 → 78874 | Levine 2018 | −36.5 | −4.6 |
+| 232332 → 78874 | Levine 2018 | −8.9 | −8.3 |
+
+6 of 8 cells harmful unpenalised and 5 of 8 at α = 3, against 7 and 7 with the
+shared measurement. Smaller, because one axis is scored instead of three, and
+present.
+
+### What this changes
+
+The limitation is retired rather than restated. Measurement independence does not
+change the saliva conclusion, and the one number it does change — how much of age
+acceleration composition accounts for — is now attributed to the axes it comes
+from.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -3278,6 +3341,7 @@ count included where it was clean.
 | **α = 3 as a general safeguard for transported corrections** | stage 38 in saliva: 7 of 8 cells still harmful at α = 3 (up to +35%), unpenalised up to +152%, while the correction works at home | the penalty is a blood result; in a tissue whose composition axis dominates it does not hold |
 | stage 38 reading the saliva penalty failure as collinearity of the nine-type fit | stage 39: a three-type fit (condition ≈ 1) fails the same way; the immune slope of Horvath 2018 changes sign between cohorts | the mechanism — it is model shift on the dominant axis, which shrinkage cannot reverse |
 | **stage 42's 'the difference is the sign'** | a reader: normalised, Horvath 2018's saliva slope loses its opposite sign and 7 of 8 cells stay harmful; Levine 2018 keeps its sign and is still harmful at α = 3 | the sign framing, replaced by spread relative to the mean effect (τ/\|mean\| 0.09–0.55 in blood, 0.91–5.34 in saliva) |
+| reading 'composition accounts for 10.8–51.6% of age acceleration in saliva' as an immune-composition figure | stage 46: on the immune axis alone the EPIC cohorts give 0–12 p.p., and only GSE78874 gives 50 | the attribution — most of it is the epithelial/fibroblast axes in the EPIC cohorts |
 | **the n = 40 median quoted as +18.9 p.p.**, the largest of three sets of 30 draws | stage 24b with 100 draws: +16.1 p.p., harmful in 88% | the headline number; small draw sets are unstable at this size |
 | **the floor called 4.5 p.p. and the remainder said to match the shuffled reference 'almost exactly'** | a reader: 4.5 includes the 0.8 the shuffled fit still does at n = 656, and the match fails at n = 40 (20.9 vs 15.6) and n = 80 | floor restated as 3.8 p.p.; agreement quoted with its error (0.6 p.p. from n = 60, 1.2 at n = 40) |
 | figure 2 plotting net damage on an axis labelled composition left | the same reader | both series are now composition left |
