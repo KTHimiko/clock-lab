@@ -97,7 +97,10 @@ Clocks: Horvath 2013 @horvath2013, Levine 2018 @levine2018 and Horvath 2018
 on. Hannum 2013 and Horvath 2013 were both trained on GSE40279 (Horvath 2013 lists
 it as training set 3; GSE42861 was a test set only). Levine 2018 (InCHIANTI) and
 Horvath 2018 were trained on none of the four. Pairs involving GSE40279 are
-therefore scored with Levine 2018 and Horvath 2018 only. As a clock of a different
+therefore scored with Levine 2018 and Horvath 2018 only. A fifth cohort, GSE132203
+($n = 795$, EPIC array, mostly African American), tests replication across array
+generation and ancestry; clocks are scored on it only above 95% probe coverage
+(Levine 2018, Horvath 2018). As a clock of a different
 kind we add DunedinPACE @belsky2022, which estimates the pace of ageing and was
 trained on a cohort not in GEO; we reimplemented it from its package's published
 model data and validated it (cohort means 0.93–1.05; current smokers +0.14 faster
@@ -276,12 +279,20 @@ used.
 For DunedinPACE, the transported correction fitted on 40 samples of GSE40279 was
 neutral (median +0.3%, harmful in 51% of draws), although shuffled coefficients
 still did +4.9% of damage: the noise component was present, but real
-coefficients removed enough genuine signal to offset it, because DunedinPACE's
-composition effect transports well from that cohort. The small-sample harm is
-therefore a property of the clock and the cohort pair, not a constant. What
+coefficients removed enough genuine signal to offset it. Fitted instead on the
+fifth cohort, it was neutral again (−1.5%, 42%), so this looks like a property of
+the clock rather than of the fitting cohort. What
 replicated was the rest: at matched sizes, 6 of 12 directed pairs were harmful
 unpenalised and none at $alpha = 3$, and a correction fitted on controls left
 10.5 more points of composition in arthritis cases than in other controls.
+
+== Replication on another array and ancestry
+
+Fitted on 40 samples of GSE132203 (EPIC, mostly African American) and transported
+to the four 450k cohorts, the correction was harmful for the age clocks in 95% of
+draws (median +24.3%; Levine 2018 91%, Horvath 2018 99%), with shuffled
+coefficients at +16.4%. Across the 8 directed pairs involving this cohort, 7 of 24
+(pair × clock) cells were harmful unpenalised and none at $alpha = 3$.
 
 = Discussion
 
@@ -304,8 +315,8 @@ of two.
 
 = Limitations
 
-Four adult whole-blood cohorts on one array, two of them defined by disease or
-exposure; results for other tissues, ages or platforms are untested. Reference
+Five adult whole-blood cohorts, four on the 450k array and one on EPIC, two
+defined by disease or exposure; other tissues and ages are untested. Reference
 panels were built here with simpler probe selection than published libraries.
 Medians at small fitting sizes vary between independent sets of draws (+11.8% to
 +18.9% at $n = 40$), and the small-sample harm itself depends on the clock and the

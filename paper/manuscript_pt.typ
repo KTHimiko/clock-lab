@@ -105,7 +105,10 @@ Relógios: Horvath 2013 @horvath2013, Levine 2018 @levine2018 e Horvath 2018
 treinou. Hannum 2013 e Horvath 2013 treinaram no GSE40279 (o Horvath 2013 o lista
 como conjunto de treino 3; o GSE42861 foi só de teste). Levine 2018 (InCHIANTI) e
 Horvath 2018 não treinaram em nenhuma das quatro. Os pares com GSE40279 são
-pontuados só com Levine 2018 e Horvath 2018. Como relógio de outro tipo,
+pontuados só com Levine 2018 e Horvath 2018. Uma quinta coorte, o GSE132203
+($n = 795$, array EPIC, majoritariamente afro-americana), testa a replicação em
+outra geração de array e outra ancestralidade; nela só se pontuam relógios com
+cobertura de sondas acima de 95% (Levine 2018, Horvath 2018). Como relógio de outro tipo,
 acrescentamos o DunedinPACE @belsky2022, que estima o ritmo de envelhecimento e
 foi treinado numa coorte fora do GEO; nós o reimplementamos a partir dos dados de
 modelo publicados no pacote e o validamos (médias por coorte de 0,93 a 1,05;
@@ -289,12 +292,21 @@ No DunedinPACE, a correção transportada ajustada em 40 amostras do GSE40279 fo
 neutra (mediana de +0,3%, nociva em 51% dos sorteios), embora os coeficientes
 embaralhados ainda tenham causado +4,9% de dano: o componente de ruído estava
 presente, mas os coeficientes reais removeram sinal genuíno suficiente para
-compensá-lo, porque o efeito de composição do DunedinPACE transporta bem a partir
-dessa coorte. O dano em amostra pequena é, portanto, propriedade do relógio e do
-par de coortes, não uma constante. O resto se repetiu: em tamanhos casados, 6 de
+compensá-lo. Ajustada na quinta coorte, a correção foi neutra de novo (−1,5%,
+nociva em 42%), então isso parece propriedade do relógio, e não da coorte de
+ajuste. O resto se repetiu: em tamanhos casados, 6 de
 12 pares direcionados foram nocivos sem penalidade e nenhum com $alpha = 3$, e
 uma correção ajustada em controles deixou 10,5 pontos a mais de composição em
 casos de artrite do que em outros controles.
+
+== Replicação em outro array e outra ancestralidade
+
+Ajustada em 40 amostras do GSE132203 (EPIC, majoritariamente afro-americana) e
+transportada para as quatro coortes de 450k, a correção foi nociva para os
+relógios de idade em 95% dos sorteios (mediana de +24,3%; Levine 2018 91%,
+Horvath 2018 99%), com os coeficientes embaralhados em +16,4%. Nos 8 pares
+direcionados que envolvem essa coorte, 7 de 24 células (par × relógio) foram
+nocivas sem penalidade e nenhuma com $alpha = 3$.
 
 = Discussão
 
@@ -317,8 +329,8 @@ efeito estimado da doença em até duas vezes.
 
 = Limitações
 
-Quatro coortes adultas de sangue total num só array, duas definidas por doença ou
-exposição; outros tecidos, idades e plataformas não foram testados. Os painéis de
+Cinco coortes adultas de sangue total, quatro em 450k e uma em EPIC, duas
+definidas por doença ou exposição; outros tecidos e idades não foram testados. Os painéis de
 referência foram construídos aqui com seleção de sondas mais simples que as
 bibliotecas publicadas. As medianas em tamanhos pequenos variam entre conjuntos
 independentes de sorteios (de +11,8% a +18,9% em 40 amostras), e o próprio dano
