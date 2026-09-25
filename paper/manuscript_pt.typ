@@ -363,7 +363,12 @@ escolhida por validação cruzada na coorte de origem. Com milhares de amostras 
 ajuste ela custa cerca de um ponto de benefício, mas uma penalidade que diminui
 com $n$ para evitar esse custo deixa o model shift passar. E trate qualquer diagnóstico
 prévio, inclusive o índice de transporte, como ordenação de risco, não como
-garantia. A mesma cautela vale dentro de um único estudo: uma correção
+garantia. O transporte já é prática publicada fora do sangue: uma adaptação de um relógio
+de sangue para saliva ajusta termos de composição em cerca de 960 amostras
+reunidas e os aplica a estudos separados @galkin2021. É o regime grande e
+reunido em que achamos o transporte menos arriscado, mas foi julgado pela
+acurácia contra a idade cronológica, que não mostra a composição que sobra na
+aceleração. A mesma cautela vale dentro de um único estudo: uma correção
 ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
 efeito estimado da doença em até duas vezes.
 

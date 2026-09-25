@@ -2733,6 +2733,23 @@ the floor is not even a property of a cohort. It can sit in one recruitment
 stream of a cohort and be absent from the other. That strengthens stage 26 —
 diagnostics computed at the level of the cohort cannot see it.
 
+## Phase B, search (a) — a published transport, found
+
+Since stage 23 the project had not found one documented case of composition
+coefficients fitted in one dataset and applied to another. Galkin et al. (2021,
+*Frontiers in Aging*) is one. To carry a blood clock over to saliva, they fit an
+adjustment on EpiDISH proportions (epithelial, immune, fibroblast) over eight
+pooled saliva/buccal studies (about 960 samples) and apply it to four held-out
+studies. Judged by accuracy against chronological age, MAE falls from 20.9 to
+4.7 years and 5% of samples get worse.
+
+Two things set it apart from the case studied here. The fit is large and pooled
+across studies, which is where stages 35–36 found transport safest. And accuracy
+against chronological age cannot show whether composition is left in, or added
+to, age acceleration, which is the quantity a downstream association inherits.
+The transport is real and published; the damage measured here has not been
+measured there.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |

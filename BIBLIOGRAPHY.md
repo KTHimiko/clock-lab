@@ -330,6 +330,19 @@ drops all 72 replicate arrays and keeps 2,639 as the largest fitting cohort in t
 project. Released after Horvath 2013 and absent from the training sets of the
 other clocks used.
 
+**Galkin F, Kochetov K, Mamoshina P, Zhavoronkov A (2021).** Adapting blood DNA
+methylation aging clocks for use in saliva samples with cell-type deconvolution.
+*Frontiers in Aging* 2:697254. doi:10.3389/fragi.2021.697254 ·
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC9261380/>
+
+**The first documented transport of composition coefficients this project has
+found.** EpiDISH proportions (epithelial, immune, fibroblast) enter an adjustment
+fitted on eight pooled saliva/buccal studies (about 960 samples, leave-one-study-
+out) and applied to four held-out studies. It is judged by accuracy against
+chronological age: MAE falls from 20.9 to 4.7 years, and 5% of samples get
+worse. That is the regime stages 35–36 found safest (a large pooled fit), and a
+metric that cannot see the composition left in age acceleration.
+
 ---
 
 ## A note on method

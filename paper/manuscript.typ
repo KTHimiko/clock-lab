@@ -348,7 +348,11 @@ them with a fixed, substantial penalty rather than one chosen by cross-validatio
 on the source cohort. With thousands of fitting samples it costs about a point of
 benefit, but a penalty that fades with $n$ to avoid that cost lets model shift
 through. And treat any pre-transport diagnostic, including the
-transport index, as a ranking of risk rather than a guarantee. The same caution applies
+transport index, as a ranking of risk rather than a guarantee. Transport is already published practice outside blood: a saliva adaptation of a
+blood clock fits composition terms on about 960 pooled samples and applies them
+to held-out studies @galkin2021. That is the large, pooled regime in which we
+found transport least risky, but it was judged by accuracy against chronological
+age, which cannot show composition left in acceleration. The same caution applies
 inside a single study: a correction fitted on controls and applied to patients is
 a transport, and here it changed the estimated disease effect by up to a factor
 of two.
