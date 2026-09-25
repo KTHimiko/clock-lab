@@ -252,7 +252,9 @@ nocivos; nenhum limiar do índice delimita uma região segura.
 Uma estimativa em forma fechada do dano líquido que supõe coeficientes
 compartilhados, $2 hat(sigma)^2 dot "índice" - b' S_B b$, precisa só da coorte de
 ajuste e das proporções do alvo. Ela acertou o sinal em 71% das configurações
-($rho$ de 0,633), contra 81% ($rho$ de 0,884) de um oráculo que conhece os
+($rho$ de 0,6332 em 126 configurações — por coincidência próximo do $rho$ do
+termo de especificação acima, que é outra correlação, em 24), contra 81%
+($rho$ de 0,884) de um oráculo que conhece os
 coeficientes do próprio alvo. Ela erra para o lado tranquilizador: 30 dos 73
 transportes que rotulou como seguros foram nocivos, concentrados onde o termo de
 especificação é grande.

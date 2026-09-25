@@ -281,9 +281,7 @@ a safe region.
 
 A closed-form estimate of net damage that assumes shared coefficients,
 $2 hat(sigma)^2 dot "index" - b' S_B b$, needs only the fitting cohort and the
-target's proportions. It predicted the sign in 71% of configurations
-($rho = 0.633$), against 81% ($rho = 0.884$) for an oracle that knows the target's
-own coefficients. It errs toward reassurance: 30 of the 73 transports it
+target's proportions. It predicted the sign in 71% of configurations ($rho = 0.6332$ over 126 configurations — coincidentally near the specification term's $rho$ above, which is a different correlation over 24), against 81% ($rho = 0.884$) for an oracle that knows the target's own coefficients. It errs toward reassurance: 30 of the 73 transports it
 labelled safe were harmful, concentrated where the specification term is large.
 
 == A penalty removes most of the harm

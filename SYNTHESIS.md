@@ -2047,6 +2047,10 @@ survives:
 > fit still does at n = 656 is subtracted, and adding it to the permuted damage
 > reproduces the real curve within 0.6 p.p. from n = 60 up, but underestimates
 > it by 1.2 at n = 40. The three-size agreement quoted below was selective.
+> Stage 24's P3 also flips: with 100 draws the permuted coefficients are the
+> more harmful at n = 40 (+17.4 against +16.1), where 30 draws had the real fit
+> worse. The two are within each other's spread, which is the point — at n = 40
+> essentially all of the harm is consistent with noise.
 
 **Coefficients carrying no information at all do +15.6% of damage at n = 40.**
 "Noise is harmless" is false, and so is every ratio built on it. The permuted
