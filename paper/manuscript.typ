@@ -454,7 +454,10 @@ and 7 with the shared measurement.
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
-follows from least squares, not from data. Transported, the adjustment's small-
+follows from least squares, not from data. It is also not free: adjusting for
+immune fractions within a dataset lowers the biological reliability of nearly
+every clock @sehgal2026, so the within-cohort correction we use as a comparator
+is a reference, not a standard of truth. Transported, the adjustment's small-
 sample damage is mostly estimation noise — shuffled coefficients do nearly as
 much of it — while its large-sample damage comes from differences in the
 composition effect between cohorts. That second component is invisible without

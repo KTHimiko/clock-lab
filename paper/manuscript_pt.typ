@@ -426,8 +426,11 @@ a medição compartilhada.
 
 = Discussão
 
-A correção de composição dentro da coorte não pode ser validada dentro dela; isso
-decorre dos mínimos quadrados, não dos dados. Transportada, o dano em amostras
+A correção de composição dentro da coorte não pode ser validada dentro dela;
+isso decorre dos mínimos quadrados, não dos dados. Ela também não sai de graça:
+corrigir por frações imunes dentro de um conjunto de dados reduz a confiabilidade
+biológica de quase todo relógio @sehgal2026, então a correção de dentro da coorte
+que usamos como comparador é uma referência, não um padrão de verdade. Transportada, o dano em amostras
 pequenas é sobretudo ruído de estimação — coeficientes embaralhados fazem quase o
 mesmo estrago —, enquanto o dano em amostras grandes vem de diferenças no efeito
 da composição entre coortes. Esse segundo componente é invisível sem os

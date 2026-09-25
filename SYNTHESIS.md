@@ -3276,6 +3276,23 @@ change the saliva conclusion, and the one number it does change — how much of 
 acceleration composition accounts for — is now attributed to the axes it comes
 from.
 
+## Phase B, search (b) — the closest thing to competition, and it is complementary
+
+Sehgal et al. (2026, *Aging Cell*) adjust for immune cell fractions inside each
+dataset, across four technical-replicate and four acute-perturbation datasets,
+and find that the adjustment **consistently lowers the biological ICC of nearly
+every clock** while technical reliability stays above 0.90. They do not transport
+coefficients between cohorts, so they are not competition for the question here.
+
+They do qualify one of this project's framings. Since stage 12 the within-cohort
+correction has been described as the case where the adjustment "does what it
+claims", and stage 43 uses it as the comparator. Both remain true in the narrow
+sense — it removes the linear composition term exactly, and it is what the
+target's own data support — but "does what it claims" was never a statement about
+whether the corrected clock is more trustworthy, and Sehgal et al. give evidence
+that it is less reliable. The comparator is a reference, not a truth, which
+stage 43 already said; the manuscript now says why.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |

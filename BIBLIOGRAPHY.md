@@ -374,6 +374,24 @@ within-cohort cousin of stages 38–41's finding that the composition effect in
 saliva differs between cohorts. It does not transport coefficients, so it does
 not compete.
 
+**Sehgal R, et al. (2026).** Biological versus technical reliability of
+epigenetic clocks and implications for disease prognosis and intervention
+response. *Aging Cell*. doi:10.1111/acel.70635 ·
+<https://pmc.ncbi.nlm.nih.gov/articles/PMC13418614/>
+
+Four technical-replicate datasets and four acute-perturbation datasets (meals,
+stress, altitude, pollution). Adjusting for immune cell fractions — fitted
+*within* each dataset, EpiDISH on centDHSbloodDMC, the same published panel
+stage 44 uses for measurement — **consistently lowered the biological ICC of
+nearly every clock** (p < 0.001), while technical ICC stayed above 0.90.
+
+Complementary, not competing: they never transport coefficients between cohorts.
+Between them, the within-dataset adjustment costs reliability and the transported
+one costs accuracy. It qualifies this project's habit of treating the
+within-cohort correction as the thing that "does what it claims": it removes the
+linear composition term exactly, which is not the same as leaving the clock more
+trustworthy.
+
 ---
 
 ## A note on method
