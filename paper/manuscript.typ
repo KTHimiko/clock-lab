@@ -79,7 +79,8 @@ cell-type adjustment are simulation-based and within-dataset @mcgregor2016.
 
 We examine the case where the coefficients leave the cohort that produced them —
 reuse of published coefficients, small cohorts borrowing from larger ones, or a
-fixed correction applied to new samples.
+fixed correction applied to new samples. We test it in blood, and in saliva,
+where composition is larger and a published adaptation already transports it.
 
 = Methods
 

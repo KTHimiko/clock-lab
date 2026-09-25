@@ -86,7 +86,8 @@ conjunto de dados @mcgregor2016.
 
 Examinamos o caso em que os coeficientes saem da coorte que os produziu:
 reutilização de coeficientes publicados, coortes pequenas que os tomam de
-coortes maiores, ou uma correção fixa aplicada a amostras novas.
+coortes maiores, ou uma correção fixa aplicada a amostras novas. Testamos isso no sangue e na
+saliva, onde a composição pesa mais e uma adaptação publicada já a transporta.
 
 = Métodos
 
