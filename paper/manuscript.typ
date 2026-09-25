@@ -201,9 +201,22 @@ pre-set threshold of 6 (9 of 12 at nominal $p < 0.05$). The two measures weight
 coefficient differences differently: Wald by estimation precision, the
 specification term by variance in the target cohort. Within cohorts, Levine 2018
 coefficients differed between arthritis cases and controls and between ever and
-never smokers ($p = 0.013$ each); Horvath 2018 coefficients did not ($p = 0.61$,
-$0.48$). Adjusting for disease and smoking left between-cohort differences
-essentially unchanged.
+never smokers ($p = 0.013$ each); for Horvath 2018 this test did not reject
+($p = 0.61$, $0.48$). Adjusting for disease and smoking left between-cohort
+differences essentially unchanged.
+
+Model shift is not a batch effect. Within GSE42861, where cases and controls share
+study, array and laboratory, we fitted the correction on a random half of the
+controls and applied it both to the other half and to the arthritis cases (30
+paired splits). Applied to cases it left 7.4, 7.4 and 2.6 more points of
+composition than applied to controls (Horvath 2013, Levine 2018, Horvath 2018),
+although the transport index was lower for cases — so none of the excess is
+estimation noise, and the estimated model-shift component was 8.7, 8.4 and 6.3
+points. Horvath 2018 is affected even though the Wald test above did not detect a
+coefficient difference. The choice of reference population also changes the
+estimated disease effect: for Horvath 2018, the age-adjusted arthritis effect was
+−0.74 years with a whole-cohort correction and −1.39 years with a controls-only
+correction.
 
 == What can be known before transporting
 
@@ -266,7 +279,10 @@ For practice this suggests three things. Where the target cohort is large enough
 fit the adjustment within it. Where coefficients must be transported, penalise
 them with a fixed, substantial penalty rather than one chosen by cross-validation
 on the source cohort. And treat any pre-transport diagnostic, including the
-transport index, as a ranking of risk rather than a guarantee.
+transport index, as a ranking of risk rather than a guarantee. The same caution applies
+inside a single study: a correction fitted on controls and applied to patients is
+a transport, and here it changed the estimated disease effect by up to a factor
+of two.
 
 = Limitations
 

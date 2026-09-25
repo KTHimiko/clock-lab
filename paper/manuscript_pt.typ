@@ -212,9 +212,22 @@ barra pré-definida de 6 (9 de 12 com $p$ nominal abaixo de 0,05). As duas medid
 pesam as diferenças de coeficiente de modos distintos: o Wald pela precisão da
 estimativa, o termo de especificação pela variância na coorte-alvo. Dentro das
 coortes, os coeficientes do Levine 2018 diferiram entre casos de artrite e
-controles e entre quem já fumou e quem nunca fumou ($p$ = 0,013 cada); os do
-Horvath 2018 não ($p$ = 0,61 e 0,48). Ajustar por doença e tabagismo deixou as
-diferenças entre coortes praticamente inalteradas.
+controles e entre quem já fumou e quem nunca fumou ($p$ = 0,013 cada); para o
+Horvath 2018 esse teste não rejeitou ($p$ = 0,61 e 0,48). Ajustar por doença e
+tabagismo deixou as diferenças entre coortes praticamente inalteradas.
+
+O model shift não é efeito de lote. Dentro do GSE42861, onde casos e controles
+compartilham estudo, array e laboratório, ajustamos a correção numa metade
+aleatória dos controles e a aplicamos tanto à outra metade quanto aos casos de
+artrite (30 divisões pareadas). Aplicada aos casos, ela deixou 7,4, 7,4 e 2,6
+pontos a mais de composição do que aplicada a controles (Horvath 2013, Levine
+2018, Horvath 2018), embora o índice de transporte fosse menor para os casos —
+então nada do excesso é ruído de estimação, e o componente de model shift
+estimado foi de 8,7, 8,4 e 6,3 pontos. O Horvath 2018 é afetado mesmo sem o teste
+de Wald acima detectar diferença de coeficientes. A escolha da população de
+referência também muda o efeito estimado da doença: no Horvath 2018, o efeito da
+artrite ajustado por idade foi de −0,74 ano com a correção na coorte inteira e de
+−1,39 ano com a correção ajustada só nos controles.
 
 == O que dá para saber antes de transportar
 
@@ -279,7 +292,9 @@ bastante, ajuste a correção dentro dela. Quando os coeficientes precisam ser
 transportados, penalize-os com uma penalidade fixa e substancial, em vez de uma
 escolhida por validação cruzada na coorte de origem. E trate qualquer diagnóstico
 prévio, inclusive o índice de transporte, como ordenação de risco, não como
-garantia.
+garantia. A mesma cautela vale dentro de um único estudo: uma correção
+ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
+efeito estimado da doença em até duas vezes.
 
 = Limitações
 
