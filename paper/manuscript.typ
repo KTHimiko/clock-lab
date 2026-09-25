@@ -41,7 +41,9 @@
   where its coefficients are applied to a different cohort. Across four public
   whole-blood cohorts, scoring only clocks never trained on the cohorts involved,
   a correction fitted on forty samples and transported increased the composition
-  signal in 93% of draws for the age-estimating clocks, and on the naive/memory
+  signal in 93% of draws for the age-estimating clocks (95% and 83% when fitted
+  instead on an EPIC cohort of different ancestry or on a 2,639-sample cohort),
+  and on the naive/memory
   lymphocyte axis the increase was three to four times what a six-type panel
   shows; for a pace-of-ageing clock, DunedinPACE, the same small-sample transport
   was neutral. The error has two parts.
@@ -55,8 +57,10 @@
   the transport index added only modest information beyond sample size
   (within-$n$ Spearman $rho approx 0.36$; block-permutation $p = 0.036$). A ridge
   penalty on the composition coefficients cut harmful (pair × clock) transports
-  from half to 3%, across measurement and reference panels. Cross-validation on
-  the fitting cohort chose penalties too weak to do the same.
+  from half to 3%, across measurement and reference panels, and from 23 of 72 to
+  1 across six cohorts. A penalty that fades with sample size let model shift
+  through (11 of 72), and cross-validation on the fitting cohort chose penalties
+  too weak to do the same.
 ])
 
 = Introduction

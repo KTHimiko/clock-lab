@@ -47,7 +47,8 @@
   Em quatro coortes públicas de sangue total, pontuando só relógios que nunca
   treinaram nas coortes envolvidas, uma correção ajustada em quarenta amostras e
   transportada aumentou o sinal de composição em 93% dos sorteios nos relógios
-  que estimam idade, e no eixo naive/memória dos linfócitos o aumento foi três a
+  que estimam idade (95% e 83% quando ajustada numa coorte EPIC de outra
+  ancestralidade ou numa coorte de 2.639 amostras), e no eixo naive/memória dos linfócitos o aumento foi três a
   quatro vezes o que um painel de seis tipos mostra; num relógio de ritmo de
   envelhecimento, o DunedinPACE, o mesmo transporte em amostra pequena foi
   neutro. O erro tem duas partes. O ruído de estimação, amplificado
@@ -62,8 +63,10 @@
   informação modesta além do tamanho amostral ($rho$ de Spearman dentro de $n$ em
   torno de 0,36; permutação em blocos com $p$ = 0,036). Uma penalidade ridge nos
   coeficientes de composição reduziu os transportes nocivos (par × relógio) de
-  metade para 3%, em diferentes painéis de medição e de referência. A validação
-  cruzada na coorte de ajuste escolheu penalidades fracas demais para o mesmo.
+  metade para 3%, em diferentes painéis de medição e de referência, e de 23 de 72
+  para 1 em seis coortes. Uma penalidade que diminui com o tamanho amostral deixou
+  o model shift passar (11 de 72), e a validação cruzada na coorte de ajuste
+  escolheu penalidades fracas demais para o mesmo.
 ])
 
 = Introdução
