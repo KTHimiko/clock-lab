@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after forty-one stages
+## The answer, after forty-two stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -74,7 +74,10 @@ cohorts, the correction was harmful in 7 of 8 cells even at α = 3, and up to
 penalty is a blood result. Neither normalisation nor a three-type fit changes it: the
 clock's slope on the immune fraction changes sign between saliva cohorts (stage
 39), and pooling studies before fitting does not rescue it (stage 41: 6 of 8
-harmful).
+harmful). Stage 42 names the mechanism: shrinkage helps when the target's
+coefficient has the same sign, and in blood no cohort's composition slope was
+clearly of the opposite sign, while in saliva Horvath 2018's was (2 cohorts
+positive, 1 negative).
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2944,6 +2947,45 @@ and an average does not transport to a target whose slope has the other sign.
 A related result from within one cohort: Chan et al. (2026, 529 children) found
 epigenetic age and exposure effects differing between saliva samples that are
 mostly epithelial and those that are mostly immune.
+
+## Stage 42 — why the penalty works in blood: the sign holds there, and not in saliva
+
+Ridge shrinks a transported coefficient toward zero. If the target's own
+coefficient has the same sign and a different size, shrinking moves the
+correction toward it and bounds the damage. If the sign differs, shrinking can
+only reduce a correction pointing the wrong way. Stage 39 found a sign reversal in
+saliva. This stage asks whether blood has one. The slope is of each clock on one
+composition fraction, adjusted for age, per +10 points (SE):
+
+| blood axis | clock | 40279 | 61151 | 50660 | 42861 | 132203 | 55763 |
+|---|---|---|---|---|---|---|---|
+| naive CD8 | Levine 2018 | −15.0 | −14.3 | −12.4 | −12.4 | −10.9 | −10.4 |
+| naive CD8 | Horvath 2018 | −6.9 | −4.3 | −5.1 | −0.7 | −2.0 | −4.1 |
+| neutrophils | Levine 2018 | +1.60 | +0.96 | +1.31 | +1.63 | +1.71 | +1.16 |
+| neutrophils | Horvath 2018 | +0.04 (0.16) | +0.00 (0.37) | −0.28 | −0.16 | −0.26 | −0.50 |
+
+- **Criterion 1 (same sign on neutrophils, both clocks, all six) failed.** Horvath
+  2018's two "positive" slopes are +0.04 (SE 0.16) and 0.00 (0.37), both zero
+  within noise.
+- **Criterion 2 (same sign on naive CD8) passed** for both clocks in all six.
+- **Criterion 3 (larger heterogeneity in saliva) passed:** I² 97% for both clocks
+  in saliva, against 50% and 62% on the blood neutrophil axis.
+
+The distinction that criterion 1 missed, counted after the fact: the cohorts
+whose 95% interval lies entirely on one side of zero.
+
+| | positive | negative |
+|---|---|---|
+| blood, any axis, any clock | never both | — |
+| saliva, Levine 2018 | 0 | 3 |
+| **saliva, Horvath 2018** | **2** | **1** |
+
+Only Horvath 2018 in saliva has cohorts clearly on both sides. It matches stage
+38 cell by cell. At α = 3 the saliva cells of Levine 2018, whose slope keeps its
+sign, fall to a median of +3.2% (from +17.0%). Those of Horvath 2018, whose slope
+flips, stay at +21.2% (from +87.9%). The penalty works where the sign holds. In
+blood the sign held everywhere it could be measured, and that is why α = 3 was
+enough there.
 
 ## Corrections so far
 

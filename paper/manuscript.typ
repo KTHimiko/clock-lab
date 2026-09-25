@@ -404,7 +404,17 @@ rescue it: fitted on the other saliva cohorts with a fixed effect per study and
 applied to the one left out, the correction was harmful in 6 of 8 cells (5 of 8
 at $alpha = 3$), because the pooled slope takes the sign of the pool's majority.
 Composition-dependent heterogeneity within a saliva cohort has also been
-reported @chan2026. The same caution applies
+reported @chan2026.
+
+Why the penalty works in blood and not in saliva follows from the sign. Shrinking
+toward zero moves a transported coefficient toward any target whose own
+coefficient has the same sign. In the six blood cohorts, both clocks' slopes on
+naive CD8 T cells kept one sign, and on neutrophils no cohort's 95% interval lay
+on the opposite side from the others; in saliva, Horvath 2018 had two cohorts
+clearly positive and one clearly negative, with between-cohort $I^2$ of 97%
+against 43–84% in blood. At $alpha = 3$, the saliva cells of Levine 2018, whose
+slope kept its sign, fell to a median of +3.2%; those of Horvath 2018 stayed at
++21.2%. The same caution applies
 inside a single study: a correction fitted on controls and applied to patients is
 a transport, and here it changed the estimated disease effect by up to a factor
 of two.

@@ -422,7 +422,17 @@ do sangue. Reunir estudos não resolveu: ajustada nas outras coortes de saliva,
 com efeito fixo por estudo, e aplicada à coorte deixada de fora, a correção foi
 nociva em 6 de 8 células (5 de 8 com $alpha = 3$), porque a inclinação reunida
 toma o sinal da maioria do conjunto. Heterogeneidade dependente da composição
-dentro de uma coorte de saliva também já foi descrita @chan2026. A mesma cautela vale dentro de um único estudo: uma correção
+dentro de uma coorte de saliva também já foi descrita @chan2026.
+
+Por que a penalidade funciona no sangue e não na saliva decorre do sinal.
+Encolher em direção a zero aproxima um coeficiente transportado de qualquer alvo
+cujo coeficiente próprio tenha o mesmo sinal. Nas seis coortes de sangue, as
+inclinações dos dois relógios em células T CD8 naive mantiveram um só sinal, e em
+neutrófilos nenhum intervalo de 95% ficou do lado oposto ao das demais coortes;
+na saliva, o Horvath 2018 teve duas coortes claramente positivas e uma claramente
+negativa, com $I^2$ entre coortes de 97% contra 43% a 84% no sangue. Com
+$alpha = 3$, as células de saliva do Levine 2018, cuja inclinação manteve o sinal,
+caíram para uma mediana de +3,2%; as do Horvath 2018 ficaram em +21,2%. A mesma cautela vale dentro de um único estudo: uma correção
 ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
 efeito estimado da doença em até duas vezes.
 
