@@ -137,8 +137,15 @@ original paper.
 curl -sLO "https://raw.githubusercontent.com/yiluyucheng/dnaMethyAge/main/data/HorvathS2013.rda"
 ```
 
-Read with `pyreadr`; no R needed. `DunedinPACE.rda` fails to parse and is not
-used.
+Read with `pyreadr`; no R needed. `DunedinPACE.rda` (same repository) fails to
+parse with `pyreadr`; `scripts/build_dunedinpace.py` reads it with the `rdata`
+package and writes `dunedinpace.npz`, which `model/dunedinpace.py` loads. The
+DunedinPACE model data are GPL-3 and are not redistributed here.
+
+```bash
+curl -sLO "https://raw.githubusercontent.com/yiluyucheng/dnaMethyAge/main/data/DunedinPACE.rda"
+.venv/bin/python scripts/build_dunedinpace.py
+```
 
 ## GSE110554 — FlowSorted.Blood.EPIC, purified blood cell types on EPIC
 
