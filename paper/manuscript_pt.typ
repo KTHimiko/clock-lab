@@ -418,7 +418,11 @@ de sangue para saliva ajusta termos de composição em cerca de 960 amostras
 reunidas e os aplica a estudos separados @galkin2021. Foi julgado pela acurácia
 contra a idade cronológica, que não mostra a composição que sobra na aceleração,
 e entre coortes de saliva achamos o transporte mais nocivo que em qualquer ponto
-do sangue; reunir muitos estudos pode diluir o model shift, o que não testamos. A mesma cautela vale dentro de um único estudo: uma correção
+do sangue. Reunir estudos não resolveu: ajustada nas outras coortes de saliva,
+com efeito fixo por estudo, e aplicada à coorte deixada de fora, a correção foi
+nociva em 6 de 8 células (5 de 8 com $alpha = 3$), porque a inclinação reunida
+toma o sinal da maioria do conjunto. Heterogeneidade dependente da composição
+dentro de uma coorte de saliva também já foi descrita @chan2026. A mesma cautela vale dentro de um único estudo: uma correção
 ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
 efeito estimado da doença em até duas vezes.
 

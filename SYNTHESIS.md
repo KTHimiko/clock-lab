@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after forty stages
+## The answer, after forty-one stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -73,7 +73,8 @@ cohorts, the correction was harmful in 7 of 8 cells even at α = 3, and up to
 +152% unpenalised, while the same correction works inside each cohort. The
 penalty is a blood result. Neither normalisation nor a three-type fit changes it: the
 clock's slope on the immune fraction changes sign between saliva cohorts (stage
-39).
+39), and pooling studies before fitting does not rescue it (stage 41: 6 of 8
+harmful).
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2906,6 +2907,43 @@ agrees. Levine 2018 is negative too (−2.42, SE 0.68), as in every saliva cohor
 This does not rescue transport. Whichever cohorts are the exception, a
 coefficient carried between saliva studies can have the wrong sign, and nothing
 in the source cohort says which kind of target it is going to.
+
+## Stage 41 — pooling saliva studies does not rescue transport
+
+Galkin et al. (2021) pooled eight saliva studies before fitting their
+composition adjustment. If model shift scatters around a common value, pooling
+averages it out; if the target sits on the other side of the split, the pooled
+coefficient keeps the wrong sign. This stage tests leave-one-cohort-out over the
+four saliva cohorts. The fit is three-type (condition ≈ 1) with a fixed intercept
+per study. GSE232891 and GSE232332 are never on opposite sides, because they
+may share people.
+
+| target | clock | own immune slope | pooled slope | unpenalised | α = 3 |
+|---|---|---|---|---|---|
+| GSE78874 | Levine 2018 | −4.72 | −0.92 | −3.4% | −2.3% |
+| GSE78874 | Horvath 2018 | −0.94 | **+1.36** | **+137.4%** | +24.1% |
+| GSE149747 | Levine 2018 | −2.42 | −2.62 | −11.8% | −7.7% |
+| GSE149747 | Horvath 2018 | −0.82 | **+0.39** | +36.7% | +0.7% |
+| GSE232891 | Levine 2018 | −0.20 | −4.56 | +28.5% | +2.5% |
+| GSE232891 | Horvath 2018 | **+1.03** | −0.94 | +8.7% | +1.8% |
+| GSE232332 | Levine 2018 | −1.35 | −4.56 | +30.5% | −1.9% |
+| GSE232332 | Horvath 2018 | **+1.90** | −0.94 | +19.3% | +4.4% |
+
+(slopes in years per +10 points of immune fraction)
+
+- **Criterion 2 (pooling rescues, ≤ 2 of 8 harmful) failed:** 6 of 8.
+- **Criterion 3 (pooling plus α = 3, ≤ 1 of 8) failed:** 5 of 8.
+- Without study intercepts: 8 of 8.
+
+The pooled slope follows the majority of the pool, or its largest cohort, and
+helps only the targets that agree with it: Levine 2018 in GSE149747 (−11.8%). With
+four cohorts, two of them from one group, "pooling" here means two or three
+studies, not eight. Still, the mechanism is clear: pooling estimates an average,
+and an average does not transport to a target whose slope has the other sign.
+
+A related result from within one cohort: Chan et al. (2026, 529 children) found
+epigenetic age and exposure effects differing between saliva samples that are
+mostly epithelial and those that are mostly immune.
 
 ## Corrections so far
 

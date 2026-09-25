@@ -399,8 +399,12 @@ transport index, as a ranking of risk rather than a guarantee. Transport is alre
 blood clock fits composition terms on about 960 pooled samples and applies them
 to held-out studies @galkin2021. It was judged by accuracy against chronological
 age, which cannot show composition left in acceleration, and between saliva
-cohorts we found transport more harmful than anywhere in blood; pooling many
-studies may average model shift out, which we did not test. The same caution applies
+cohorts we found transport more harmful than anywhere in blood. Pooling did not
+rescue it: fitted on the other saliva cohorts with a fixed effect per study and
+applied to the one left out, the correction was harmful in 6 of 8 cells (5 of 8
+at $alpha = 3$), because the pooled slope takes the sign of the pool's majority.
+Composition-dependent heterogeneity within a saliva cohort has also been
+reported @chan2026. The same caution applies
 inside a single study: a correction fitted on controls and applied to patients is
 a transport, and here it changed the estimated disease effect by up to a factor
 of two.

@@ -363,6 +363,17 @@ and cervix. *Epigenomics* 10(7):925–940. doi:10.2217/epi-2018-0037
 EpiDISH and its hierarchical extension (HEpiDISH). Stage 38 uses its references
 (centEpiFibIC.m, centBloodSub.m; package version 2.28.0) for saliva.
 
+**Chan MH, Meijer M, Merrill SM, …, Kobor MS (2026).** Not all saliva samples
+are equal: the role of cellular heterogeneity in DNA methylation and epigenetic
+age analyses with biological and psychosocial factors. *Psychoneuroendocrinology*
+184:107688. doi:10.1016/j.psyneuen.2025.107688
+
+In 529 children, saliva samples that are mostly epithelial, mostly immune, or
+mixed give different epigenetic ages and different exposure effects. It is a
+within-cohort cousin of stages 38–41's finding that the composition effect in
+saliva differs between cohorts. It does not transport coefficients, so it does
+not compete.
+
 ---
 
 ## A note on method
