@@ -47,20 +47,26 @@
   coorte. Em seis coortes públicas de sangue, pontuando só relógios que nunca
   treinaram nas coortes envolvidas, uma correção ajustada em quarenta amostras e
   transportada aumentou o sinal de composição em 83% a 95% dos sorteios nos
-  relógios que estimam idade, conforme a coorte de ajuste; no relógio de ritmo de
-  envelhecimento DunedinPACE foi neutra. O erro tem duas partes. O ruído de
-  estimação cai com $1\/n$ e é reproduzido quase exatamente por coeficientes sem
-  informação. O model shift — um efeito de composição que difere entre coortes —
-  não caiu com o tamanho de ajuste até 2.639 amostras e responde pelos piores
-  transportes. Como depende dos coeficientes do próprio alvo, nada calculável de
-  antemão certificou um transporte como seguro: um previsor em forma fechada
-  dos 73 transportes que um previsor em forma fechada chamou de seguros, 30 foram nocivos. Uma penalidade ridge fixa
-  reduziu os transportes nocivos (par × relógio) de 23 de 72 para 1; uma
-  penalidade que diminui com o tamanho amostral, ou escolhida por validação
-  cruzada, não. Na saliva, onde a composição responde por até metade da
-  aceleração, os transportes entre coortes foram nocivos em 7 de 8 células com ou
-  sem penalidade (até +152 p.p.), embora a correção funcionasse dentro de cada coorte,
-  e reunir estudos não ajudou. O que separa os dois tecidos é quanto as coortes discordam em relação ao efeito médio: o desvio-padrão entre coortes da inclinação de composição foi de 0,09 a 0,55 do efeito médio no sangue e de 0,91 a 5,34 na saliva. Uma penalidade encolhe o coeficiente em direção a zero, o que fica perto do coeficiente de cada coorte só no primeiro caso.
+  relógios que estimam idade; no relógio de ritmo de envelhecimento DunedinPACE
+  foi neutra. Nas unidades que um estudo reporta, ela moveu o efeito estimado de
+  fumo ou doença em 0,91 ano em relação à estimativa de dentro da coorte, contra
+  0,55 ano de não aplicar correção alguma, e inverteu o sinal dele em 3 de 24
+  configurações. O erro tem duas partes: o ruído de estimação, que cai com
+  $1\/n$ e é reproduzido por coeficientes sem informação, e o model shift — um
+  efeito de composição que difere entre coortes —, que não caiu com o tamanho de
+  ajuste até 2.639 amostras. Como o model shift depende dos coeficientes do
+  próprio alvo, nada calculável de antemão certificou um transporte como seguro:
+  de 73 transportes que um previsor em forma fechada chamou de seguros, 30 foram
+  nocivos. Uma penalidade ridge fixa reduziu os transportes nocivos (par ×
+  relógio) de 23 de 72 para 1, onde uma penalidade que diminui com o tamanho
+  amostral, ou escolhida por validação cruzada, não reduziu. Na saliva, onde a
+  composição responde por até metade da aceleração, os transportes foram nocivos
+  em 7 de 8 células com ou sem penalidade, e reunir estudos não ajudou. O que
+  separa os tecidos é quanto as coortes discordam em relação ao efeito médio: o
+  desvio-padrão entre coortes da inclinação de composição foi de 0,09 a 0,55 do
+  efeito médio no sangue e de 0,91 a 5,34 na saliva. Uma penalidade encolhe o
+  coeficiente em direção a zero, o que fica perto do coeficiente de cada coorte só
+  no primeiro caso.
 ])
 
 = Introdução
@@ -363,6 +369,30 @@ inclinação reunida toma o sinal da maioria do conjunto.
 
 O sangue difere em quanto as coortes discordam em relação ao próprio efeito. Num ajuste de efeitos aleatórios das inclinações por coorte, o desvio-padrão entre coortes dividido pelo efeito médio em módulo foi de 0,09 a 0,55 nas seis coortes de sangue (eixos CD8 naive e neutrófilos, nos dois relógios) e de 0,91 no Levine 2018 e 5,34 no Horvath 2018 na saliva; o $I^2$ foi de 43% a 84% contra 97%. A inversão de sinal é o extremo desse espalhamento, e não é tudo: com o GSE78874 normalizado, a inclinação do Horvath 2018 na saliva é −0,20 (IC de 95% de −0,46 a +0,06), já sem sinal claramente oposto ao das coortes EPIC, e 7 de 8 células seguem nocivas; o Levine 2018 nunca inverte e ainda é nocivo com $alpha = 3$ em 3 de 4 células.
 
+== O que isso faz com uma associação reportada
+
+Composição restante não é o que um estudo reporta. Para quatro exposições — fumo
+(GSE50660), artrite reumatoide (GSE42861), doença inflamatória intestinal e
+câncer de esôfago (as duas coortes de saliva em EPIC) — reestimamos o coeficiente
+da exposição em (idade do relógio) ~ idade + exposição sob três correções:
+nenhuma, ajustada dentro do alvo e transportada. Tomando a correção de dentro da
+coorte como comparador, uma correção ajustada em 40 amostras de outra coorte
+moveu o efeito reportado numa mediana de 0,91 ano, contra 0,55 ano de não aplicar
+correção alguma; com $alpha = 3$, 0,48; em tamanho de ajuste cheio, 0,25. De 24
+células (alvo × origem × relógio), 13 moveram mais de um ano e 3 inverteram o
+sinal; a maior foi de 4,19 anos, no Levine 2018 levado do GSE132203 para a coorte
+de artrite, cujo efeito dentro da coorte é de +0,04 ano. Com $alpha = 3$, 6 de 24
+ainda moveram mais de um ano.
+
+Essa métrica também mostra uma cauda que a composição restante, limitada por
+construção, não mostra: em 40 amostras, 1,2% de 720 sorteios ficaram a mais de 10
+anos da estimativa de dentro da coorte, o pior a 37,6 anos. Resolvido como
+mínimos quadrados exatos, sem descartar valores singulares próximos de zero,
+10,1% passaram de 10 anos, então o tamanho da cauda depende do solucionador,
+ainda que a existência dela não dependa; ela se concentra na saliva, onde a
+matriz de composição é quase singular. Com $alpha = 3$ nenhum sorteio passou de
+10 anos.
+
 = Discussão
 
 A correção de composição dentro da coorte não pode ser validada dentro dela; isso
@@ -372,6 +402,8 @@ mesmo estrago —, enquanto o dano em amostras grandes vem de diferenças no efe
 da composição entre coortes. Esse segundo componente é invisível sem os
 coeficientes do próprio alvo, e um alvo grande o bastante para estimá-los poderia
 simplesmente ser corrigido dentro de si.
+
+Nas unidades que um estudo reporta, o custo de pegar emprestado uma correção é de cerca de um ano num efeito de doença ou exposição, e de mais de quatro anos na pior configuração que encontramos — o bastante para mudar o que um artigo conclui.
 
 Para a prática, isso sugere quatro coisas. Quando a coorte-alvo é grande o
 bastante, ajuste a correção dentro dela. No sangue, quando os coeficientes

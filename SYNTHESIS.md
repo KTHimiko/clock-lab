@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after forty-two stages
+## The answer, after forty-three stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -58,6 +58,12 @@ and counted per clock, 12 of 40 transports below its old "safe" threshold were
 harmful. Of the 73 transports a closed-form net-damage predictor
 calls safe, 30 are harmful. The second component needs the target's own coefficients, and a target
 large enough to estimate them does not need a transported correction.
+
+**In years, the units a study reports** (stage 43): a correction fitted on forty
+samples elsewhere moves the estimated effect of smoking or disease 0.91 years
+from what the target cohort's own correction gives, against 0.55 years for not
+correcting at all; 13 of 24 cells move by more than a year and 3 flip sign. A
+penalty brings it to 0.48.
 
 **What works is penalising** (stage 27). Ridge shrinks the coefficients toward
 "no correction", which bounds the damage from noise and from a wrong β alike.
@@ -3073,6 +3079,63 @@ The 24 GSE132203 cells are stated to include DunedinPACE (6 of 16 age-clock cell
 harmful). "The worst transport" is now "at full fitting size". Galkin et al.'s
 training set includes GSE78874, one of the cohorts where transport fails here,
 and the introduction says so.
+
+## Stage 43 — in years: how far a reported association moves
+
+Every earlier stage scored the correction by how much composition it leaves.
+Nobody reports that number; what gets reported is an association — smoking
+accelerates ageing by X years, this disease by Y. Stage 31 showed for one cohort
+and one clock that the choice of reference moved the arthritis effect from −0.74
+to −1.39 years. This asks it across four exposures, with the within-cohort
+correction as the comparator (what the target's own data support, and the
+practice the field treats as correct — a reference, not a truth):
+
+| target | exposure | exposed / not |
+|---|---|---|
+| GSE50660 | smoking, ever vs never | 285 / 179 |
+| GSE42861 | rheumatoid arthritis | 354 / 335 |
+| GSE232891 (saliva) | inflammatory bowel disease | 302 / 250 |
+| GSE232332 (saliva) | oesophageal cancer | 98 / 167 |
+
+Median |estimate − within-cohort estimate|, in years, over (target × source ×
+clock) cells, 30 draws each:
+
+| | median error |
+|---|---|
+| no correction at all | 0.55 |
+| transported, fitted on 40 | **0.91** |
+| transported, fitted on 40, α = 3 | 0.48 |
+| transported, full fitting cohort | 0.25 |
+
+- **Criterion 2 passed.** At n = 40 a transported correction moves the reported
+  answer further from the within-cohort one (0.91 y) than doing nothing does
+  (0.55 y). In the units a reader sees, it is worse than useless.
+- **Criterion 3 passed.** 13 of 24 cells are off by more than a year or flip
+  sign; 3 flip sign outright. The worst: GSE132203 → GSE42861, Levine 2018, 4.19
+  years, where the within-cohort arthritis effect is +0.04.
+- **Criterion 4 passed.** α = 3 cuts the median error to 0.48 y, below doing
+  nothing, and leaves 6 of 24 cells off by a year or more.
+- **At full fitting size the transport is good** (0.25 y), consistent with the
+  composition-left curves.
+
+### A tail the composition metric could not show
+
+Composition left is bounded above by construction, so it hid this. In years, at
+n = 40, the unpenalised fit is sometimes degenerate: 1.2% of 720 draws land more
+than 10 years from the within-cohort estimate, the worst at 37.6 years. Solved as
+exact least squares, without dropping near-zero singular values, 10.1% exceed 10
+years and the worst is 10^14 — so the size of the tail depends on the solver,
+while its existence does not. **At α = 3 no draw exceeds 10 years; the worst is
+3.5.** The tail is concentrated in saliva (33% of exact-least-squares draws,
+against 6% in blood), where the composition matrix is nearly singular.
+
+### What this changes
+
+It gives the paper its practical statement. A correction borrowed from another
+cohort and applied to forty samples does not merely leave composition behind: it
+moves the number the study reports, by about a year on median, by more than four
+in the worst cell, and occasionally by an absurd amount. A fixed penalty brings
+the median below the do-nothing baseline and removes the tail.
 
 ## Corrections so far
 

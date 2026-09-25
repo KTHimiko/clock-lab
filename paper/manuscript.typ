@@ -37,29 +37,30 @@
   #text(weight: "bold")[Abstract] #h(0.6em)
   Epigenetic age acceleration in blood is routinely adjusted for immune cell
   composition by regressing clock age on estimated cell proportions. Within the
-  cohort where it is fitted, the adjustment does what it claims; we study what
+  cohort where it is fitted the adjustment does what it claims; we study what
   happens when its coefficients are applied to another cohort. In six public
   blood cohorts, scoring only clocks never trained on the cohorts involved, a
   correction fitted on forty samples and transported increased the composition
-  signal in 83–95% of draws for the age-estimating clocks, depending on the
-  fitting cohort; for the pace-of-ageing clock DunedinPACE it was neutral. The
-  error has two parts. Estimation noise falls as $1\/n$ and is reproduced almost
-  exactly by coefficients that carry no information. Model shift — a composition
-  effect that differs between cohorts — did not fall with fitting size up to
-  2,639 samples and accounts for the worst transports. Because it depends on the
-  target's own coefficients, nothing computable beforehand certified a transport
-  as safe: of the 73 transports a closed-form predictor called safe, 30 were
-  harmful. A
-  fixed ridge penalty cut harmful (pair × clock) transports from 23 of 72 to 1; a
-  penalty that fades with sample size, or one chosen by cross-validation, did
-  not. In saliva, where composition accounts for up to half of age acceleration,
-  transports between cohorts were harmful in 7 of 8 cells with or without the
-  penalty (up to +152 p.p.), although the correction worked within each cohort, and
-  pooling studies did not help. What separates the two tissues is how far cohorts
-  disagree relative to the average effect: the between-cohort standard deviation
-  of the composition slope was 0.09–0.55 of the mean effect in blood and 0.91–5.34
-  in saliva. A penalty shrinks a coefficient toward zero, which is close to every
-  cohort's own only in the first case.
+  signal in 83–95% of draws for the age-estimating clocks; for the
+  pace-of-ageing clock DunedinPACE it was neutral. In the units a study reports,
+  it moved the estimated effect of smoking or disease 0.91 years away from the
+  within-cohort estimate, against 0.55 years for applying no correction at all,
+  and reversed its sign in 3 of 24 configurations. The error has two parts:
+  estimation noise, which falls as $1\/n$ and is reproduced by coefficients that
+  carry no information, and model shift — a composition effect differing between
+  cohorts — which did not fall with fitting size up to 2,639 samples. Because
+  model shift depends on the target's own coefficients, nothing computable
+  beforehand certified a transport as safe: of 73 transports a closed-form
+  predictor called safe, 30 were harmful. A fixed ridge penalty cut harmful
+  (pair × clock) transports from 23 of 72 to 1, where a penalty fading with
+  sample size, or one chosen by cross-validation, did not. In saliva, where
+  composition accounts for up to half of age acceleration, transports were
+  harmful in 7 of 8 cells with or without the penalty, and pooling studies did
+  not help. What separates the tissues is how far cohorts disagree relative to
+  the average effect: the between-cohort standard deviation of the composition
+  slope was 0.09–0.55 of the mean effect in blood and 0.91–5.34 in saliva. A
+  penalty shrinks a coefficient toward zero, which is close to every cohort's own
+  only in the first case.
 ])
 
 = Introduction
@@ -396,6 +397,29 @@ Horvath 2018's saliva slope is −0.20 (95% CI −0.46 to +0.06), no longer clea
 opposite to the EPIC cohorts, and 7 of 8 cells remain harmful; Levine 2018 never
 reverses and is still harmful at $alpha = 3$ in 3 of 4 cells.
 
+== What it does to a reported association
+
+Composition left is not what a study reports. For four exposures — smoking
+(GSE50660), rheumatoid arthritis (GSE42861), inflammatory bowel disease and
+oesophageal cancer (the two EPIC saliva cohorts) — we re-estimated the exposure
+coefficient in (clock age) ~ age + exposure under three corrections: none, fitted
+within the target, and transported. Taking the within-cohort correction as the
+comparator, a correction fitted on 40 samples elsewhere moved the reported effect
+a median of 0.91 years, against 0.55 years for applying no correction at all; at
+$alpha = 3$, 0.48; at full fitting size, 0.25. Of 24 (target × source × clock)
+cells, 13 moved by more than a year and 3 reversed sign; the largest was 4.19
+years, for Levine 2018 carried from GSE132203 into the arthritis cohort, whose
+within-cohort effect is +0.04 years. At $alpha = 3$, 6 of 24 still moved by more
+than a year.
+
+This metric also shows a tail that composition left, bounded above by
+construction, cannot: at $n = 40$, 1.2% of 720 draws landed more than 10 years
+from the within-cohort estimate, the worst at 37.6 years. Solved as exact least
+squares, without dropping near-zero singular values, 10.1% exceeded 10 years, so
+the tail's size is solver-dependent while its existence is not; it is
+concentrated in saliva, where the composition matrix is nearly singular. At
+$alpha = 3$ no draw exceeded 10 years.
+
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
@@ -405,6 +429,8 @@ much of it — while its large-sample damage comes from differences in the
 composition effect between cohorts. That second component is invisible without
 the target's own coefficients, and a target large enough to estimate them could
 simply be adjusted within itself.
+
+In the units a study reports, the cost of borrowing a correction is about a year on a disease or exposure effect, and more than four years in the worst configuration we found — enough to change what a paper concludes.
 
 For practice this suggests four things. Where the target cohort is large enough,
 fit the adjustment within it. In blood, where coefficients must be transported,
