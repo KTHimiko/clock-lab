@@ -43,33 +43,27 @@
   A aceleração de idade epigenética em sangue é rotineiramente corrigida pela
   composição de células imunes, regredindo a idade do relógio sobre as proporções
   celulares estimadas. Dentro da coorte onde é ajustada, a correção faz o que
-  promete. Estudamos o caso em que seus coeficientes são aplicados a outra coorte.
-  Em quatro coortes públicas de sangue total, pontuando só relógios que nunca
+  promete; estudamos o que acontece quando seus coeficientes são aplicados a outra
+  coorte. Em seis coortes públicas de sangue, pontuando só relógios que nunca
   treinaram nas coortes envolvidas, uma correção ajustada em quarenta amostras e
-  transportada aumentou o sinal de composição em 93% dos sorteios nos relógios
-  que estimam idade (95% e 83% quando ajustada numa coorte EPIC de outra
-  ancestralidade ou numa coorte de 2.639 amostras), e no eixo naive/memória dos linfócitos o aumento foi três a
-  quatro vezes o que um painel de seis tipos mostra; num relógio de ritmo de
-  envelhecimento, o DunedinPACE, o mesmo transporte em amostra pequena foi
-  neutro. O erro tem duas partes. O ruído de estimação, amplificado
-  pelas diferenças de covariância de composição entre as coortes, cai com $1\/n$ e
-  é reproduzido quase exatamente por coeficientes sem informação. O model shift —
-  um efeito de composição que difere entre coortes — não cai com o tamanho de
-  ajuste, até 2.639 amostras, responde pelos piores transportes e varia de
-  tamanho entre alvos. Como a segunda parte depende dos
-  coeficientes da própria coorte-alvo, nada que pudemos calcular de antemão
-  certificou um transporte como seguro: um previsor em forma fechada rotulou como
-  seguros 30 de 73 transportes nocivos, e o índice de transporte acrescentou só
-  informação modesta além do tamanho amostral ($rho$ de Spearman dentro de $n$ em
-  torno de 0,36; permutação em blocos com $p$ = 0,036). Uma penalidade ridge nos
-  coeficientes de composição reduziu os transportes nocivos (par × relógio) de
-  metade para 3%, em diferentes painéis de medição e de referência, e de 23 de 72
-  para 1 em seis coortes de sangue. Uma penalidade que diminui com o tamanho
-  amostral deixou o model shift passar (11 de 72), e a validação cruzada na coorte
-  de ajuste escolheu penalidades fracas demais para o mesmo. Na saliva, onde a
-  composição domina, os transportes entre três coortes foram nocivos em 7 de 8
-  células com ou sem penalidade (até +152%), embora a correção funcionasse dentro
-  de cada coorte.
+  transportada aumentou o sinal de composição em 83% a 95% dos sorteios nos
+  relógios que estimam idade, conforme a coorte de ajuste; no relógio de ritmo de
+  envelhecimento DunedinPACE foi neutra. O erro tem duas partes. O ruído de
+  estimação cai com $1\/n$ e é reproduzido quase exatamente por coeficientes sem
+  informação. O model shift — um efeito de composição que difere entre coortes —
+  não caiu com o tamanho de ajuste até 2.639 amostras e responde pelos piores
+  transportes. Como depende dos coeficientes do próprio alvo, nada calculável de
+  antemão certificou um transporte como seguro: um previsor em forma fechada
+  chamou de seguros 30 de 73 transportes nocivos. Uma penalidade ridge fixa
+  reduziu os transportes nocivos (par × relógio) de 23 de 72 para 1; uma
+  penalidade que diminui com o tamanho amostral, ou escolhida por validação
+  cruzada, não. Na saliva, onde a composição responde por até metade da
+  aceleração, os transportes entre coortes foram nocivos em 7 de 8 células com ou
+  sem penalidade (até +152%), embora a correção funcionasse dentro de cada coorte,
+  e reunir estudos não ajudou. A diferença é o sinal: o encolhimento ajuda quando
+  o coeficiente do alvo tem o mesmo sinal, o que se manteve entre as coortes de
+  sangue e falhou na saliva, onde a inclinação de um relógio na fração imune se
+  inverteu entre coortes.
 ])
 
 = Introdução
@@ -394,6 +388,19 @@ outro grupo (GSE149747, 44 adultos na linha de base), a inclinação foi de −0
 EPIC, o que pesa contra o array como explicação; pela regra que fixamos antes, a
 comparação foi inconclusiva.
 
+Reunir estudos também não resgatou o transporte: ajustada nas outras coortes de
+saliva, com efeito fixo por estudo, e aplicada à coorte deixada de fora, a
+correção foi nociva em 6 de 8 células (5 de 8 com $alpha = 3$), porque a
+inclinação reunida toma o sinal da maioria do conjunto.
+
+O sangue difere no sinal. Nas seis coortes de sangue, as
+inclinações dos dois relógios em células T CD8 naive mantiveram um só sinal, e em
+neutrófilos nenhum intervalo de 95% ficou do lado oposto ao das demais coortes;
+na saliva, o Horvath 2018 teve duas coortes claramente positivas e uma claramente
+negativa, com $I^2$ entre coortes de 97% contra 43% a 84% no sangue. Com
+$alpha = 3$, as células de saliva do Levine 2018, cuja inclinação manteve o sinal,
+caíram para uma mediana de +3,2%; as do Horvath 2018 ficaram em +21,2%.
+
 = Discussão
 
 A correção de composição dentro da coorte não pode ser validada dentro dela; isso
@@ -404,43 +411,37 @@ da composição entre coortes. Esse segundo componente é invisível sem os
 coeficientes do próprio alvo, e um alvo grande o bastante para estimá-los poderia
 simplesmente ser corrigido dentro de si.
 
-Para a prática, isso sugere três coisas. Quando a coorte-alvo é grande o
-bastante, ajuste a correção dentro dela. Quando os coeficientes precisam ser
-transportados, penalize-os com uma penalidade fixa e substancial, em vez de uma
-escolhida por validação cruzada na coorte de origem. Com milhares de amostras de
-ajuste ela custa cerca de um ponto de benefício, mas uma penalidade que diminui
-com $n$ para evitar esse custo deixa o model shift passar. Isso vale só para o
-sangue: na saliva nenhuma penalidade que testamos tornou seguro um transporte, e
-lá a correção não deveria ser transportada. E trate qualquer diagnóstico
-prévio, inclusive o índice de transporte, como ordenação de risco, não como
-garantia. O transporte já é prática publicada fora do sangue: uma adaptação de um relógio
-de sangue para saliva ajusta termos de composição em cerca de 960 amostras
-reunidas e os aplica a estudos separados @galkin2021. Foi julgado pela acurácia
-contra a idade cronológica, que não mostra a composição que sobra na aceleração,
-e entre coortes de saliva achamos o transporte mais nocivo que em qualquer ponto
-do sangue. Reunir estudos não resolveu: ajustada nas outras coortes de saliva,
-com efeito fixo por estudo, e aplicada à coorte deixada de fora, a correção foi
-nociva em 6 de 8 células (5 de 8 com $alpha = 3$), porque a inclinação reunida
-toma o sinal da maioria do conjunto. Heterogeneidade dependente da composição
-dentro de uma coorte de saliva também já foi descrita @chan2026.
+Para a prática, isso sugere quatro coisas. Quando a coorte-alvo é grande o
+bastante, ajuste a correção dentro dela. No sangue, quando os coeficientes
+precisam ser transportados, penalize-os com uma penalidade fixa e substancial, em
+vez de uma escolhida por validação cruzada na coorte de origem ou de uma que
+diminui com $n$; com milhares de amostras de ajuste isso custa cerca de um ponto
+de benefício. Na saliva, e plausivelmente em qualquer tecido em que a composição
+domina, não transporte: nenhuma penalidade e nenhum agrupamento de estudos o
+tornaram seguro. E trate qualquer diagnóstico prévio, inclusive o índice de
+transporte, como ordenação de risco, não como garantia. A mesma cautela vale
+dentro de um único estudo: uma correção ajustada em controles e aplicada a
+pacientes é um transporte, e aqui ela mudou o efeito estimado da doença em até
+duas vezes.
 
-Por que a penalidade funciona no sangue e não na saliva decorre do sinal.
-Encolher em direção a zero aproxima um coeficiente transportado de qualquer alvo
-cujo coeficiente próprio tenha o mesmo sinal. Nas seis coortes de sangue, as
-inclinações dos dois relógios em células T CD8 naive mantiveram um só sinal, e em
-neutrófilos nenhum intervalo de 95% ficou do lado oposto ao das demais coortes;
-na saliva, o Horvath 2018 teve duas coortes claramente positivas e uma claramente
-negativa, com $I^2$ entre coortes de 97% contra 43% a 84% no sangue. Com
-$alpha = 3$, as células de saliva do Levine 2018, cuja inclinação manteve o sinal,
-caíram para uma mediana de +3,2%; as do Horvath 2018 ficaram em +21,2%. A mesma cautela vale dentro de um único estudo: uma correção
-ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
-efeito estimado da doença em até duas vezes.
+O alcance da penalidade decorre do sinal do efeito da composição. Encolher em
+direção a zero aproxima um coeficiente transportado de qualquer alvo cujo
+coeficiente próprio tenha o mesmo sinal, e não ajuda um alvo de sinal oposto;
+entre as coortes de sangue o sinal se manteve, e na saliva não.
+
+O transporte já é prática publicada fora do sangue: uma adaptação de um relógio
+de sangue para saliva ajusta termos de composição em cerca de 960 amostras
+reunidas e os aplica a estudos separados @galkin2021. Foi julgada pela acurácia
+contra a idade cronológica, que não mostra a composição que sobra na aceleração;
+nas nossas coortes de saliva, reunir estudos não evitou o dano. Heterogeneidade
+dependente da composição dentro de uma coorte de saliva também já foi descrita
+@chan2026.
 
 = Limitações
 
 Seis coortes adultas de sangue total, cinco em 450k e uma em EPIC, duas
-definidas por doença ou exposição, e três coortes adultas de saliva cujos pares
-todos cruzam array e pré-processamento; outros tecidos e crianças não foram
+definidas por doença ou exposição, e quatro coortes adultas de saliva cujos pares
+de transporte todos cruzam array e pré-processamento; outros tecidos e crianças não foram
 testados, e a medição na saliva compartilha a referência com o ajuste. Os painéis de
 referência foram construídos aqui com seleção de sondas mais simples que as
 bibliotecas publicadas. As medianas em tamanhos pequenos variam entre conjuntos

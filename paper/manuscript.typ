@@ -37,32 +37,27 @@
   #text(weight: "bold")[Abstract] #h(0.6em)
   Epigenetic age acceleration in blood is routinely adjusted for immune cell
   composition by regressing clock age on estimated cell proportions. Within the
-  cohort where it is fitted, the adjustment does what it claims. We study the case
-  where its coefficients are applied to a different cohort. Across four public
-  whole-blood cohorts, scoring only clocks never trained on the cohorts involved,
-  a correction fitted on forty samples and transported increased the composition
-  signal in 93% of draws for the age-estimating clocks (95% and 83% when fitted
-  instead on an EPIC cohort of different ancestry or on a 2,639-sample cohort),
-  and on the naive/memory
-  lymphocyte axis the increase was three to four times what a six-type panel
-  shows; for a pace-of-ageing clock, DunedinPACE, the same small-sample transport
-  was neutral. The error has two parts.
-  Estimation noise, amplified by differences between the cohorts' composition
-  covariance, falls as $1\/n$ and is reproduced almost exactly by coefficients
-  that carry no information. Model shift — a composition effect that differs
-  between cohorts — does not fall with fitting size, up to 2,639 fitting
-  samples, accounts for the worst transports and varies in size between targets. Because the second part depends on the target cohort's own
-  coefficients, nothing we could compute beforehand certified a transport as
-  safe: a closed-form predictor labelled 30 of 73 harmful transports as safe, and
-  the transport index added only modest information beyond sample size
-  (within-$n$ Spearman $rho approx 0.36$; block-permutation $p = 0.036$). A ridge
-  penalty on the composition coefficients cut harmful (pair × clock) transports
-  from half to 3%, across measurement and reference panels, and from 23 of 72 to
-  1 across six blood cohorts. A penalty that fades with sample size let model
-  shift through (11 of 72), and cross-validation on the fitting cohort chose
-  penalties too weak to do the same. In saliva, where composition dominates,
-  transports between three cohorts were harmful in 7 of 8 cells with or without
-  the penalty (up to +152%), although the correction worked within each cohort.
+  cohort where it is fitted, the adjustment does what it claims; we study what
+  happens when its coefficients are applied to another cohort. In six public
+  blood cohorts, scoring only clocks never trained on the cohorts involved, a
+  correction fitted on forty samples and transported increased the composition
+  signal in 83–95% of draws for the age-estimating clocks, depending on the
+  fitting cohort; for the pace-of-ageing clock DunedinPACE it was neutral. The
+  error has two parts. Estimation noise falls as $1\/n$ and is reproduced almost
+  exactly by coefficients that carry no information. Model shift — a composition
+  effect that differs between cohorts — did not fall with fitting size up to
+  2,639 samples and accounts for the worst transports. Because it depends on the
+  target's own coefficients, nothing computable beforehand certified a transport
+  as safe: a closed-form predictor called 30 of 73 harmful transports safe. A
+  fixed ridge penalty cut harmful (pair × clock) transports from 23 of 72 to 1; a
+  penalty that fades with sample size, or one chosen by cross-validation, did
+  not. In saliva, where composition accounts for up to half of age acceleration,
+  transports between cohorts were harmful in 7 of 8 cells with or without the
+  penalty (up to +152%), although the correction worked within each cohort, and
+  pooling studies did not help. The difference is the sign: shrinkage helps when
+  the target's coefficient has the same sign, which held across blood cohorts and
+  failed in saliva, where one clock's slope on the immune fraction reversed
+  between cohorts.
 ])
 
 = Introduction
@@ -378,6 +373,19 @@ cohort from another group (GSE149747, 44 adults at baseline) the slope was −0.
 cohorts, which argues against the array as the explanation; by our pre-set rule
 this comparison was inconclusive.
 
+Pooling studies did
+not rescue transport: fitted on the other saliva cohorts with a fixed effect per study and
+applied to the one left out, the correction was harmful in 6 of 8 cells (5 of 8
+at $alpha = 3$), because the pooled slope takes the sign of the pool's majority.
+
+Blood differs in the sign. In the six blood cohorts, both clocks' slopes on
+naive CD8 T cells kept one sign, and on neutrophils no cohort's 95% interval lay
+on the opposite side from the others; in saliva, Horvath 2018 had two cohorts
+clearly positive and one clearly negative, with between-cohort $I^2$ of 97%
+against 43–84% in blood. At $alpha = 3$, the saliva cells of Levine 2018, whose
+slope kept its sign, fell to a median of +3.2%; those of Horvath 2018 stayed at
++21.2%.
+
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
@@ -388,42 +396,35 @@ composition effect between cohorts. That second component is invisible without
 the target's own coefficients, and a target large enough to estimate them could
 simply be adjusted within itself.
 
-For practice this suggests three things. Where the target cohort is large enough,
-fit the adjustment within it. Where coefficients must be transported, penalise
-them with a fixed, substantial penalty rather than one chosen by cross-validation
-on the source cohort. With thousands of fitting samples it costs about a point of
-benefit, but a penalty that fades with $n$ to avoid that cost lets model shift
-through. This holds in blood only: in saliva no penalty we tried made a
-transported correction safe, and there it should not be transported at all. And treat any pre-transport diagnostic, including the
-transport index, as a ranking of risk rather than a guarantee. Transport is already published practice outside blood: a saliva adaptation of a
+For practice this suggests four things. Where the target cohort is large enough,
+fit the adjustment within it. In blood, where coefficients must be transported,
+penalise them with a fixed, substantial penalty rather than one chosen by
+cross-validation on the source cohort or one that fades with $n$; with thousands
+of fitting samples this costs about a point of benefit. In saliva, and plausibly
+in any tissue where composition dominates, do not transport: no penalty and no
+pooling made it safe. And treat any pre-transport diagnostic, including the
+transport index, as a ranking of risk rather than a guarantee. The same caution
+applies inside a single study: a correction fitted on controls and applied to
+patients is a transport, and here it changed the estimated disease effect by up
+to a factor of two.
+
+The penalty's reach follows from the sign of the composition effect. Shrinking
+toward zero moves a transported coefficient toward any target whose own
+coefficient has the same sign, and cannot help one whose sign differs; across
+blood cohorts the sign held, and in saliva it did not.
+
+Transport is already published practice outside blood: a saliva adaptation of a
 blood clock fits composition terms on about 960 pooled samples and applies them
 to held-out studies @galkin2021. It was judged by accuracy against chronological
-age, which cannot show composition left in acceleration, and between saliva
-cohorts we found transport more harmful than anywhere in blood. Pooling did not
-rescue it: fitted on the other saliva cohorts with a fixed effect per study and
-applied to the one left out, the correction was harmful in 6 of 8 cells (5 of 8
-at $alpha = 3$), because the pooled slope takes the sign of the pool's majority.
-Composition-dependent heterogeneity within a saliva cohort has also been
-reported @chan2026.
-
-Why the penalty works in blood and not in saliva follows from the sign. Shrinking
-toward zero moves a transported coefficient toward any target whose own
-coefficient has the same sign. In the six blood cohorts, both clocks' slopes on
-naive CD8 T cells kept one sign, and on neutrophils no cohort's 95% interval lay
-on the opposite side from the others; in saliva, Horvath 2018 had two cohorts
-clearly positive and one clearly negative, with between-cohort $I^2$ of 97%
-against 43–84% in blood. At $alpha = 3$, the saliva cells of Levine 2018, whose
-slope kept its sign, fell to a median of +3.2%; those of Horvath 2018 stayed at
-+21.2%. The same caution applies
-inside a single study: a correction fitted on controls and applied to patients is
-a transport, and here it changed the estimated disease effect by up to a factor
-of two.
+age, which cannot show composition left in acceleration; in our saliva cohorts,
+pooling did not prevent harm. Composition-dependent heterogeneity within a
+saliva cohort has also been reported @chan2026.
 
 = Limitations
 
 Six adult whole-blood cohorts, five on the 450k array and one on EPIC, two
-defined by disease or exposure, and three adult saliva cohorts whose pairs all
-cross array and preprocessing; other tissues and children are untested, and the
+defined by disease or exposure, and four adult saliva cohorts whose transport
+pairs all cross array and preprocessing; other tissues and children are untested, and the
 saliva measurement shares its reference with the fit. Reference
 panels were built here with simpler probe selection than published libraries.
 Medians at small fitting sizes vary between independent sets of draws (+11.8% to
