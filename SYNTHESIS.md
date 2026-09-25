@@ -3137,6 +3137,47 @@ moves the number the study reports, by about a year on median, by more than four
 in the worst cell, and occasionally by an absurd amount. A fixed penalty brings
 the median below the do-nothing baseline and removes the tail.
 
+## Stage 45 — the linearity assumption, tested
+
+Every correction here is linear in the proportions, and the split into estimation
+noise and model shift assumes it. If the true effect were curved, part of what
+this project calls model shift could be one shared nonlinearity fitted at a
+different point of the curve in each cohort — a different diagnosis with a
+different remedy. Two tests, six blood cohorts, both age clocks.
+
+**A. Is there curvature?** Squared terms for the four largest components (Neu,
+CD4mem, CD8mem, Mono) added to the within-cohort fit:
+
+| | extra R² | significant at 0.05 |
+|---|---|---|
+| median over 12 cells | **0.0019** | 4 of 12 |
+| largest (GSE61151, Horvath 2018) | 0.0063 | no |
+
+Curvature is detectable in a third of the cells and is negligible in size
+everywhere. **Criterion 2 passed** (bar: median below 0.01).
+
+**B. Does allowing for it transport better?** Both corrections fitted and
+transported at matched n over all 30 directed pairs, 60 (pair × clock) cells:
+
+| | harmful cells | median Δ |
+|---|---|---|
+| linear | 23 of 60 | −2.4 p.p. |
+| quadratic | 22 of 60 | −2.4 p.p. |
+
+**Criterion 3 failed, by one cell.** The bar was that the quadratic correction
+leave at least as many harmful cells as the linear one; it left 22 against 23.
+One cell in 60, with identical medians, is not a difference, and the pre-set bar
+was a strict inequality where it should have been a tolerance. The substantive
+reading is that the two are indistinguishable: **allowing for curvature does not
+reduce the harm**, so the harm is not unmodelled curvature.
+
+### What this changes
+
+The limitation "the decomposition assumes a linear composition effect" can be
+stated with a measurement behind it rather than as an unexamined caveat: the
+nonlinearity is there, it is worth about 0.2% of variance, and modelling it
+changes nothing about transport.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |

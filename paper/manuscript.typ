@@ -470,7 +470,7 @@ Medians at small fitting sizes are unstable across independent sets of 30 draws
 (+11.8 to +18.9 p.p. at $n = 40$; the pooled figure from 100 draws is +16.1), and
 the small-sample harm itself depends on the clock and the
 fitting cohort (neutral for DunedinPACE from GSE40279). The penalty value is specific to this panel and these
-clocks. The decomposition assumes a linear composition effect. Sensitivity
+clocks. The decomposition assumes a linear composition effect; squared terms for the four largest components add a median of 0.002 to within-cohort $R^2$ (significant in 4 of 12 cohort × clock cells), and a quadratic correction transports no better than the linear one (22 against 23 harmful cells of 60, same median). Sensitivity
 scoring on twelve types shares the fitting panel. None of this bears on whether
 epigenetic clocks measure biological ageing; it concerns one correction applied
 to them.

@@ -438,8 +438,7 @@ referência foram construídos aqui com seleção de sondas mais simples que as
 bibliotecas publicadas. As medianas em tamanhos pequenos são instáveis entre conjuntos independentes de 30 sorteios (de +11,8 a +18,9 p.p. em 40 amostras; a mediana conjunta com 100 sorteios é +16,1), e o próprio dano
 em amostra pequena depende do relógio e da coorte de ajuste (neutro para o
 DunedinPACE a partir do GSE40279). O valor da
-penalidade é específico deste painel e destes relógios. A decomposição supõe um
-efeito linear da composição. A pontuação de sensibilidade com doze tipos usa o
+penalidade é específico deste painel e destes relógios. A decomposição supõe um efeito linear da composição; termos quadráticos para os quatro maiores componentes acrescentam uma mediana de 0,002 ao $R^2$ dentro da coorte (significativos em 4 de 12 células coorte × relógio), e uma correção quadrática não transporta melhor que a linear (22 contra 23 células nocivas de 60, mesma mediana). A pontuação de sensibilidade com doze tipos usa o
 mesmo painel do ajuste. Nada disso diz respeito a se relógios epigenéticos medem
 envelhecimento biológico; trata de uma correção aplicada a eles.
 
