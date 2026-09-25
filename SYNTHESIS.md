@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-two stages
+## The answer, after thirty-three stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2490,6 +2490,10 @@ supported**: its median composition share in the test cohorts is 8.5%, about the
 same as Levine's 8.3%, and Levine was harmed at n = 40 in stage 17. Signal size
 alone does not explain it.
 
+> **Stage 33 weakened this.** From a second fitting cohort, GSE132203, DunedinPACE
+> is neutral at n = 40 again (−1.5%, harmful in 42%). The neutrality looks like a
+> property of the clock, not of the fitting cohort.
+
 What the per-pair table shows instead is that the n-curve has a single fitting
 cohort, GSE40279, and that DunedinPACE's composition effect transports well *from
 that cohort*: at full size its correction removes 19.4 points into the arthritis
@@ -2505,6 +2509,52 @@ small-n headline is a property of the clock and the pair, not a constant.
 
 What does not: the claim that a small transported correction is harmful in most
 draws. For one clock from one fitting cohort, it is a coin flip.
+
+---
+
+## Stage 33 — a fifth cohort, on another array and another ancestry
+
+GSE132203, the Grady Trauma Project: 795 whole-blood samples on the **EPIC** array,
+mostly African American. Every transport to or from it also crosses array
+generations. None of the clocks was trained on it. Its betas are a 5.3 GB
+supplementary CSV (md5 08771432…), of which the 22,374 rows the analysis needs were
+kept.
+
+### Validation (33a)
+
+- **The panels are the same panels.** The stage 18 cache kept compositions, not
+  the panels; they were rebuilt by the same deterministic procedure and reproduced
+  its fingerprint exactly (r = 0.789, MAE = 0.027), then saved.
+- Panel coverage on EPIC 96.8% (twelve types) and 98.2% (six).
+- **The age check caught a bug.** On the first run every clock correlated with
+  "age" at r ≈ 0.02–0.19 while agreeing with each other at 0.88–0.94. The series
+  carries two fields, `age` and `age acceleration`, and a prefix match had let the
+  second overwrite the first. Fixed to an exact field match; with true age the
+  clocks track it at r = 0.86–0.95.
+- Clock coverage bar of 95%, set in advance: Levine 2018 (99.8%) and Horvath 2018
+  (100%) pass. **Horvath 2013 is excluded at 94.6%** despite r = 0.90 — the rule
+  was written first. Hannum, 88.7%.
+
+### Results (33b)
+
+| pre-set criterion | result | |
+|---|---|---|
+| 8 directed pairs with GSE132203: ≥ 3 harmful cells unpenalised, ≤ 10% at α = 3 | **7** of 24, **0** of 24 | passed |
+| fitted on 40 samples of GSE132203, age clocks harmful in > 60% of draws | **+24.3%**, harmful in **95%** (Levine 91%, Horvath 2018 99%) | passed |
+| permuted reference positive | **+16.4%** | passed |
+
+The small-sample harm replicates **from a different fitting cohort, on a different
+array, in a different population**, and is larger than from GSE40279. The penalty
+leaves no harmful cell.
+
+### DunedinPACE is neutral again — which corrects stage 32's explanation
+
+Fitted on 40 samples of GSE132203, DunedinPACE's transported correction was
+neutral again: median −1.5%, harmful in 42%. Stage 32 had attributed its neutrality
+at n = 40 to the fitting cohort — "its composition effect transports well from
+GSE40279". Two different fitting cohorts now give the same answer, so that
+explanation is weakened: it looks like a property of the clock. Why a pace-of-ageing
+clock tolerates a noisy transported correction where age clocks do not is open.
 
 ---
 
@@ -2565,6 +2615,8 @@ draws. For one clock from one fitting cohort, it is a coin flip.
 | measuring every transport with the six-type panel, blind to the naive/memory axis | a reviewer; stage 29 measuring on twelve types and on the naive/memory columns: +48.1% and +30.6% at n = 40 where six types saw +11.8% | nothing overturned — the six-type curves understated the damage three- to four-fold |
 | reading stage 25's non-significant Wald test (p = 0.61) as Horvath 2018 having no disease-driven model shift | stage 31: within GSE42861, controls → cases leaves +6.3 points beyond the noise term for Horvath 2018 | the differential prediction; model shift is present for all three clocks inside one study |
 | treating 'harmful in 93% of draws at n = 40' as a general property of the transported correction | stage 32: for DunedinPACE, fitted on the same cohort, 51% — a coin flip | the small-n headline is clock- and pair-dependent; the penalty and the within-study model shift generalise |
+| stage 33a reading GSE132203's age by a prefix match, so the 'age acceleration' field overwrote 'age' | check 4: every clock at r ≈ 0.02 with 'age' while agreeing with each other at 0.88–0.94 | nothing — caught before use; exact field match |
+| stage 32 attributing DunedinPACE's small-n neutrality to the fitting cohort (GSE40279) | stage 33: neutral again from GSE132203 | the explanation — it looks like a property of the clock |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
