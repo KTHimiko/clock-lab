@@ -60,18 +60,19 @@ mpl.rcParams.update({
 T = {
  "en": dict(
   pct_dec=".",
-  y_net="net damage (points of age-acceleration variance)",
-  y_left="composition left in the age residual",
+  y_net="net damage Δ (p.p. of age-acceleration variance)",
+  y_left="composition left (p.p. of age-acceleration variance)",
   x_n="samples in the fitting cohort",
   f1_title="Transported, the correction is worse than none below ~160 samples",
   f1_real="real coefficients (median, IQR shaded)",
   f1_perm="coefficients with no information (permuted)",
-  f2_title="Two components: noise that shrinks with n, and a floor that does not",
-  f2_real="left by real coefficients", f2_floor="its floor at full n",
-  f2_perm="left by permuted coefficients", f2_ann="n-independent floor",
+  f2_title="Two components: a floor that does not shrink, and noise that does",
+  f2_real="left by real coefficients (median)",
+  f2_floor="noise-free floor (left at full n minus shuffled Δ there)",
+  f2_perm="floor + damage done by shuffled coefficients", f2_ann="n-independent floor",
   f3_title="Model shift explains the worst transports",
   f3_x=r"specification term  $(\beta_{fit}-\beta_{test})'\,\Sigma_{test}\,(\beta_{fit}-\beta_{test})$, bias-corrected",
-  f3_y="composition left at full fitting size",
+  f3_y="composition left at full fitting size (p.p.)",
   f3_worst="GSE61151 → GSE42861",
   f3_rho="Spearman ρ = {r:.2f}\n24 configurations",
   f4_title="The index ranks the noise; nothing computed in advance certifies safety",
@@ -88,18 +89,19 @@ T = {
   f6_h="Horvath 2018", f6_l="Levine 2018", f6_norm="GSE78874 (normalised)"),
  "pt": dict(
   pct_dec=",",
-  y_net="dano líquido (pontos da variância de aceleração)",
-  y_left="composição restante no resíduo de idade",
+  y_net="dano líquido Δ (p.p. da variância de aceleração)",
+  y_left="composição restante (p.p. da variância de aceleração)",
   x_n="amostras na coorte de ajuste",
   f1_title="Transportada, a correção é pior que nenhuma abaixo de ~160 amostras",
   f1_real="coeficientes reais (mediana, IQR sombreado)",
   f1_perm="coeficientes sem informação (embaralhados)",
-  f2_title="Dois componentes: ruído que cai com n, e um piso que não cai",
-  f2_real="deixado pelos coeficientes reais", f2_floor="o piso dele em n cheio",
-  f2_perm="deixado pelos embaralhados", f2_ann="piso independente de n",
+  f2_title="Dois componentes: um piso que não cai, e ruído que cai",
+  f2_real="deixada pelos coeficientes reais (mediana)",
+  f2_floor="piso sem ruído (restante em n cheio menos o Δ embaralhado ali)",
+  f2_perm="piso + dano dos coeficientes embaralhados", f2_ann="piso independente de n",
   f3_title="O model shift explica os piores transportes",
   f3_x=r"termo de especificação  $(\beta_{ajuste}-\beta_{teste})'\,\Sigma_{teste}\,(\beta_{ajuste}-\beta_{teste})$, corrigido",
-  f3_y="composição restante em tamanho cheio",
+  f3_y="composição restante em tamanho cheio (p.p.)",
   f3_worst="GSE61151 → GSE42861",
   f3_rho="Spearman ρ = {r:.2f}\n24 configurações",
   f4_title="O índice ordena o ruído; nenhuma conta de antemão certifica segurança",
@@ -119,7 +121,7 @@ LANG = "en"
 
 
 def pct(x, _=None):
-    s = f"{x:+.0%}" if x else "0"
+    s = f"{100 * x:+.0f}" if round(100 * x) else "0"
     return s.replace(".", T[LANG]["pct_dec"])
 
 
@@ -150,7 +152,7 @@ def log_n_axis(ax, ticks=(40, 80, 160, 320, 656)):
 
 
 # ------------------------------------------------------------------ data ----
-NB = pd.read_csv(RES / "null_by_n.csv")
+NB = pd.read_csv(RES / "null_by_n_r100.csv")   # stage 24b: 100 draws per size
 real, perm = NB[NB.kind == "real"], NB[NB.kind == "perm"]
 q = lambda s, k: s.quantile(k)
 R1 = real.groupby("n").delta.agg(["median", lambda s: q(s, .25), lambda s: q(s, .75)])
@@ -158,7 +160,7 @@ R1.columns = ["med", "lo", "hi"]
 P1 = perm.groupby("n").delta.agg(["median", lambda s: q(s, .25), lambda s: q(s, .75)])
 P1.columns = ["med", "lo", "hi"]
 LEFT = real.groupby("n").after.median()
-FLOOR = float(LEFT.loc[LEFT.index.max()])
+FLOOR = float(LEFT.loc[LEFT.index.max()] - P1.med.loc[P1.index.max()])   # noise-free
 
 BH = pd.read_csv(RES / "beta_heterogeneity.csv")
 rho3 = spearmanr(BH.spec, BH.after)[0]
@@ -189,7 +191,7 @@ def fig1(t):
             mfc="white", mec=BLUE, mew=1.4, zorder=5)
     ax.plot(P1.index, P1.med, color=ORANGE, lw=1.6, dashes=(4, 2), marker="s",
             ms=4, mfc=ORANGE, mec="white", zorder=4)
-    ax.annotate(pct(R1.med.iloc[0]).replace("%", "") + "%", (R1.index[0], R1.med.iloc[0]),
+    ax.annotate(pct(R1.med.iloc[0]) + " p.p.", (R1.index[0], R1.med.iloc[0]),
                 xytext=(6, 2), textcoords="offset points", color=BLUE,
                 fontsize=9, fontweight="bold")
     log_n_axis(ax)
@@ -213,7 +215,7 @@ def fig2(t):
                 fontsize=8, color=INK_2)
     ax.plot(LEFT.index, LEFT.values, color=BLUE, lw=2.0, marker="o", ms=4.5,
             mfc="white", mec=BLUE, mew=1.4, zorder=5)
-    ax.plot(P1.index, P1.med, color=ORANGE, lw=1.6, dashes=(4, 2), marker="s",
+    ax.plot(P1.index, FLOOR + P1.med, color=ORANGE, lw=1.6, dashes=(4, 2), marker="s",
             ms=4, mfc=ORANGE, mec="white", zorder=4)
     log_n_axis(ax)
     ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(pct))
@@ -273,7 +275,7 @@ def fig4(t):
     CAP = 0.55
     out = C4[C4.obs > CAP]
     for r in out.itertuples():
-        ax.annotate(pct(r.obs).replace("%", "") + "%", (r.index, CAP),
+        ax.annotate(pct(r.obs) + " p.p.", (r.index, CAP),
                     xytext=(0, -14), textcoords="offset points", ha="center",
                     fontsize=7.5, color=INK_2,
                     arrowprops=dict(arrowstyle="-|>", color=MUTED, lw=0.8))

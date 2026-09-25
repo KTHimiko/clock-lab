@@ -31,7 +31,7 @@
   #v(0.2em)
   #text(size: 9pt)[#link("mailto:luanivepe@gmail.com")[luanivepe\@gmail.com]]
   #v(0.2em)
-  #text(size: 9pt)[Rascunho de preprint, revisado após parecer — #datetime.today().display("[day]/[month]/[year]")]
+  #text(size: 9pt)[Rascunho de preprint — #datetime.today().display("[day]/[month]/[year]")]
   #v(0.4em)
   #text(size: 8.5pt, style: "italic")[Versão em português. A versão de referência, para submissão, é a inglesa.]
 ]
@@ -54,16 +54,13 @@
   não caiu com o tamanho de ajuste até 2.639 amostras e responde pelos piores
   transportes. Como depende dos coeficientes do próprio alvo, nada calculável de
   antemão certificou um transporte como seguro: um previsor em forma fechada
-  chamou de seguros 30 de 73 transportes nocivos. Uma penalidade ridge fixa
+  dos 73 transportes que um previsor em forma fechada chamou de seguros, 30 foram nocivos. Uma penalidade ridge fixa
   reduziu os transportes nocivos (par × relógio) de 23 de 72 para 1; uma
   penalidade que diminui com o tamanho amostral, ou escolhida por validação
   cruzada, não. Na saliva, onde a composição responde por até metade da
   aceleração, os transportes entre coortes foram nocivos em 7 de 8 células com ou
-  sem penalidade (até +152%), embora a correção funcionasse dentro de cada coorte,
-  e reunir estudos não ajudou. A diferença é o sinal: o encolhimento ajuda quando
-  o coeficiente do alvo tem o mesmo sinal, o que se manteve entre as coortes de
-  sangue e falhou na saliva, onde a inclinação de um relógio na fração imune se
-  inverteu entre coortes.
+  sem penalidade (até +152 p.p.), embora a correção funcionasse dentro de cada coorte,
+  e reunir estudos não ajudou. O que separa os dois tecidos é quanto as coortes discordam em relação ao efeito médio: o desvio-padrão entre coortes da inclinação de composição foi de 0,09 a 0,55 do efeito médio no sangue e de 0,91 a 5,34 na saliva. Uma penalidade encolhe o coeficiente em direção a zero, o que fica perto do coeficiente de cada coorte só no primeiro caso.
 ])
 
 = Introdução
@@ -86,8 +83,7 @@ conjunto de dados @mcgregor2016.
 
 Examinamos o caso em que os coeficientes saem da coorte que os produziu:
 reutilização de coeficientes publicados, coortes pequenas que os tomam de
-coortes maiores, ou uma correção fixa aplicada a amostras novas. Testamos isso no sangue e na
-saliva, onde a composição pesa mais e uma adaptação publicada já a transporta.
+coortes maiores, ou uma correção fixa aplicada a amostras novas. Coeficientes de ajuste estimados num conjunto de dados e aplicados a outros já são prática publicada: uma adaptação de relógios de sangue para saliva os ajusta em oito estudos reunidos e os aplica a estudos separados @galkin2021, e seu conjunto de treino inclui o GSE78874, uma das coortes em que achamos que o transporte falha.
 
 = Métodos
 
@@ -117,8 +113,7 @@ modelo publicados no pacote e o validamos (médias por coorte de 0,93 a 1,05;
 fumantes atuais 0,14 mais rápidos que quem nunca fumou, $p = 3 times 10^(-11)$).
 Uma sexta coorte, GSE55763 @lehne2015 (450k, Londres), serve de coorte de ajuste
 grande: sem os 72 arrays de réplica técnica, tem 2.639 adultos não aparentados
-(24 a 75 anos); é posterior ao Horvath 2013, não está no treino de nenhum relógio
-e os quatro relógios de idade passaram nela nas checagens de cobertura e idade.
+(24 a 75 anos); é posterior ao Horvath 2013, não está no treino de nenhum relógio e todos os relógios passaram nela nas checagens de cobertura e idade.
 
 A saliva, mistura de epitélio bucal e leucócitos, foi testada em três coortes
 adultas: GSE232891 (EPIC, 552 pessoas; doença inflamatória intestinal e
@@ -129,8 +124,7 @@ ajuste hierárquico de nove tipos (epitélio, fibroblasto, sete subtipos imunes)
 uma medição de três tipos (epitélio, fibroblasto, imune), que compartilham o
 primeiro passo e por isso favorecem a correção na medição. As duas primeiras
 coortes vêm do mesmo grupo e seus arquivos não trazem sondas de genotipagem, então
-não foi possível excluir pessoas em comum e elas nunca foram pareadas. Levine 2018
-e Horvath 2018 passaram nas checagens de cobertura e idade nas três.
+não foi possível excluir pessoas em comum e elas nunca foram pareadas. Levine 2018 e Horvath 2018 passaram nas checagens de cobertura e idade nas três. Uma quarta coorte de saliva, GSE149747 (EPIC, de outro grupo), entra com suas 44 amostras de linha de base na comparação de inclinações e nos ajustes reunidos, mas é pequena demais para uma curva de transporte.
 
 == Correção e pontuação
 
@@ -172,7 +166,7 @@ Os coeficientes ridge são ajustados na composição padronizada e residualizada
 pela idade, com penalidade $alpha$ vezes o autovalor médio, para que $alpha$ seja
 comparável entre coortes e tamanhos; $alpha = 0$ reproduz mínimos quadrados. Sob
 mudança de distribuição a penalidade ótima nem precisa ser positiva
-@patil2024; uma penalidade positiva fixa é usada aqui como padrão conservador.
+@patil2024; uma penalidade positiva fixa é usada aqui como padrão conservador. O valor $alpha = 3$ foi fixado nas quatro primeiras coortes, antes de o GSE132203 e o GSE55763 entrarem no projeto, então o comportamento dele nessas duas e na saliva é fora da amostra que o escolheu.
 As subamostras são estratificadas por decil de idade. Onde as configurações
 compartilham coortes, a significância é avaliada por permutação em blocos
 @winkler2015, trocando perfis inteiros de índice entre pares de coortes.
@@ -185,41 +179,26 @@ compartilham coortes, a significância é avaliada por permutação em blocos
   image("figures/pt/fig1_curve.png", width: 95%),
   caption: [*Dano líquido de uma correção transportada, por tamanho de ajuste.*
   Ajustada em subamostras estratificadas por idade do GSE40279 e aplicada a três
-  coortes externas; Levine 2018 e Horvath 2018; 30 sorteios por tamanho. Acima de
+  coortes externas; Levine 2018 e Horvath 2018; 100 sorteios por tamanho. Acima de
   zero a correção foi pior do que nenhuma. Laranja: o mesmo procedimento com as
   linhas de composição embaralhadas antes do ajuste.],
 ) <fig1>
 
-Ajustada em 40 amostras e transportada, a correção teve $Delta$ mediano de +18,9%
-(IQR de +8,2% a +34,2%) e foi nociva em 93% dos sorteios (@fig1). Em três
-conjuntos independentes de sorteios, a mediana em 40 amostras variou de +11,8% a
-+18,9%. A mediana ficou perto de zero entre 160 e 240 amostras e em −1,6% nas 656
-completas, onde 33% dos valores (relógio × coorte) ainda eram nocivos. Pontuado
-com doze tipos em vez de seis, o dano em 40 amostras foi de +48,1%; só nas
-colunas naive/memória, +30,6%. Essa medição usa o mesmo painel do ajuste e é
+Ajustada em 40 amostras e transportada, a correção teve $Delta$ mediano de +16,1 p.p. (IQR de +5,5 a +29,7) e foi nociva em 88% dos sorteios, sobre 100 sorteios por tamanho (@fig1); três conjuntos anteriores de 30 sorteios deram medianas de +11,8 a +18,9, então conjuntos pequenos isolados são instáveis nesse tamanho. A mediana ficou perto de zero entre 160 e 240 amostras e em −1,6 p.p. nas 656 completas, onde 33% dos valores (relógio × coorte) ainda eram nocivos. Pontuado com doze tipos em vez de seis, o dano em 40 amostras foi de +48,1 p.p.; só nas colunas naive/memória, +30,6. Essa medição usa o mesmo painel do ajuste e é
 enviesada a favor da correção, então a curva de seis tipos subestima o dano.
 
 == Dois componentes
 
 #figure(
   image("figures/pt/fig2_components.png", width: 95%),
-  caption: [*Composição deixada pelos coeficientes reais e pelos embaralhados.* O
-  ajuste real mantém um piso de cerca de 4,5 pontos em tamanho cheio; acima desse
-  piso, o excesso acompanha a referência embaralhada.],
+  caption: [*Composição deixada pelo ajuste real, contra um piso mais ruído.* Azul: o que a correção transportada deixa. Cinza: o piso sem ruído, os 3,8 p.p. que sobram em tamanho cheio depois de descontar o que os coeficientes embaralhados ainda fazem ali. Laranja: esse piso mais o dano dos embaralhados em cada tamanho. As duas séries são composição restante, nas mesmas unidades.],
 ) <fig2>
 
-Coeficientes embaralhados não carregam informação, e mesmo assim deixaram +15,6%
-de dano líquido em 40 amostras, caindo com o tamanho a uma inclinação log-log de
-−0,93 (@fig2). A maior parte do dano em amostras pequenas é, portanto, ruído de
-estimação. O ajuste real, porém, ainda deixou 4,5 pontos de composição em 656
-amostras, onde a referência embaralhada deixou 1,0. Descontado esse piso, o resto
-acompanhou de perto a referência embaralhada (9,6 contra 9,6 pontos em 60
-amostras; 3,1 contra 3,1 em 120; 1,2 contra 1,3 em 240).
+Coeficientes embaralhados não carregam informação, e mesmo assim fizeram +17,4 p.p. de dano líquido em 40 amostras, caindo com o tamanho a uma inclinação log-log de −1,16 (@fig2). A maior parte do dano em amostras pequenas é, portanto, ruído de estimação. O ajuste real, porém, ainda deixou 4,5 p.p. de composição em 656 amostras, onde os embaralhados ainda faziam 0,8; a diferença, 3,8 p.p., é um piso que o tamanho de ajuste não remove. Somar esse piso ao dano dos embaralhados reproduz a curva do ajuste real dentro de 0,6 p.p. em todos os tamanhos a partir de 60, e a subestima em 1,2 em 40 amostras (@fig2).
 
 O piso não é artefato de pontuar com outro painel: aplicada dentro do GSE40279, a
 mesma correção removeu 95% (Levine) e 85% (Horvath 2018) do sinal de composição
-de seis tipos. Transportada em tamanho cheio, removeu de 92% a −109% conforme o
-par — no pior caso, dobrando o sinal.
+de seis tipos. Transportada em tamanho cheio, removeu de 92% a −109% do sinal que encontrou, conforme o par — no pior caso, dobrando-o. (Percentuais do sinal encontrado são relativos; $Delta$ e composição restante estão em p.p. da variância de aceleração ao longo do texto.)
 
 == Model shift
 
@@ -231,9 +210,7 @@ par — no pior caso, dobrando o sinal.
 ) <fig3>
 
 O termo de especificação corrigido ordenou a sobra em tamanho cheio com $rho$ de
-Spearman de 0,633 ($p$ = 0,0009; @fig3). Ele explica o pior transporte
-encontrado, do GSE61151 para a coorte de artrite: previsto +26,6% e +51,8% para
-os dois relógios, observado +30,8% e +30,5%. Os testes de Wald par a par de
+Spearman de 0,633 ($p$ = 0,0009; @fig3). Ele explica o pior transporte em tamanho de ajuste cheio, do GSE61151 para a coorte de artrite: previsto +26,6 e +51,8 p.p. para os dois relógios, observado +30,8 e +30,5. Os testes de Wald par a par de
 coeficientes iguais rejeitaram em 4 de 12 comparações após Bonferroni, abaixo da
 barra pré-definida de 6 (9 de 12 com $p$ nominal abaixo de 0,05). As duas medidas
 pesam as diferenças de coeficiente de modos distintos: o Wald pela precisão da
@@ -252,9 +229,7 @@ pontos a mais de composição do que aplicada a controles (Horvath 2013, Levine
 então nada do excesso é ruído de estimação, e o componente de model shift
 estimado foi de 8,7, 8,4 e 6,3 pontos. O Horvath 2018 é afetado mesmo sem o teste
 de Wald acima detectar diferença de coeficientes. A escolha da população de
-referência também muda o efeito estimado da doença: no Horvath 2018, o efeito da
-artrite ajustado por idade foi de −0,74 ano com a correção na coorte inteira e de
-−1,39 ano com a correção ajustada só nos controles.
+referência também muda o efeito estimado da doença: no Horvath 2018, o efeito da artrite ajustado por idade foi de −0,74 ano (IC de 95% de −1,05 a −0,37) com a correção na coorte inteira e de −1,39 (de −2,08 a −0,80) com a correção ajustada só nos controles, uma diferença de −0,66 (de −1,13 a −0,31) por bootstrap que reajusta as duas correções em cada reamostra.
 
 == O que dá para saber antes de transportar
 
@@ -291,9 +266,9 @@ especificação é grande.
 ) <fig5>
 
 Sem penalidade, 15 de 30 células (par × relógio) foram nocivas. Com $alpha = 3$,
-restou uma, em +0,2% (@fig5); com $alpha = 10$, nenhuma. A penalidade tem custo:
-onde a correção sem penalidade já ajudava, o benefício mediano caiu de −4,0% para
-−3,3% com $alpha = 3$ e para −1,5% com $alpha = 10$. A penalidade fixa também se
+restou uma, em +0,2 p.p. (@fig5); com $alpha = 10$, nenhuma. A penalidade tem custo:
+onde a correção sem penalidade já ajudava, o benefício mediano caiu de −4,0 p.p. para
+−3,3 com $alpha = 3$ e para −1,5 com $alpha = 10$. A penalidade fixa também se
 sustentou quando as duas coortes foram deconvoluídas com painéis de referência
 diferentes (14 células nocivas sem penalidade, 1 com $alpha = 3$) e quando
 pontuada com doze tipos ou no eixo naive/memória (nenhuma célula nociva com
@@ -316,12 +291,10 @@ por uma penalidade que diminui.
 
 == Um relógio de ritmo de envelhecimento
 
-No DunedinPACE, a correção transportada ajustada em 40 amostras do GSE40279 foi
-neutra (mediana de +0,3%, nociva em 51% dos sorteios), embora os coeficientes
-embaralhados ainda tenham causado +4,9% de dano: o componente de ruído estava
+No DunedinPACE, a correção transportada ajustada em 40 amostras do GSE40279 foi neutra (mediana de +0,3 p.p., nociva em 51% dos sorteios), embora os coeficientes
+embaralhados ainda tenham causado +4,9 p.p. de dano: o componente de ruído estava
 presente, mas os coeficientes reais removeram sinal genuíno suficiente para
-compensá-lo. Ajustada na quinta coorte, a correção foi neutra de novo (−1,5%,
-nociva em 42%), então isso parece propriedade do relógio, e não da coorte de
+compensá-lo. Ajustada na quinta coorte, a correção foi neutra de novo (−1,5 p.p., nociva em 42%), então isso parece propriedade do relógio, e não da coorte de
 ajuste. O resto se repetiu: em tamanhos casados, 6 de
 12 pares direcionados foram nocivos sem penalidade e nenhum com $alpha = 3$, e
 uma correção ajustada em controles deixou 10,5 pontos a mais de composição em
@@ -331,16 +304,14 @@ casos de artrite do que em outros controles.
 
 Ajustada em 40 amostras do GSE132203 (EPIC, majoritariamente afro-americana) e
 transportada para as quatro coortes de 450k, a correção foi nociva para os
-relógios de idade em 95% dos sorteios (mediana de +24,3%; Levine 2018 91%,
-Horvath 2018 99%), com os coeficientes embaralhados em +16,4%. Nos 8 pares
-direcionados que envolvem essa coorte, 7 de 24 células (par × relógio) foram
-nocivas sem penalidade e nenhuma com $alpha = 3$.
+relógios de idade em 95% dos sorteios (mediana de +24,3 p.p.; Levine 2018 91%,
+Horvath 2018 99%), com os coeficientes embaralhados em +16,4. Nos 8 pares direcionados que envolvem essa coorte, 7 de 24 células (par × relógio) foram nocivas sem penalidade e nenhuma com $alpha = 3$; as 24 contam o DunedinPACE junto dos dois relógios de idade (6 das 16 células de relógios de idade foram nocivas).
 
 == Uma coorte de ajuste quatro vezes maior
 
 Ajustada no GSE55763 e transportada para as outras cinco coortes (13 células de
 relógios de idade), a correção foi nociva com 40 amostras em 83% dos sorteios
-(mediana de +7,6%). Entre 656 amostras e as 2.639 completas, a composição que ela
+(mediana de +7,6 p.p.). Entre 656 amostras e as 2.639 completas, a composição que ela
 deixou caiu só de 1,9 para 1,3 ponto, razão de 0,72 contra os 0,25 que o ruído
 em $1\/n$ prevê; a referência embaralhada caiu de 0,5 para 0,1 (inclinação
 log-log de −1,03). O piso, portanto, persiste na mediana. Não é uniforme: no
@@ -348,7 +319,7 @@ tamanho cheio foi de +4,6 pontos na coorte de artrite e +3,0 no GSE40279, mas
 zero no GSE50660 e no GSE61151, e superou a referência embaralhada em 8 de 13
 células, abaixo das 9 que fixamos antes. O model shift é propriedade do par de
 coortes. Com tantas amostras de ajuste, a correção sem penalidade ajudou em 10 de
-13 células, e a penalidade fixa custou benefício (mediana de −3,0% contra −4,0%)
+13 células, e a penalidade fixa custou benefício (mediana de −3,0 p.p. contra −4,0)
 ao eliminar as três células nocivas. Restringir o GSE40279 à faixa etária da
 coorte de ajuste (24 a 75 anos) não mudou seu piso (de +3,5 para +3,3 pontos no
 Horvath 2018), então a extrapolação de idade não o explica. O piso se concentra
@@ -368,22 +339,16 @@ separadas; centrar por placa não o removeu.
 Antes da correção, a composição respondia por 10,8% a 51,6% da variância da
 aceleração nos relógios de idade na saliva, e por 42% a 56% no DunedinPACE.
 Ajustada em 40 amostras e transportada entre coortes de saliva, a correção foi
-nociva em 67% dos sorteios (mediana de +20,9%; embaralhada, +6,4%). Em tamanho
+nociva em 67% dos sorteios (mediana de +20,9 p.p.; embaralhada, +6,4). Em tamanho
 pareado (259 amostras), 7 de 8 células (par × relógio) foram nocivas sem
-penalidade, 7 de 8 com $alpha = 3$ e 6 de 8 com a penalidade que diminui; no
-Horvath 2018 transportado para o GSE78874, a correção sem penalidade deixou +116%
-e +152% a mais de sinal de composição do que encontrou. Dentro de cada coorte,
-ajustar numa metade aleatória e aplicar na outra foi benéfico em 5 de 6 células
-de relógios de idade (de −15% a −48%); a exceção tinha 132 amostras de ajuste e
+penalidade, 7 de 8 com $alpha = 3$ e 6 de 8 com a penalidade que diminui; no Horvath 2018 transportado para o GSE78874, a correção sem penalidade deixou 132 e 168 p.p. de composição onde havia encontrado 16 — de oito a dez vezes o sinal que deveria remover. Dentro de cada coorte,
+ajustar numa metade aleatória e aplicar na outra foi benéfico em 5 de 6 células de relógios de idade (de −15 a −48 p.p.); a exceção tinha 132 amostras de ajuste e
 pouco sinal inicial. A falha está, portanto, no transporte. Todo par de saliva
 também cruza array e pré-processamento, então diferenças técnicas e biológicas
 não se separam, mas normalizar o GSE78874 por quantis para a distribuição EPIC
 deixou 7 de 8 células nocivas, e o mesmo fez um ajuste de três tipos com matriz
 de composição bem condicionada (número de condição ≈ 1, contra 872 a 1.317 com
-nove tipos). A causa está no eixo dominante (@fig6): ajustado pela idade, o Horvath 2018
-mudou +1,0 e +1,9 ano a cada 10 pontos de fração imune nas coortes EPIC e −0,9 no
-GSE78874. O encolhimento reduz uma correção de sinal trocado (de +116% para +28%
-com $alpha = 3$), mas não a torna útil. Numa quarta coorte de saliva em EPIC, de
+nove tipos). A causa está no eixo dominante (@fig6): ajustado pela idade, o Horvath 2018 mudou +1,0 e +1,9 ano a cada 10 pontos de fração imune nas coortes EPIC e −0,9 no GSE78874, e o Levine 2018, que mantém o sinal nas quatro coortes, variou de −0,2 a −4,7. O encolhimento leva um coeficiente transportado para zero, então só consegue limitar uma correção que discorda tanto assim do alvo: com $alpha = 3$ a pior célula caiu de +116 para +28 p.p., e as células do Levine 2018, com o sinal intacto, para uma mediana de +3,2 em vez de zero. Numa quarta coorte de saliva em EPIC, de
 outro grupo (GSE149747, 44 adultos na linha de base), a inclinação foi de −0,82
 (IC de 95% de −1,71 a 0,07), do lado da coorte de 450k e não das outras coortes
 EPIC, o que pesa contra o array como explicação; pela regra que fixamos antes, a
@@ -394,13 +359,7 @@ saliva, com efeito fixo por estudo, e aplicada à coorte deixada de fora, a
 correção foi nociva em 6 de 8 células (5 de 8 com $alpha = 3$), porque a
 inclinação reunida toma o sinal da maioria do conjunto.
 
-O sangue difere no sinal. Nas seis coortes de sangue, as
-inclinações dos dois relógios em células T CD8 naive mantiveram um só sinal, e em
-neutrófilos nenhum intervalo de 95% ficou do lado oposto ao das demais coortes;
-na saliva, o Horvath 2018 teve duas coortes claramente positivas e uma claramente
-negativa, com $I^2$ entre coortes de 97% contra 43% a 84% no sangue. Com
-$alpha = 3$, as células de saliva do Levine 2018, cuja inclinação manteve o sinal,
-caíram para uma mediana de +3,2%; as do Horvath 2018 ficaram em +21,2%.
+O sangue difere em quanto as coortes discordam em relação ao próprio efeito. Num ajuste de efeitos aleatórios das inclinações por coorte, o desvio-padrão entre coortes dividido pelo efeito médio em módulo foi de 0,09 a 0,55 nas seis coortes de sangue (eixos CD8 naive e neutrófilos, nos dois relógios) e de 0,91 no Levine 2018 e 5,34 no Horvath 2018 na saliva; o $I^2$ foi de 43% a 84% contra 97%. A inversão de sinal é o extremo desse espalhamento, e não é tudo: com o GSE78874 normalizado, a inclinação do Horvath 2018 na saliva é −0,20 (IC de 95% de −0,46 a +0,06), já sem sinal claramente oposto ao das coortes EPIC, e 7 de 8 células seguem nocivas; o Levine 2018 nunca inverte e ainda é nocivo com $alpha = 3$ em 3 de 4 células.
 
 = Discussão
 
@@ -425,10 +384,7 @@ dentro de um único estudo: uma correção ajustada em controles e aplicada a
 pacientes é um transporte, e aqui ela mudou o efeito estimado da doença em até
 duas vezes.
 
-O alcance da penalidade decorre do sinal do efeito da composição. Encolher em
-direção a zero aproxima um coeficiente transportado de qualquer alvo cujo
-coeficiente próprio tenha o mesmo sinal, e não ajuda um alvo de sinal oposto;
-entre as coortes de sangue o sinal se manteve, e na saliva não.
+O alcance da penalidade decorre de quanto as coortes discordam em relação ao efeito que se quer corrigir. Encolher em direção a zero troca um coeficiente transportado por um menor, que fica perto do coeficiente próprio de toda coorte quando o espalhamento entre coortes é uma fração do efeito médio, como no sangue, e perto de nenhum quando o espalhamento é tão grande quanto o efeito, como na saliva. A inversão de sinal é o caso extremo, não um mecanismo à parte, e esperaríamos a penalidade falhar sempre que essa razão se aproxima de um.
 
 O transporte já é prática publicada fora do sangue: uma adaptação de um relógio
 de sangue para saliva ajusta termos de composição em cerca de 960 amostras
@@ -445,8 +401,7 @@ definidas por doença ou exposição, e quatro coortes adultas de saliva cujos p
 de transporte todos cruzam array e pré-processamento; outros tecidos e crianças não foram
 testados, e a medição na saliva compartilha a referência com o ajuste. Os painéis de
 referência foram construídos aqui com seleção de sondas mais simples que as
-bibliotecas publicadas. As medianas em tamanhos pequenos variam entre conjuntos
-independentes de sorteios (de +11,8% a +18,9% em 40 amostras), e o próprio dano
+bibliotecas publicadas. As medianas em tamanhos pequenos são instáveis entre conjuntos independentes de 30 sorteios (de +11,8 a +18,9 p.p. em 40 amostras; a mediana conjunta com 100 sorteios é +16,1), e o próprio dano
 em amostra pequena depende do relógio e da coorte de ajuste (neutro para o
 DunedinPACE a partir do GSE40279). O valor da
 penalidade é específico deste painel e destes relógios. A decomposição supõe um
@@ -460,6 +415,6 @@ Todas as séries são públicas (GSE40279, GSE61151, GSE50660, GSE42861, GSE1322
 GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
 derrubada e os scripts das figuras estão em
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
-(a ser tornado público antes da submissão).
+, privado no momento em que isto é escrito e disponível com o autor mediante pedido.
 
 #bibliography("refs.bib", title: "Referências", style: "nature")

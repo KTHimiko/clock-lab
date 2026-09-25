@@ -41,7 +41,8 @@ samples.
   the fitting cohort barely did — the standard excess-risk term for least squares
   under covariate shift, (σ²/n)·tr(Σ_fit⁻¹ Σ_test). It falls as 1/n, and
   coefficients carrying no information reproduce it almost point for point:
-  +15.6% at n = 40. Most of the small-n harm *is* noise.
+  +17.4 p.p. at n = 40 (stage 24b, 100 draws). Most of the small-n harm *is*
+  noise.
 - **model shift**: the composition effect itself differs between cohorts, so
   even a perfectly estimated correction from one damages another. It does not
   shrink with fitting size, and it is behind the worst transport in the project,
@@ -54,8 +55,8 @@ samples.
 28). The transport index sees only the first component; it adds modest
 information beyond fitting size (within-n ρ ≈ 0.36, block-permutation p = 0.036),
 and counted per clock, 12 of 40 transports below its old "safe" threshold were
-harmful. A closed-form net-damage predictor calls 30 of 73 harmful transports
-safe. The second component needs the target's own coefficients, and a target
+harmful. Of the 73 transports a closed-form net-damage predictor
+calls safe, 30 are harmful. The second component needs the target's own coefficients, and a target
 large enough to estimate them does not need a transported correction.
 
 **What works is penalising** (stage 27). Ridge shrinks the coefficients toward
@@ -74,10 +75,11 @@ cohorts, the correction was harmful in 7 of 8 cells even at α = 3, and up to
 penalty is a blood result. Neither normalisation nor a three-type fit changes it: the
 clock's slope on the immune fraction changes sign between saliva cohorts (stage
 39), and pooling studies before fitting does not rescue it (stage 41: 6 of 8
-harmful). Stage 42 names the mechanism: shrinkage helps when the target's
-coefficient has the same sign, and in blood no cohort's composition slope was
-clearly of the opposite sign, while in saliva Horvath 2018's was (2 cohorts
-positive, 1 negative).
+harmful). Stage 42 names the mechanism: shrinkage helps when a
+cohort's own coefficient is close to the shrunk one, which holds when the spread
+between cohorts is small next to the average effect (τ/|mean| 0.09–0.55 in blood)
+and fails when it is not (0.91–5.34 in saliva, where one clock's slope also
+reverses sign).
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2039,6 +2041,13 @@ survives:
 | real fit, error left | +25.5% | +14.1% | +11.8% | +7.6% | +6.6% | +5.7% | +5.1% | +4.5% |
 | **permuted, Δ** | **+15.6%** | +9.6% | +5.0% | +3.1% | +2.6% | +1.3% | +2.1% | +1.0% |
 
+> **Stage 24b re-ran this with 100 draws per size instead of 30.** At n = 40 the
+> real fit's Δ is +16.1 p.p. (not +18.9) and the permuted reference +17.4 (not
+> +15.6); the slope is −1.16. The floor is 3.8 p.p. once the 0.8 the permuted
+> fit still does at n = 656 is subtracted, and adding it to the permuted damage
+> reproduces the real curve within 0.6 p.p. from n = 60 up, but underestimates
+> it by 1.2 at n = 40. The three-size agreement quoted below was selective.
+
 **Coefficients carrying no information at all do +15.6% of damage at n = 40.**
 "Noise is harmless" is false, and so is every ratio built on it. The permuted
 reference falls with n at a log-log slope of **−0.93** — the 1/n the transport
@@ -2987,6 +2996,80 @@ flips, stay at +21.2% (from +87.9%). The penalty works where the sign holds. In
 blood the sign held everywhere it could be measured, and that is why α = 3 was
 enough there.
 
+> **Amended after review (stage 42b).** "The difference is the sign" is too
+> strong, and two facts in this project contradict it. Normalised, Horvath 2018's
+> GSE78874 slope is −0.20 (95% CI −0.46 to +0.06), no longer clearly of the
+> opposite sign, and 7 of 8 cells stay harmful. Levine 2018 keeps its sign in all
+> four saliva cohorts and is still harmful at α = 3 (+3.2 p.p.). What separates
+> the two tissues is the between-cohort spread **relative to the average effect**,
+> τ/|mean| from a random-effects fit:
+>
+> | | Horvath 2018 | Levine 2018 |
+> |---|---|---|
+> | blood, naive CD8 | 0.49 | 0.09 |
+> | blood, neutrophils | 0.55 | 0.15 |
+> | **saliva, immune** | **5.34** | **0.91** |
+>
+> Where the spread is a fraction of the mean effect, a shrunk coefficient is
+> close to every cohort's own, and α = 3 works. Where the spread is as large as
+> the effect or larger — as in both saliva clocks — no single coefficient is
+> close to all of them, and shrinking toward zero only limits the damage.
+> Sign reversal is the extreme of that, not a separate mechanism.
+
+## Stages 24b, 31b, 42b — what a reader's audit changed
+
+A reader audited the manuscript before posting. Eight points were text; four
+needed numbers, and those are here. Two claims were wrong and are withdrawn.
+
+### 24b — the n = 40 median, from 100 draws
+
+The median at n = 40 had been quoted as +18.9 p.p., the largest of three sets of
+30 draws (the range was +11.8 to +18.9). Rerun with 100 draws per size and fresh
+seeds: **median +16.1 p.p., harmful in 88% of draws** (IQR +5.5 to +29.7). The
+permuted reference at n = 40 is +17.4 and falls at a log-log slope of −1.16.
+Stage 24's own checks pass again (n = 656 reproduced; P1 refuted; P2 confirmed).
+
+### The floor was double-counting noise, and "almost exactly" was wrong
+
+Stage 24 called 4.5 p.p. the n-independent floor. That is what the real fit
+leaves at n = 656, where shuffled coefficients still do 0.8, so the floor
+contained the noise it was meant to exclude. **The noise-free floor is 3.8 p.p.**
+Adding it to the shuffled damage reproduces the real curve within 0.6 p.p. from
+n = 60 up, and underestimates it by 1.2 at n = 40 — not "almost exactly", and the
+old text quoted only the three sizes where it did agree. Figure 2 also plotted
+net damage on an axis labelled composition left; both series are now composition
+left, in p.p.
+
+### 31b — an interval for the arthritis effect
+
+"Nearly a factor of two" rested on two point estimates. Bootstrap over people
+(1,000 resamples, both corrections refitted inside each one), Horvath 2018:
+whole-cohort −0.74 (95% CI −1.05 to −0.37), controls-only −1.39 (−2.08 to −0.80),
+**difference −0.66 (−1.13 to −0.31)**. The gap survives; the other two clocks'
+intervals cross zero.
+
+### 42b — "the difference is the sign" withdrawn
+
+See the amendment in stage 42. Between-cohort spread relative to the average
+effect (τ/|mean|) is 0.09–0.55 in blood and 0.91–5.34 in saliva; sign reversal is
+the extreme of that, not the mechanism. Normalised, Horvath 2018's saliva slope
+no longer clearly reverses and 7 of 8 cells stay harmful; Levine 2018 never
+reverses and is still harmful at α = 3.
+
+### Text corrections
+
+The abstract stated the safety predictor the other way round from the results (a
+share of harmful transports called safe, against a share of "safe" calls that
+were harmful); the results' version is now used in both. Δ and composition left
+are labelled p.p. throughout, reserving % for shares of the composition signal
+found. The header no longer says "revised after review". α = 3 is now stated to
+have been fixed on the first four cohorts, which makes GSE132203, GSE55763 and
+the saliva cohorts out-of-sample for that choice. GSE149747 is in the methods.
+The 24 GSE132203 cells are stated to include DunedinPACE (6 of 16 age-clock cells
+harmful). "The worst transport" is now "at full fitting size". Galkin et al.'s
+training set includes GSE78874, one of the cohorts where transport fails here,
+and the introduction says so.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -3051,6 +3134,11 @@ enough there.
 | stage 35's reading of the GSE40279 floor as age extrapolation (that cohort runs to 101, the fitting one stops at 75) | stage 36 restricting GSE40279 to 24–75: +3.5 → +3.3 | the hypothesis; the cause of that floor is unknown |
 | **α = 3 as a general safeguard for transported corrections** | stage 38 in saliva: 7 of 8 cells still harmful at α = 3 (up to +35%), unpenalised up to +152%, while the correction works at home | the penalty is a blood result; in a tissue whose composition axis dominates it does not hold |
 | stage 38 reading the saliva penalty failure as collinearity of the nine-type fit | stage 39: a three-type fit (condition ≈ 1) fails the same way; the immune slope of Horvath 2018 changes sign between cohorts | the mechanism — it is model shift on the dominant axis, which shrinkage cannot reverse |
+| **stage 42's 'the difference is the sign'** | a reader: normalised, Horvath 2018's saliva slope loses its opposite sign and 7 of 8 cells stay harmful; Levine 2018 keeps its sign and is still harmful at α = 3 | the sign framing, replaced by spread relative to the mean effect (τ/\|mean\| 0.09–0.55 in blood, 0.91–5.34 in saliva) |
+| **the n = 40 median quoted as +18.9 p.p.**, the largest of three sets of 30 draws | stage 24b with 100 draws: +16.1 p.p., harmful in 88% | the headline number; small draw sets are unstable at this size |
+| **the floor called 4.5 p.p. and the remainder said to match the shuffled reference 'almost exactly'** | a reader: 4.5 includes the 0.8 the shuffled fit still does at n = 656, and the match fails at n = 40 (20.9 vs 15.6) and n = 80 | floor restated as 3.8 p.p.; agreement quoted with its error (0.6 p.p. from n = 60, 1.2 at n = 40) |
+| figure 2 plotting net damage on an axis labelled composition left | the same reader | both series are now composition left |
+| 'nearly a factor of two' for the arthritis effect, from two point estimates | stage 31b bootstrap | the phrase keeps its meaning, now with −0.66 (−1.13 to −0.31) |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
