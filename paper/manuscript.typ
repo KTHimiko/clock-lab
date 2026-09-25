@@ -359,9 +359,13 @@ cohort, fitting on one random half and applying to the other was beneficial in 5
 of 6 age-clock cells (−15% to −48%); the exception had 132 fitting samples and a
 small initial signal. The failure is therefore in the transport. Every saliva pair
 also crosses array and preprocessing, so technical and biological differences
-cannot be separated. The nine-type saliva composition is far more collinear than
-blood (condition number 872–1,317 against 13–178), and ridge shrinks weak
-directions; an error on the dominant epithelium–leukocyte axis passes through it.
+cannot be separated, but quantile-normalising GSE78874 to the EPIC distribution
+left 7 of 8 cells harmful, and so did a three-type fit whose composition matrix
+is well conditioned (condition number ≈ 1, against 872–1,317 for nine types).
+The cause is on the dominant axis: adjusted for age, Horvath 2018 changed by
++1.0 and +1.9 years per 10 points of immune fraction in the EPIC cohorts and by
+−0.9 in GSE78874. Shrinkage can reduce a correction of the wrong sign
+(+116% to +28% at $alpha = 3$) but cannot make it helpful.
 
 = Discussion
 

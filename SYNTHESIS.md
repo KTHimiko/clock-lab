@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-eight stages
+## The answer, after thirty-nine stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -71,7 +71,9 @@ benefit but leaves 11 of 72 cells harmful at matched n, against 1 of 72 (stage
 **In saliva it does not hold at all** (stage 38): transported between saliva
 cohorts, the correction was harmful in 7 of 8 cells even at α = 3, and up to
 +152% unpenalised, while the same correction works inside each cohort. The
-penalty is a blood result.
+penalty is a blood result. Neither normalisation nor a three-type fit changes it: the
+clock's slope on the immune fraction changes sign between saliva cohorts (stage
+39).
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2824,12 +2826,53 @@ barely touched, and a coefficient that differs between cohorts on that axis
 passes straight through. In blood the harmful error sat on weak directions,
 which is why α = 3 worked there.
 
+> **Stage 39 refuted this.** A three-type fit with condition number ≈ 1 fails the
+> same way, and so does a normalised GSE78874. The immune-fraction slope changes
+> sign between cohorts (Horvath 2018: +1.0 and +1.9 against −0.9 years per 10
+> points), and shrinkage cannot fix a sign.
+
 ### What this changes
 
 The penalty result is a **blood** result, and the manuscript has to say so. In a
 tissue where composition dominates, a transported correction can be far worse
 than none, and neither a fixed nor a fading penalty rescues it. The within-study
 correction still works.
+
+## Stage 39 — saliva: not the preprocessing, not collinearity — the slope changes sign
+
+Stage 38 offered two readings of why the saliva transports failed and the penalty
+did not help, and stage 39 tested both on the same 8 cells, with criteria written
+beforehand.
+
+- **Technical (criterion 2, failed).** 39a quantile-normalised GSE78874 to
+  GSE232891's beta distribution. The immune fraction barely moved (r = 0.997 with
+  raw) and the clocks kept tracking age. Transports were still harmful in 7 of 8
+  cells unpenalised, and 7 of 8 at α = 3. The bar was 3 of 8.
+- **Collinearity (criterion 3, failed).** A three-type fit (epithelium,
+  fibroblast, immune) has a condition number of 1.0–1.2 against 872–1,317 for
+  nine types, and still left 6 of 8 cells harmful at α = 3. The bar was 1.
+  Normalised and three-type together: 7 of 8.
+
+What is left, measured post hoc: the slope of each clock on the immune fraction
+(adjusted for age), per cohort.
+
+| cohort | Horvath 2018, years per +10 pp immune | Levine 2018 |
+|---|---|---|
+| GSE232891 (EPIC) | +1.03 (SE 0.29) | −0.20 (0.36) |
+| GSE232332 (EPIC) | +1.90 (0.32) | −1.35 (0.40) |
+| GSE78874 (450k) | −0.94 (0.14) | −4.72 (0.29) |
+| GSE78874, normalised | −0.20 (0.13) | −5.10 (0.27) |
+
+For Horvath 2018 the slope on the dominant axis **changes sign** between the EPIC
+cohorts and GSE78874. For Levine 2018 it differs up to twenty-fold. A penalty
+shrinks a coefficient toward zero. It can make a sign-reversed correction less
+harmful (α = 3 took +116% to +28%), but it cannot make it helpful. Stage 38's
+collinearity reading was wrong: the failure is model shift on the axis that
+carries most of the composition signal.
+
+What still cannot be separated: the two EPIC cohorts come from one group, so the
+reversal may be group, array or population. Normalisation did not remove it,
+which argues against a simple distributional artefact of processing.
 
 ## Corrections so far
 
@@ -2894,6 +2937,7 @@ correction still works.
 | ridge α = 3 recommended with its cost measured only at matched n (at most 656) | stage 35 at n = 2,639: median −3.0% against −4.0% unpenalised, −7.9% against −12.5% in the best cell | the penalty is a small-n safeguard; at large n it has a price |
 | stage 35's reading of the GSE40279 floor as age extrapolation (that cohort runs to 101, the fitting one stops at 75) | stage 36 restricting GSE40279 to 24–75: +3.5 → +3.3 | the hypothesis; the cause of that floor is unknown |
 | **α = 3 as a general safeguard for transported corrections** | stage 38 in saliva: 7 of 8 cells still harmful at α = 3 (up to +35%), unpenalised up to +152%, while the correction works at home | the penalty is a blood result; in a tissue whose composition axis dominates it does not hold |
+| stage 38 reading the saliva penalty failure as collinearity of the nine-type fit | stage 39: a three-type fit (condition ≈ 1) fails the same way; the immune slope of Horvath 2018 changes sign between cohorts | the mechanism — it is model shift on the dominant axis, which shrinkage cannot reverse |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was

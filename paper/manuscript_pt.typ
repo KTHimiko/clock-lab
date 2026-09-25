@@ -375,9 +375,13 @@ ajustar numa metade aleatória e aplicar na outra foi benéfico em 5 de 6 célul
 de relógios de idade (de −15% a −48%); a exceção tinha 132 amostras de ajuste e
 pouco sinal inicial. A falha está, portanto, no transporte. Todo par de saliva
 também cruza array e pré-processamento, então diferenças técnicas e biológicas
-não se separam. A composição de nove tipos na saliva é muito mais colinear que no
-sangue (número de condição de 872 a 1.317, contra 13 a 178), e o ridge encolhe as
-direções fracas; um erro no eixo dominante epitélio–leucócito passa por ele.
+não se separam, mas normalizar o GSE78874 por quantis para a distribuição EPIC
+deixou 7 de 8 células nocivas, e o mesmo fez um ajuste de três tipos com matriz
+de composição bem condicionada (número de condição ≈ 1, contra 872 a 1.317 com
+nove tipos). A causa está no eixo dominante: ajustado pela idade, o Horvath 2018
+mudou +1,0 e +1,9 ano a cada 10 pontos de fração imune nas coortes EPIC e −0,9 no
+GSE78874. O encolhimento reduz uma correção de sinal trocado (de +116% para +28%
+com $alpha = 3$), mas não a torna útil.
 
 = Discussão
 
