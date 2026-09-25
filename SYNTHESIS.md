@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-five stages
+## The answer, after thirty-six stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -65,7 +65,9 @@ one cell left, at +0.2% — and to none at α = 10, which gives up most of the
 benefit where none was at risk. Cross-validation on the fitting cohort does not
 size the penalty on the cohort that fails. It is a small-n safeguard: fitted on 2,639
 samples, the unpenalised correction is the better one on median (−4.0% against
-−3.0%, stage 35).
+−3.0%, stage 35). A textbook penalty that fades as 1/n recovers that
+benefit but leaves 11 of 72 cells harmful at matched n, against 1 of 72 (stage
+36): model shift does not fade, so the penalty bounding it cannot either.
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2620,6 +2622,9 @@ correction):
   also keeps a floor is not tested here. One candidate is age extrapolation:
   GSE40279 runs to 101 years and the fitting cohort stops at 75. That is a
   hypothesis written after the result, not a finding.
+
+  > **Stage 36 tested this and it failed.** Restricted to ages 24–75, GSE40279
+  > keeps the floor (+3.5 → +3.3 for Horvath 2018).
 - **Small-n harm from a third fitting cohort (criterion 5, passed):** at n = 40
   the age clocks' correction was harmful in 83% of draws (median +7.6%).
 - **The penalty (criterion 6, passed):** harmful cells go from 13 of 13 to 1 of
@@ -2643,6 +2648,50 @@ cannot be read off the fitting cohort — and adds one practical fact: with
 thousands of fitting samples and no disease in the target, the transported
 correction helped in 10 of 13 cells. The fixed penalty is a small-n safeguard.
 At large n it has a price.
+
+## Stage 36 — a penalty that fades with n protects less; model shift needs the proportional one
+
+The penalty used since stage 21 is α × the mean eigenvalue of the fitting
+cohort's standardised composition cross-product. That eigenvalue grows with n,
+so α = 3 shrinks by the same proportion at every fitting size, and stage 35
+measured what that costs at n = 2,639. A textbook ridge with a fixed λ fades as
+1/n; here α_n = 3 × 40 / n, which equals α = 3 at n = 40. Patil, Du & Tibshirani
+(2024) show that the optimal ridge level differs between covariate shift and
+regression shift (our model shift). The prediction written before the run: a
+penalty that vanishes with n cannot bound an error that does not.
+
+All 30 directed pairs among the six cached cohorts, at matched n, 20 draws, 72
+age-clock cells:
+
+| | unpenalised | α = 3 | fading α_n |
+|---|---|---|---|
+| harmful cells | 23 of 72 | **1 of 72** | 11 of 72 |
+| median where unpenalised helped (49 cells) | −4.1% | −4.2% | −5.4% |
+| fitted on all 2,639 of GSE55763, median of 13 cells | −4.0% | −3.0% | −4.0% |
+
+- **Criterion 2 passed:** the fading penalty leaves 11 harmful cells against 1.
+  The cells it misses are the model-shift cells: Horvath 2018 into and out of
+  GSE40279, and GSE61151 into the arthritis cohort, where it cuts +26.1% to +1.1%
+  but not to zero.
+- **Criterion 3 passed:** fitted on all of GSE55763 the fading penalty is 0.06
+  points from the unpenalised median, which recovers what α = 3 gave up.
+- **Criterion 4 failed, and stage 35's hypothesis goes with it.** Restricting
+  GSE40279 to the fitting cohort's age range (24–75, 490 people) leaves the
+  floor where it was: +2.4 → +2.3 (Levine 2018) and +3.5 → +3.3 (Horvath 2018).
+  Age extrapolation does not explain it, and what does is not known.
+
+The penalty result also generalises. Over six cohorts, 72 cells and a second
+array, α = 3 leaves one harmful cell, the same one stage 27 left (GSE61151 →
+GSE40279, Horvath 2018, +0.2%). At matched n it cost nothing on median.
+
+### What this changes
+
+No single rule wins both regimes. The proportional penalty is what bounds model
+shift, and it costs about one point of benefit only when the fitting cohort runs
+to thousands. The fading penalty costs nothing there, but it lets through ten
+more harmful cells at the sizes where transported corrections are actually used.
+Whether a target carries model shift cannot be known in advance (stage 26), so
+the recommendation stays α = 3, now with its cost stated.
 
 ## Corrections so far
 
@@ -2705,6 +2754,7 @@ At large n it has a price.
 | stage 32 attributing DunedinPACE's small-n neutrality to the fitting cohort (GSE40279) | stage 33: neutral again from GSE132203 | the explanation — it looks like a property of the clock |
 | **stage 24's floor read as a general property of transport, from one cohort's top end (n = 656)** | stage 35 fitting on 2,639: the floor persists on median (ratio 0.72), but it is +4.6 into the arthritis cohort and zero into two others; 8 of 13 cells, the pre-set bar was 9 | 'n-independent' stands; 'everywhere' does not — model shift is a property of the pair |
 | ridge α = 3 recommended with its cost measured only at matched n (at most 656) | stage 35 at n = 2,639: median −3.0% against −4.0% unpenalised, −7.9% against −12.5% in the best cell | the penalty is a small-n safeguard; at large n it has a price |
+| stage 35's reading of the GSE40279 floor as age extrapolation (that cohort runs to 101, the fitting one stops at 75) | stage 36 restricting GSE40279 to 24–75: +3.5 → +3.3 | the hypothesis; the cause of that floor is unknown |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was

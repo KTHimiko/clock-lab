@@ -278,6 +278,16 @@ cells harmful, against 3% at fixed $alpha = 3$. Cross-validation optimises fit
 within the fitting cohort and cannot account for where the coefficients will be
 used.
 
+The penalty's size is defined relative to the fitting cohort's composition
+variance, so its proportional shrinkage does not fade with $n$. A conventional
+fixed-$lambda$ penalty does fade; set equal to $alpha = 3$ at $n = 40$, it is
+0.045 at $n = 2639$. Over all 30 directed pairs among the six cohorts at matched
+size (72 age-clock cells), it left 11 cells harmful against 1 for $alpha = 3$ (23
+unpenalised); the cells it missed were the model-shift transports. This matches
+the distinction between covariate and regression shift in optimal ridge
+regularisation @patil2024: an error that does not shrink with $n$ is not bounded
+by a penalty that does.
+
 == A pace-of-ageing clock
 
 For DunedinPACE, the transported correction fitted on 40 samples of GSE40279 was
@@ -311,7 +321,9 @@ GSE61151, and it exceeded the shuffled reference in 8 of 13 cells, below our
 pre-set 9. Model shift is a property of the pair of cohorts. With this many
 fitting samples the unpenalised correction helped in 10 of 13 cells, and the
 fixed penalty cost benefit (median −3.0% against −4.0%) while removing the three
-harmful cells.
+harmful cells. Restricting GSE40279 to the fitting cohort's age range (24–75
+years) left its floor unchanged (+3.5 to +3.3 points for Horvath 2018), so age
+extrapolation does not explain it.
 
 = Discussion
 
@@ -326,8 +338,9 @@ simply be adjusted within itself.
 For practice this suggests three things. Where the target cohort is large enough,
 fit the adjustment within it. Where coefficients must be transported, penalise
 them with a fixed, substantial penalty rather than one chosen by cross-validation
-on the source cohort; with thousands of fitting samples the penalty mostly costs
-benefit, and it is best read as a small-sample safeguard. And treat any pre-transport diagnostic, including the
+on the source cohort. With thousands of fitting samples it costs about a point of
+benefit, but a penalty that fades with $n$ to avoid that cost lets model shift
+through. And treat any pre-transport diagnostic, including the
 transport index, as a ranking of risk rather than a guarantee. The same caution applies
 inside a single study: a correction fitted on controls and applied to patients is
 a transport, and here it changed the estimated disease effect by up to a factor

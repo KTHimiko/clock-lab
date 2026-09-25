@@ -291,6 +291,16 @@ não funcionou tão bem: ela escolheu $alpha$ de 0,3 na célula mediana e deixou
 das células nocivas, contra 3% com $alpha = 3$ fixo. A validação cruzada otimiza o
 ajuste dentro da coorte de ajuste e não enxerga onde os coeficientes serão usados.
 
+O tamanho da penalidade é definido em relação à variância de composição da coorte
+de ajuste, então o encolhimento proporcional não diminui com $n$. Uma penalidade
+convencional de $lambda$ fixo diminui; igualada a $alpha = 3$ com 40 amostras, ela
+vale 0,045 com 2.639. Nos 30 pares direcionados entre as seis coortes em tamanho
+pareado (72 células de relógios de idade), ela deixou 11 células nocivas, contra 1
+com $alpha = 3$ (23 sem penalidade); as que escaparam foram os transportes com
+model shift. Isso bate com a distinção entre covariate shift e regression shift na
+regularização ridge ótima @patil2024: um erro que não diminui com $n$ não é contido
+por uma penalidade que diminui.
+
 == Um relógio de ritmo de envelhecimento
 
 No DunedinPACE, a correção transportada ajustada em 40 amostras do GSE40279 foi
@@ -326,7 +336,9 @@ zero no GSE50660 e no GSE61151, e superou a referência embaralhada em 8 de 13
 células, abaixo das 9 que fixamos antes. O model shift é propriedade do par de
 coortes. Com tantas amostras de ajuste, a correção sem penalidade ajudou em 10 de
 13 células, e a penalidade fixa custou benefício (mediana de −3,0% contra −4,0%)
-ao eliminar as três células nocivas.
+ao eliminar as três células nocivas. Restringir o GSE40279 à faixa etária da
+coorte de ajuste (24 a 75 anos) não mudou seu piso (de +3,5 para +3,3 pontos no
+Horvath 2018), então a extrapolação de idade não o explica.
 
 = Discussão
 
@@ -341,9 +353,9 @@ simplesmente ser corrigido dentro de si.
 Para a prática, isso sugere três coisas. Quando a coorte-alvo é grande o
 bastante, ajuste a correção dentro dela. Quando os coeficientes precisam ser
 transportados, penalize-os com uma penalidade fixa e substancial, em vez de uma
-escolhida por validação cruzada na coorte de origem; com milhares de amostras de
-ajuste a penalidade mais custa benefício do que protege, e deve ser lida como
-salvaguarda para amostras pequenas. E trate qualquer diagnóstico
+escolhida por validação cruzada na coorte de origem. Com milhares de amostras de
+ajuste ela custa cerca de um ponto de benefício, mas uma penalidade que diminui
+com $n$ para evitar esse custo deixa o model shift passar. E trate qualquer diagnóstico
 prévio, inclusive o índice de transporte, como ordenação de risco, não como
 garantia. A mesma cautela vale dentro de um único estudo: uma correção
 ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o

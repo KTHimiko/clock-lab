@@ -8,7 +8,7 @@ lymphocytes fall, myeloid cells rise — and each cell type carries its own
 methylation pattern. A clock fitted on whole blood may be reading **who is in
 the sample** rather than **how old those cells are**.
 
-## The answer, after thirty-five stages
+## The answer, after thirty-six stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -44,8 +44,9 @@ arthritis cohort, absent into two others.
 second part needs the target cohort's own coefficients. **What works is a
 penalty**: ridge-shrinking the coefficients takes harmful transports from half of
 all (pair × clock) cells to 3%, at the cost of some benefit where none was at
-risk. It is a small-sample safeguard: with thousands of fitting samples the
-unpenalised correction does better.
+risk. With thousands of fitting samples it costs about a point of benefit; a
+penalty that fades with n avoids that cost but lets model shift through (11 of 72
+cells harmful, against 1 of 72).
 
 Full argument, every number and every correction:
 [`SYNTHESIS.md`](SYNTHESIS.md).
