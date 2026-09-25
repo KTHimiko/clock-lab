@@ -381,7 +381,11 @@ de composição bem condicionada (número de condição ≈ 1, contra 872 a 1.31
 nove tipos). A causa está no eixo dominante: ajustado pela idade, o Horvath 2018
 mudou +1,0 e +1,9 ano a cada 10 pontos de fração imune nas coortes EPIC e −0,9 no
 GSE78874. O encolhimento reduz uma correção de sinal trocado (de +116% para +28%
-com $alpha = 3$), mas não a torna útil.
+com $alpha = 3$), mas não a torna útil. Numa quarta coorte de saliva em EPIC, de
+outro grupo (GSE149747, 44 adultos na linha de base), a inclinação foi de −0,82
+(IC de 95% de −1,71 a 0,07), do lado da coorte de 450k e não das outras coortes
+EPIC, o que pesa contra o array como explicação; pela regra que fixamos antes, a
+comparação foi inconclusiva.
 
 = Discussão
 
@@ -430,7 +434,7 @@ envelhecimento biológico; trata de uma correção aplicada a eles.
 = Disponibilidade de dados e código
 
 Todas as séries são públicas (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
-GSE55763, GSE232891, GSE232332, GSE78874, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
+GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
 derrubada e os scripts das figuras estão em
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
 (a ser tornado público antes da submissão).

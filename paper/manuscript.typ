@@ -365,7 +365,11 @@ is well conditioned (condition number ≈ 1, against 872–1,317 for nine types)
 The cause is on the dominant axis: adjusted for age, Horvath 2018 changed by
 +1.0 and +1.9 years per 10 points of immune fraction in the EPIC cohorts and by
 −0.9 in GSE78874. Shrinkage can reduce a correction of the wrong sign
-(+116% to +28% at $alpha = 3$) but cannot make it helpful.
+(+116% to +28% at $alpha = 3$) but cannot make it helpful. In a fourth EPIC saliva
+cohort from another group (GSE149747, 44 adults at baseline) the slope was −0.82
+(95% CI −1.71 to 0.07), on the side of the 450k cohort rather than the other EPIC
+cohorts, which argues against the array as the explanation; by our pre-set rule
+this comparison was inconclusive.
 
 = Discussion
 
@@ -412,7 +416,7 @@ to them.
 = Data and code availability
 
 All series are public (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
-GSE55763, GSE232891, GSE232332, GSE78874, GSE35069, GSE167998). Analysis code, the stage-by-stage record including every overturned
+GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE35069, GSE167998). Analysis code, the stage-by-stage record including every overturned
 conclusion, and figure scripts are at
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
 (to be made public before submission).

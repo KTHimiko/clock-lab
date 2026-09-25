@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-nine stages
+## The answer, after forty stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2873,6 +2873,39 @@ carries most of the composition signal.
 What still cannot be separated: the two EPIC cohorts come from one group, so the
 reversal may be group, array or population. Normalisation did not remove it,
 which argues against a simple distributional artefact of processing.
+
+> **Stage 40:** a fourth EPIC saliva cohort from another group gives −0.82
+> (95% CI −1.71 to +0.07), on GSE78874's side, not with the other EPIC cohorts.
+> Array is the less likely explanation. By the pre-set rule this was
+> inconclusive.
+
+## Stage 40 — a fourth saliva cohort sides with the 450k one (inconclusive by the pre-set rule)
+
+Stage 39's sign reversal set two EPIC cohorts from one group against one 450k
+cohort, so array and group were confounded. GSE149747 is EPIC saliva from another
+group (Methylation Diet and Lifestyle): 44 adults at baseline, sampled twice more
+after an intervention. The median immune fraction is 0.65. Horvath 2018 tracks age
+at r = 0.76 with full coverage. The reading rule was written down before scoring.
+
+| cohort | array | Horvath 2018, years per +10 pp immune (SE) |
+|---|---|---|
+| GSE232891 | EPIC | +1.03 (0.29) |
+| GSE232332 | EPIC | +1.90 (0.32) |
+| GSE78874 | 450k | −0.94 (0.14) |
+| **GSE149747, baseline** | **EPIC** | **−0.82 (0.45)**, 95% CI −1.71 to +0.07 |
+| GSE149747, person means | EPIC | −0.94 (0.43) |
+
+**By the pre-set rule this is inconclusive:** the rule for "the reversal follows
+the group" required the interval below zero, and it reaches +0.07. Its upper end
+is still far below the +1.03 and +1.90 of the two EPIC cohorts. So an EPIC cohort
+from another group sits with the 450k cohort, not with the other EPIC cohorts.
+Array is the less likely explanation. The two cohorts from one group look like
+the exception, and the secondary analysis (person means, CI −1.78 to −0.10)
+agrees. Levine 2018 is negative too (−2.42, SE 0.68), as in every saliva cohort.
+
+This does not rescue transport. Whichever cohorts are the exception, a
+coefficient carried between saliva studies can have the wrong sign, and nothing
+in the source cohort says which kind of target it is going to.
 
 ## Corrections so far
 
