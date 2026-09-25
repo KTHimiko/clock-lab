@@ -3178,6 +3178,41 @@ stated with a measurement behind it rather than as an unexamined caveat: the
 nonlinearity is there, it is worth about 0.2% of variance, and modelling it
 changes nothing about transport.
 
+## Stage 44 — the blood results on the published reference libraries
+
+Two limitations were structural rather than empirical: the panels were built
+here, by a simpler probe selection than the published libraries, and the
+twelve-type sensitivity analyses scored the correction with probes the fit had
+already used. The EpiDISH package ships published alternatives that fix both at
+once — the Salas et al. 2022 twelve-type reference on its IDOL-optimised 450k
+probes (600) for the fit, and the published seven-type blood reference (333) for
+the measurement. **They share 20 probes**, where the home-built pair shared its
+whole construction.
+
+44a recomputed composition for all six blood cohorts. The two twelve-type panels
+agree on what they both estimate — neutrophils r = 0.985–0.997, naive CD8 T cells
+r = 0.852–0.919 across the six — so they are measuring the same thing, not
+different things.
+
+44b re-ran the central results with nothing else changed:
+
+| | home-built panels | published panels |
+|---|---|---|
+| harmful at n = 40, fitting on GSE40279 | 88% of draws | **77%** |
+| median Δ at n = 40 | +16.1 p.p. | +9.1 |
+| harmful cells at matched n, unpenalised | 23 of 72 | **17 of 60** |
+| harmful cells at α = 3 | 1 of 72 | **0 of 60** |
+| composition left, fitting on all of GSE55763 | +1.3 p.p. | +1.9 |
+
+All three pre-registered checks passed. The harm at small n is smaller with the
+published panels (+9.1 against +16.1 p.p.) and still there in three quarters of
+draws; the penalty works slightly better, clearing every cell; the floor is
+slightly larger. **No conclusion of this paper depends on the panels built here.**
+
+The cell counts differ (60 against 72) because this run scored the two age clocks
+on every directed pair among six cohorts, without Horvath 2013, which the earlier
+count included where it was clean.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
