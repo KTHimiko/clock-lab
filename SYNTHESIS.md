@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-three stages
+## The answer, after thirty-five stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -46,6 +46,9 @@ samples.
   even a perfectly estimated correction from one damages another. It does not
   shrink with fitting size, and it is behind the worst transport in the project,
   GSE61151 → the rheumatoid arthritis cohort at +15.9%.
+  Stage 35 pushed the fitting cohort to 2,639 samples. The floor stays on
+  median (1.9 → 1.3 points while the noise reference falls to 0.1), but it
+  belongs to the pair: +4.6 into the arthritis cohort, zero into two others.
 
 **No quantity computed in advance certifies a transport as safe** (stages 26,
 28). The transport index sees only the first component; it adds modest
@@ -60,7 +63,9 @@ large enough to estimate them does not need a transported correction.
 Counted per clock, harmful transports go from 50% unpenalised to 3% at α = 3 —
 one cell left, at +0.2% — and to none at α = 10, which gives up most of the
 benefit where none was at risk. Cross-validation on the fitting cohort does not
-size the penalty on the cohort that fails.
+size the penalty on the cohort that fails. It is a small-n safeguard: fitted on 2,639
+samples, the unpenalised correction is the better one on median (−4.0% against
+−3.0%, stage 35).
 
 And flattening a clock against composition appears to be **free**: the clock
 built here that reads 41% less composition detects rheumatoid arthritis exactly
@@ -2577,6 +2582,68 @@ every result here is adult blood.
 
 ---
 
+## Stage 35 — a fitting cohort four times larger: the floor stays, but not everywhere
+
+Stage 24 described the second component as n-independent, but the largest
+fitting cohort then had 656 samples, so that description rested on one cohort's
+top end. GSE55763 (Lehne et al. 2015, London, 450k) has 2,639 unrelated adults
+once all 72 technical-replicate arrays are dropped. It lets the fitting n go four
+times further. None of the clocks was trained on it; all four passed coverage
+(≥99.7%) and the age check (r 0.86–0.94). The six criteria were written into the
+docstring before any transport was computed.
+
+Fitted on GSE55763 and transported to the other five cohorts (13 age-clock cells,
+median across cells; "error left" is the composition signal still visible after
+correction):
+
+| fitting n | 40 | 80 | 160 | 320 | 656 | 1300 | 2639 |
+|---|---|---|---|---|---|---|---|
+| Δ, real fit | +8.3% | +1.2% | −2.1% | −3.3% | −3.4% | −3.7% | −4.0% |
+| error left, real | +14.8% | +7.9% | +3.7% | +2.0% | +1.9% | +1.5% | **+1.3%** |
+| Δ, shuffled | +14.5% | +5.9% | +2.2% | +1.3% | +0.5% | +0.6% | **+0.1%** |
+| Δ, ridge α = 3 | −2.4% | −2.4% | −2.8% | −3.1% | −2.9% | −2.9% | −3.0% |
+
+- **The floor persists (criterion 2, passed).** From n = 656 to 2,639 the error
+  left falls from 1.9 to 1.3 points, a ratio of 0.72. Pure 1/n noise predicts
+  0.25, and the shuffled reference does fall that way (slope −1.03, criterion 4).
+- **It is not everywhere (criterion 3, failed).** At the full n, the error left
+  exceeds the shuffled reference in only 8 of 13 cells; the bar was 9. The floor
+  depends on the target cohort:
+
+  | target | GSE42861 (arthritis) | GSE40279 | GSE132203 | GSE50660 | GSE61151 |
+  |---|---|---|---|---|---|
+  | error left at n = 2,639 | **+4.6** | **+3.0** | +0.7 | 0.0 | −0.1 |
+
+  Into two cohorts, a well-estimated correction transports essentially perfectly.
+  Into the arthritis cohort it leaves the most, which agrees with stage 31's
+  controls → cases result: disease reshapes the composition effect. Why GSE40279
+  also keeps a floor is not tested here. One candidate is age extrapolation:
+  GSE40279 runs to 101 years and the fitting cohort stops at 75. That is a
+  hypothesis written after the result, not a finding.
+- **Small-n harm from a third fitting cohort (criterion 5, passed):** at n = 40
+  the age clocks' correction was harmful in 83% of draws (median +7.6%).
+- **The penalty (criterion 6, passed):** harmful cells go from 13 of 13 to 1 of
+  13 at n = 40, and from 3 of 13 to 0 at full n. **Its cost shows at large n:**
+  at n = 2,639 the unpenalised fit is the better one on median (−4.0% against
+  −3.0%). For Levine 2018 into GSE132203 it is −12.5% against −7.9%. α = 3
+  trades about a quarter of the benefit for a guarantee the fit did not need in
+  10 of 13 cells.
+- **DunedinPACE**, fitted on a third cohort: +0.4% at n = 40, neutral again, and
+  beneficial from n = 80 (−8.7% at full n). It is the third fitting cohort to
+  show the same thing, which supports stage 33's reading that this is a property
+  of the clock.
+
+### What this changes
+
+"Model shift does not shrink with fitting size" holds on average, now up to
+2,639 fitting samples. It needs a qualifier: it is a property of the (fitting
+cohort, target cohort) pair, large for some targets and absent for others. That
+strengthens stage 26's conclusion — whether a target carries model shift
+cannot be read off the fitting cohort — and adds one practical fact: with
+thousands of fitting samples and no disease in the target, the transported
+correction helped in 10 of 13 cells. The fixed penalty is a small-n safeguard.
+At large n it has a price.
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2636,6 +2703,8 @@ every result here is adult blood.
 | treating 'harmful in 93% of draws at n = 40' as a general property of the transported correction | stage 32: for DunedinPACE, fitted on the same cohort, 51% — a coin flip | the small-n headline is clock- and pair-dependent; the penalty and the within-study model shift generalise |
 | stage 33a reading GSE132203's age by a prefix match, so the 'age acceleration' field overwrote 'age' | check 4: every clock at r ≈ 0.02 with 'age' while agreeing with each other at 0.88–0.94 | nothing — caught before use; exact field match |
 | stage 32 attributing DunedinPACE's small-n neutrality to the fitting cohort (GSE40279) | stage 33: neutral again from GSE132203 | the explanation — it looks like a property of the clock |
+| **stage 24's floor read as a general property of transport, from one cohort's top end (n = 656)** | stage 35 fitting on 2,639: the floor persists on median (ratio 0.72), but it is +4.6 into the arthritis cohort and zero into two others; 8 of 13 cells, the pre-set bar was 9 | 'n-independent' stands; 'everywhere' does not — model shift is a property of the pair |
+| ridge α = 3 recommended with its cost measured only at matched n (at most 656) | stage 35 at n = 2,639: median −3.0% against −4.0% unpenalised, −7.9% against −12.5% in the best cell | the penalty is a small-n safeguard; at large n it has a price |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was

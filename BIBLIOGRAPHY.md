@@ -320,6 +320,16 @@ block permutation. *NeuroImage* 123:253–268. [abstract] —
 Restricted permutation that swaps whole blocks to preserve dependence. Stage 28
 uses it to replace a p-value of 2×10⁻²⁴ with 0.036.
 
+**Lehne B, Drong AW, Loh M, et al. (2015).** A coherent approach for analysis of
+the Illumina HumanMethylation450 BeadChip improves data quality and performance
+in epigenome-wide association studies. *Genome Biology* 16:37.
+doi:10.1186/s13059-015-0600-x · <https://pmc.ncbi.nlm.nih.gov/articles/PMC4365767/>
+
+Source of GSE55763: 2,687 individuals with 36 measured in duplicate. Stage 35
+drops all 72 replicate arrays and keeps 2,639 as the largest fitting cohort in the
+project. Released after Horvath 2013 and absent from the training sets of the
+other clocks used.
+
 ---
 
 ## A note on method

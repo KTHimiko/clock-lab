@@ -48,8 +48,8 @@
   Estimation noise, amplified by differences between the cohorts' composition
   covariance, falls as $1\/n$ and is reproduced almost exactly by coefficients
   that carry no information. Model shift — a composition effect that differs
-  between cohorts — does not fall with fitting size and accounts for the worst
-  transports. Because the second part depends on the target cohort's own
+  between cohorts — does not fall with fitting size, up to 2,639 fitting
+  samples, accounts for the worst transports and varies in size between targets. Because the second part depends on the target cohort's own
   coefficients, nothing we could compute beforehand certified a transport as
   safe: a closed-form predictor labelled 30 of 73 harmful transports as safe, and
   the transport index added only modest information beyond sample size
@@ -104,7 +104,11 @@ generation and ancestry; clocks are scored on it only above 95% probe coverage
 kind we add DunedinPACE @belsky2022, which estimates the pace of ageing and was
 trained on a cohort not in GEO; we reimplemented it from its package's published
 model data and validated it (cohort means 0.93–1.05; current smokers +0.14 faster
-than never smokers, $p = 3 times 10^(-11)$).
+than never smokers, $p = 3 times 10^(-11)$). A sixth cohort, GSE55763
+@lehne2015 (450k, London), serves as a large fitting cohort: after dropping all
+72 technical-replicate arrays it has 2,639 unrelated adults (ages 24–75); it
+postdates Horvath 2013 and is in no clock's training set, and all four age clocks
+cleared the coverage and age checks on it.
 
 == Correction and scoring
 
@@ -294,6 +298,21 @@ draws (median +24.3%; Levine 2018 91%, Horvath 2018 99%), with shuffled
 coefficients at +16.4%. Across the 8 directed pairs involving this cohort, 7 of 24
 (pair × clock) cells were harmful unpenalised and none at $alpha = 3$.
 
+== A fitting cohort four times larger
+
+Fitted on GSE55763 and transported to the other five cohorts (13 age-clock
+cells), the correction was harmful at $n = 40$ in 83% of draws (median +7.6%).
+Between $n = 656$ and the full 2,639 the composition it left fell only from 1.9
+to 1.3 points, a ratio of 0.72 against the 0.25 that $1\/n$ noise predicts; the
+shuffled reference fell from 0.5 to 0.1 (log-log slope −1.03). The floor
+therefore persists on median. It is not uniform: at full size it was +4.6 points
+into the arthritis cohort and +3.0 into GSE40279, but zero into GSE50660 and
+GSE61151, and it exceeded the shuffled reference in 8 of 13 cells, below our
+pre-set 9. Model shift is a property of the pair of cohorts. With this many
+fitting samples the unpenalised correction helped in 10 of 13 cells, and the
+fixed penalty cost benefit (median −3.0% against −4.0%) while removing the three
+harmful cells.
+
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
@@ -307,7 +326,8 @@ simply be adjusted within itself.
 For practice this suggests three things. Where the target cohort is large enough,
 fit the adjustment within it. Where coefficients must be transported, penalise
 them with a fixed, substantial penalty rather than one chosen by cross-validation
-on the source cohort. And treat any pre-transport diagnostic, including the
+on the source cohort; with thousands of fitting samples the penalty mostly costs
+benefit, and it is best read as a small-sample safeguard. And treat any pre-transport diagnostic, including the
 transport index, as a ranking of risk rather than a guarantee. The same caution applies
 inside a single study: a correction fitted on controls and applied to patients is
 a transport, and here it changed the estimated disease effect by up to a factor
@@ -315,7 +335,7 @@ of two.
 
 = Limitations
 
-Five adult whole-blood cohorts, four on the 450k array and one on EPIC, two
+Six adult whole-blood cohorts, five on the 450k array and one on EPIC, two
 defined by disease or exposure; other tissues and ages are untested. Reference
 panels were built here with simpler probe selection than published libraries.
 Medians at small fitting sizes vary between independent sets of draws (+11.8% to
@@ -328,8 +348,8 @@ to them.
 
 = Data and code availability
 
-All series are public (GSE40279, GSE61151, GSE50660, GSE42861, GSE35069,
-GSE167998). Analysis code, the stage-by-stage record including every overturned
+All series are public (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
+GSE55763, GSE35069, GSE167998). Analysis code, the stage-by-stage record including every overturned
 conclusion, and figure scripts are at
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
 (to be made public before submission).

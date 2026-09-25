@@ -54,7 +54,8 @@
   pelas diferenças de covariância de composição entre as coortes, cai com $1\/n$ e
   é reproduzido quase exatamente por coeficientes sem informação. O model shift —
   um efeito de composição que difere entre coortes — não cai com o tamanho de
-  ajuste e responde pelos piores transportes. Como a segunda parte depende dos
+  ajuste, até 2.639 amostras, responde pelos piores transportes e varia de
+  tamanho entre alvos. Como a segunda parte depende dos
   coeficientes da própria coorte-alvo, nada que pudemos calcular de antemão
   certificou um transporte como seguro: um previsor em forma fechada rotulou como
   seguros 30 de 73 transportes nocivos, e o índice de transporte acrescentou só
@@ -113,6 +114,10 @@ acrescentamos o DunedinPACE @belsky2022, que estima o ritmo de envelhecimento e
 foi treinado numa coorte fora do GEO; nós o reimplementamos a partir dos dados de
 modelo publicados no pacote e o validamos (médias por coorte de 0,93 a 1,05;
 fumantes atuais 0,14 mais rápidos que quem nunca fumou, $p = 3 times 10^(-11)$).
+Uma sexta coorte, GSE55763 @lehne2015 (450k, Londres), serve de coorte de ajuste
+grande: sem os 72 arrays de réplica técnica, tem 2.639 adultos não aparentados
+(24 a 75 anos); é posterior ao Horvath 2013, não está no treino de nenhum relógio
+e os quatro relógios de idade passaram nela nas checagens de cobertura e idade.
 
 == Correção e pontuação
 
@@ -308,6 +313,21 @@ Horvath 2018 99%), com os coeficientes embaralhados em +16,4%. Nos 8 pares
 direcionados que envolvem essa coorte, 7 de 24 células (par × relógio) foram
 nocivas sem penalidade e nenhuma com $alpha = 3$.
 
+== Uma coorte de ajuste quatro vezes maior
+
+Ajustada no GSE55763 e transportada para as outras cinco coortes (13 células de
+relógios de idade), a correção foi nociva com 40 amostras em 83% dos sorteios
+(mediana de +7,6%). Entre 656 amostras e as 2.639 completas, a composição que ela
+deixou caiu só de 1,9 para 1,3 ponto, razão de 0,72 contra os 0,25 que o ruído
+em $1\/n$ prevê; a referência embaralhada caiu de 0,5 para 0,1 (inclinação
+log-log de −1,03). O piso, portanto, persiste na mediana. Não é uniforme: no
+tamanho cheio foi de +4,6 pontos na coorte de artrite e +3,0 no GSE40279, mas
+zero no GSE50660 e no GSE61151, e superou a referência embaralhada em 8 de 13
+células, abaixo das 9 que fixamos antes. O model shift é propriedade do par de
+coortes. Com tantas amostras de ajuste, a correção sem penalidade ajudou em 10 de
+13 células, e a penalidade fixa custou benefício (mediana de −3,0% contra −4,0%)
+ao eliminar as três células nocivas.
+
 = Discussão
 
 A correção de composição dentro da coorte não pode ser validada dentro dela; isso
@@ -321,7 +341,9 @@ simplesmente ser corrigido dentro de si.
 Para a prática, isso sugere três coisas. Quando a coorte-alvo é grande o
 bastante, ajuste a correção dentro dela. Quando os coeficientes precisam ser
 transportados, penalize-os com uma penalidade fixa e substancial, em vez de uma
-escolhida por validação cruzada na coorte de origem. E trate qualquer diagnóstico
+escolhida por validação cruzada na coorte de origem; com milhares de amostras de
+ajuste a penalidade mais custa benefício do que protege, e deve ser lida como
+salvaguarda para amostras pequenas. E trate qualquer diagnóstico
 prévio, inclusive o índice de transporte, como ordenação de risco, não como
 garantia. A mesma cautela vale dentro de um único estudo: uma correção
 ajustada em controles e aplicada a pacientes é um transporte, e aqui ela mudou o
@@ -329,7 +351,7 @@ efeito estimado da doença em até duas vezes.
 
 = Limitações
 
-Cinco coortes adultas de sangue total, quatro em 450k e uma em EPIC, duas
+Seis coortes adultas de sangue total, cinco em 450k e uma em EPIC, duas
 definidas por doença ou exposição; outros tecidos e idades não foram testados. Os painéis de
 referência foram construídos aqui com seleção de sondas mais simples que as
 bibliotecas publicadas. As medianas em tamanhos pequenos variam entre conjuntos
@@ -343,8 +365,8 @@ envelhecimento biológico; trata de uma correção aplicada a eles.
 
 = Disponibilidade de dados e código
 
-Todas as séries são públicas (GSE40279, GSE61151, GSE50660, GSE42861, GSE35069,
-GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
+Todas as séries são públicas (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
+GSE55763, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
 derrubada e os scripts das figuras estão em
 #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
 (a ser tornado público antes da submissão).
