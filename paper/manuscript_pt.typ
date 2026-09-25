@@ -100,9 +100,13 @@ Quatro séries públicas de sangue total em 450k com idade cronológica: GSE4027
 tabagismo) e GSE42861 ($n = 689$, caso-controle de artrite reumatoide). As
 proporções foram estimadas por mínimos quadrados não negativos com restrição,
 contra um painel de seis tipos (GSE35069) e um de doze tipos que separa
-linfócitos naive e de memória (GSE167998) @salas2022, ambos construídos aqui; o
-painel de doze recupera proporções conhecidas de misturas com $r$ de 0,79 e erro
-absoluto médio de 0,027.
+linfócitos naive e de memória (GSE167998) @salas2022, ambos construídos aqui; o painel de doze recupera proporções conhecidas de
+misturas com $r$ de 0,79 e erro absoluto médio de 0,027. Como os dois foram
+construídos aqui e compartilham a construção, todo resultado de sangue foi
+repetido em bibliotecas publicadas: a referência de doze tipos de Salas et al.
+2022 no conjunto de sondas otimizado por IDOL para 450k, no ajuste, e a
+referência publicada de sete tipos de sangue, na medição @teschendorff2017, que
+compartilham 20 sondas de 600 e 333.
 
 Relógios: Horvath 2013 @horvath2013, Levine 2018 @levine2018 e Horvath 2018
 @horvath2018. Um relógio é excluído de todo par que envolve uma coorte em que ele
@@ -130,7 +134,12 @@ ajuste hierárquico de nove tipos (epitélio, fibroblasto, sete subtipos imunes)
 uma medição de três tipos (epitélio, fibroblasto, imune), que compartilham o
 primeiro passo e por isso favorecem a correção na medição. As duas primeiras
 coortes vêm do mesmo grupo e seus arquivos não trazem sondas de genotipagem, então
-não foi possível excluir pessoas em comum e elas nunca foram pareadas. Levine 2018 e Horvath 2018 passaram nas checagens de cobertura e idade nas três. Uma quarta coorte de saliva, GSE149747 (EPIC, de outro grupo), entra com suas 44 amostras de linha de base na comparação de inclinações e nos ajustes reunidos, mas é pequena demais para uma curva de transporte.
+não foi possível excluir pessoas em comum e elas nunca foram pareadas. Levine 2018 e Horvath 2018 passaram nas checagens de cobertura e idade nas três. Como essa medição é o
+primeiro passo do próprio ajuste, a saliva também foi pontuada com um painel
+independente construído a partir do GSE147318 @middleton2022, saliva de crianças
+separada em frações imune e epitelial; suas 300 sondas compartilham 3,3% com o
+EpiDISH e ele é usado como escore imune relativo, já que sua escala absoluta não
+transfere entre estudos. Uma quarta coorte de saliva, GSE149747 (EPIC, de outro grupo), entra com suas 44 amostras de linha de base na comparação de inclinações e nos ajustes reunidos, mas é pequena demais para uma curva de transporte.
 
 == Correção e pontuação
 
@@ -393,6 +402,28 @@ ainda que a existência dela não dependa; ela se concentra na saliva, onde a
 matriz de composição é quase singular. Com $alpha = 3$ nenhum sorteio passou de
 10 anos.
 
+== Robustez aos painéis de referência
+
+Repetidos nas bibliotecas publicadas, sem nenhuma outra mudança, os resultados de
+sangue se mantêm: a correção ajustada em 40 amostras do GSE40279 foi nociva em
+77% de 600 sorteios (mediana de +9,1 p.p., contra 88% e +16,1 com os painéis
+construídos aqui); nas 60 células (par × relógio) em tamanho pareado, 17 foram
+nocivas sem penalidade e nenhuma com $alpha = 3$; e, ajustada em todo o GSE55763,
+a composição restante mediana foi de +1,9 p.p. Os dois painéis de doze tipos
+concordam no que ambos estimam (neutrófilos com $r$ de 0,985 a 0,997; CD8 naive
+de 0,852 a 0,919, nas seis coortes).
+
+Na saliva, o painel independente correlaciona-se de 0,951 a 0,997 com a fração
+imune do EpiDISH e vê quase o mesmo sinal de composição antes da correção que a
+própria coluna imune do EpiDISH (por exemplo, +1,5 contra −0,1 p.p. no GSE232891
+para o Levine 2018; +50,6 contra +50,6 no GSE78874). O que difere é o número de
+eixos, não a origem deles: a medição de três tipos vê +18,5 e +31,8 p.p. no
+GSE232891, onde o eixo imune sozinho vê cerca de zero, então nas coortes EPIC a
+maior parte do sinal de composição na aceleração está nos eixos
+epitélio/fibroblasto. Pontuadas só no eixo imune com o painel independente, 6 de
+8 células foram nocivas sem penalidade e 5 de 8 com $alpha = 3$, contra 7 e 7 com
+a medição compartilhada.
+
 = Discussão
 
 A correção de composição dentro da coorte não pode ser validada dentro dela; isso
@@ -432,10 +463,10 @@ dependente da composição dentro de uma coorte de saliva também já foi descri
 
 Seis coortes adultas de sangue total, cinco em 450k e uma em EPIC, duas
 definidas por doença ou exposição, e quatro coortes adultas de saliva cujos pares
-de transporte todos cruzam array e pré-processamento; outros tecidos e crianças não foram
-testados, e a medição na saliva compartilha a referência com o ajuste. Os painéis de
-referência foram construídos aqui com seleção de sondas mais simples que as
-bibliotecas publicadas. As medianas em tamanhos pequenos são instáveis entre conjuntos independentes de 30 sorteios (de +11,8 a +18,9 p.p. em 40 amostras; a mediana conjunta com 100 sorteios é +16,1), e o próprio dano
+de transporte todos cruzam array e pré-processamento; outros tecidos e crianças
+não foram testados. Os painéis construídos aqui foram conferidos contra
+bibliotecas publicadas, e a medição na saliva contra um painel independente, sem
+mudar nenhuma conclusão. As medianas em tamanhos pequenos são instáveis entre conjuntos independentes de 30 sorteios (de +11,8 a +18,9 p.p. em 40 amostras; a mediana conjunta com 100 sorteios é +16,1), e o próprio dano
 em amostra pequena depende do relógio e da coorte de ajuste (neutro para o
 DunedinPACE a partir do GSE40279). O valor da
 penalidade é específico deste painel e destes relógios. A decomposição supõe um efeito linear da composição; termos quadráticos para os quatro maiores componentes acrescentam uma mediana de 0,002 ao $R^2$ dentro da coorte (significativos em 4 de 12 células coorte × relógio), e uma correção quadrática não transporta melhor que a linear (22 contra 23 células nocivas de 60, mesma mediana). A pontuação de sensibilidade com doze tipos usa o

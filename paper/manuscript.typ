@@ -98,8 +98,12 @@ Four public whole-blood 450k series with chronological age: GSE40279
 cohort) and GSE42861 ($n = 689$, rheumatoid arthritis case-control). Proportions
 were estimated by constrained non-negative least squares against a six-type
 panel (GSE35069) and a twelve-type panel resolving naive and memory lymphocytes
-(GSE167998) @salas2022, both built here; the twelve-type panel recovers known
-mixture proportions at $r = 0.79$, mean absolute error 0.027.
+(GSE167998) @salas2022, both built here; the twelve-type panel recovers known mixture proportions at
+$r = 0.79$, mean absolute error 0.027. Because both were built here and share
+their construction, every blood result was repeated on published libraries: the
+Salas et al. 2022 twelve-type reference on its IDOL-optimised 450k probe set for
+the fit @salas2022 and the published seven-type blood reference for the
+measurement @teschendorff2017, which share 20 probes of 600 and 333.
 
 Clocks: Horvath 2013 @horvath2013, Levine 2018 @levine2018 and Horvath 2018
 @horvath2018. A clock is excluded from any pair involving a cohort it was trained
@@ -129,7 +133,12 @@ three-type measurement (epithelium, fibroblast, immune), which share their first
 step and so bias measurement toward the correction. The first two cohorts come
 from one group and their files carry no genotyping probes, so shared individuals
 could not be excluded and they were never paired. Levine 2018 and Horvath 2018
-cleared coverage and age checks in all three. A fourth saliva cohort, GSE149747
+cleared coverage and age checks in all three. Because that measurement is the
+fit's own first step, saliva was also scored with an independent panel built from
+GSE147318 @middleton2022, children's saliva sorted into immune and epithelial
+fractions; its 300 probes share 3.3% with EpiDISH and it is used as a relative
+immune score, since its absolute scale does not transfer between studies. A
+fourth saliva cohort, GSE149747
 (EPIC, another group), contributes its 44 baseline samples to the slope
 comparison and to the pooled fits, but is too small for a transport curve.
 
@@ -420,6 +429,28 @@ the tail's size is solver-dependent while its existence is not; it is
 concentrated in saliva, where the composition matrix is nearly singular. At
 $alpha = 3$ no draw exceeded 10 years.
 
+== Robustness to the reference panels
+
+Repeated on the published libraries, with nothing else changed, the blood results
+hold: the correction fitted on 40 samples of GSE40279 was harmful in 77% of 600
+draws (median +9.1 p.p., against 88% and +16.1 with the panels built here); over
+the 60 (pair × clock) cells at matched size, 17 were harmful unpenalised and none
+at $alpha = 3$; and fitted on all of GSE55763 the median composition left was
++1.9 p.p. The two twelve-type panels agree on what they both estimate
+(neutrophils $r = 0.985$–0.997, naive CD8 $r = 0.852$–0.919 across the six
+cohorts).
+
+In saliva, the independent panel correlates 0.951–0.997 with the EpiDISH immune
+fraction and sees almost the same composition signal before correction as
+EpiDISH's own immune column (for example +1.5 against −0.1 p.p. in GSE232891 for
+Levine 2018, +50.6 against +50.6 in GSE78874). What differs is the number of
+axes, not their source: the three-type measurement sees +18.5 and +31.8 p.p. in
+GSE232891 where the immune axis alone sees about zero, so in the EPIC cohorts
+most of the composition signal in age acceleration lies on the
+epithelial/fibroblast axes. Scored on the immune axis alone with the independent
+panel, 6 of 8 cells were harmful unpenalised and 5 of 8 at $alpha = 3$, against 7
+and 7 with the shared measurement.
+
 = Discussion
 
 Within-cohort composition adjustment cannot be validated inside the cohort; this
@@ -463,9 +494,9 @@ saliva cohort has also been reported @chan2026.
 
 Six adult whole-blood cohorts, five on the 450k array and one on EPIC, two
 defined by disease or exposure, and four adult saliva cohorts whose transport
-pairs all cross array and preprocessing; other tissues and children are untested, and the
-saliva measurement shares its reference with the fit. Reference
-panels were built here with simpler probe selection than published libraries.
+pairs all cross array and preprocessing; other tissues and children are untested. The
+panels built here were checked against published libraries, and the saliva
+measurement against an independent panel, without changing any conclusion.
 Medians at small fitting sizes are unstable across independent sets of 30 draws
 (+11.8 to +18.9 p.p. at $n = 40$; the pooled figure from 100 draws is +16.1), and
 the small-sample harm itself depends on the clock and the
