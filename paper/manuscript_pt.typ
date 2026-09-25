@@ -363,6 +363,13 @@ separadas; centrar por placa não o removeu.
 
 == Saliva
 
+#figure(
+  image("figures/pt/fig6_saliva.png", width: 95%),
+  caption: [*Inclinação de cada relógio na fração imune em quatro coortes de
+  saliva.* Idade do relógio regredida na idade cronológica e na fração imune;
+  inclinação por 10 pontos percentuais, IC de 95%. GSE149747 na linha de base.],
+) <fig6>
+
 Antes da correção, a composição respondia por 10,8% a 51,6% da variância da
 aceleração nos relógios de idade na saliva, e por 42% a 56% no DunedinPACE.
 Ajustada em 40 amostras e transportada entre coortes de saliva, a correção foi
@@ -378,7 +385,7 @@ também cruza array e pré-processamento, então diferenças técnicas e biológ
 não se separam, mas normalizar o GSE78874 por quantis para a distribuição EPIC
 deixou 7 de 8 células nocivas, e o mesmo fez um ajuste de três tipos com matriz
 de composição bem condicionada (número de condição ≈ 1, contra 872 a 1.317 com
-nove tipos). A causa está no eixo dominante: ajustado pela idade, o Horvath 2018
+nove tipos). A causa está no eixo dominante (@fig6): ajustado pela idade, o Horvath 2018
 mudou +1,0 e +1,9 ano a cada 10 pontos de fração imune nas coortes EPIC e −0,9 no
 GSE78874. O encolhimento reduz uma correção de sinal trocado (de +116% para +28%
 com $alpha = 3$), mas não a torna útil. Numa quarta coorte de saliva em EPIC, de

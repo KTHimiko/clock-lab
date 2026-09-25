@@ -348,6 +348,13 @@ centring by plate did not remove it.
 
 == Saliva
 
+#figure(
+  image("figures/en/fig6_saliva.png", width: 95%),
+  caption: [*Immune-fraction slope of each clock in four saliva cohorts.* Clock
+  age regressed on chronological age and immune fraction; slope per 10
+  percentage points, 95% CI. GSE149747 at baseline.],
+) <fig6>
+
 Before correction, composition accounted for 10.8–51.6% of age-acceleration
 variance for the age clocks in saliva, and 42–56% for DunedinPACE. Fitted on 40
 samples and transported between saliva cohorts, the correction was harmful in 67%
@@ -362,7 +369,7 @@ also crosses array and preprocessing, so technical and biological differences
 cannot be separated, but quantile-normalising GSE78874 to the EPIC distribution
 left 7 of 8 cells harmful, and so did a three-type fit whose composition matrix
 is well conditioned (condition number ≈ 1, against 872–1,317 for nine types).
-The cause is on the dominant axis: adjusted for age, Horvath 2018 changed by
+The cause is on the dominant axis (@fig6): adjusted for age, Horvath 2018 changed by
 +1.0 and +1.9 years per 10 points of immune fraction in the EPIC cohorts and by
 −0.9 in GSE78874. Shrinkage can reduce a correction of the wrong sign
 (+116% to +28% at $alpha = 3$) but cannot make it helpful. In a fourth EPIC saliva

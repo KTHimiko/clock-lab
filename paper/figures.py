@@ -13,6 +13,7 @@ can never disagree with the stage that produced its numbers.
   fig4  the transport index against net damage, per clock, with the
         transports a closed-form predictor wrongly calls safe       stage 26
   fig5  the penalty, cell by cell                                   stage 27
+  fig6  saliva: the immune-fraction slope, per cohort and clock     stages 39-40
 
 The old figure 1 drew the permuted reference as a flat line measured only at
 n = 656; the old figure 2 marked a "safe" floor that stage 26 withdrew; the old
@@ -80,7 +81,11 @@ T = {
   f4_note="within-n ρ ≈ 0.36\nblock-permutation p = 0.036",
   f5_title="A penalty removes the harm in 29 of 30 cells",
   f5_sub="{k} of 30 (pair × clock) cells harmful without a penalty; {j} at α = 3",
-  f5_ols="least squares (no penalty)", f5_ridge="ridge, α = 3"),
+  f5_ols="least squares (no penalty)", f5_ridge="ridge, α = 3",
+  f6_title="In saliva, the composition slope changes sign between cohorts",
+  f6_sub="clock age per +10 points of immune fraction, adjusted for age (95% CI)",
+  f6_x="years per +10 percentage points of immune fraction",
+  f6_h="Horvath 2018", f6_l="Levine 2018", f6_norm="GSE78874 (normalised)"),
  "pt": dict(
   pct_dec=",",
   y_net="dano líquido (pontos da variância de aceleração)",
@@ -104,7 +109,11 @@ T = {
   f4_note="ρ dentro de n ≈ 0,36\npermutação em blocos p = 0,036",
   f5_title="A penalidade remove o dano em 29 de 30 células",
   f5_sub="{k} de 30 células (par × relógio) nocivas sem penalidade; {j} com α = 3",
-  f5_ols="mínimos quadrados (sem penalidade)", f5_ridge="ridge, α = 3"),
+  f5_ols="mínimos quadrados (sem penalidade)", f5_ridge="ridge, α = 3",
+  f6_title="Na saliva, a inclinação da composição troca de sinal entre coortes",
+  f6_sub="idade do relógio por +10 pontos de fração imune, ajustada pela idade (IC 95%)",
+  f6_x="anos por +10 pontos percentuais de fração imune",
+  f6_h="Horvath 2018", f6_l="Levine 2018", f6_norm="GSE78874 (normalizada)"),
 }
 LANG = "en"
 
@@ -164,6 +173,10 @@ RP = pd.read_csv(RES / "ridge_per_clock.csv")
 C5 = (RP.groupby(["src", "dst", "clock", "alpha"]).delta.median()
         .unstack("alpha").reset_index().sort_values(0.0))
 k_ols, k_r3 = int((C5[0.0] > 0).sum()), int((C5[3.0] > 0).sum())
+
+
+SL = pd.read_csv(RES / "saliva_slopes.csv")
+SL_ORDER = ["GSE232891", "GSE232332", "GSE149747", "GSE78874", "GSE78874 (normalised)"]
 
 
 # -------------------------------------------------------------- figures -----
@@ -293,9 +306,34 @@ def fig5(t):
     save(fig, "fig5_penalty")
 
 
+def fig6(t):
+    fig, ax = plt.subplots(figsize=(6.6, 3.6))
+    style(ax, t["f6_x"])
+    ax.axvline(0, color=INK, lw=1.0, zorder=2)
+    for k, (clock, col, mk, off) in enumerate([("Horvath2018", BLUE, "o", -0.14),
+                                                ("Levine2018", ORANGE, "s", 0.14)]):
+        g = SL[SL.clock == clock].set_index("cohort").loc[SL_ORDER]
+        y = np.arange(len(g)) + off
+        ax.errorbar(g.slope, y, xerr=1.96 * g.se, fmt="none", ecolor=col, elinewidth=1.2, capsize=0, zorder=3)
+        ax.scatter(g.slope, y, s=34, marker=mk, facecolor=col, edgecolor="white", lw=0.9, zorder=5,
+                   label=t["f6_h"] if clock == "Horvath2018" else t["f6_l"])
+    labels = []
+    for c in SL_ORDER:
+        r = SL[SL.cohort == c].iloc[0]
+        name = t["f6_norm"] if "normalised" in c else c
+        labels.append(f"{name}  ·  {r['array']}, n = {r['n']}")
+    ax.set_yticks(np.arange(len(SL_ORDER))); ax.set_yticklabels(labels, fontsize=7.5)
+    ax.invert_yaxis()
+    ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(
+        lambda x, _: f"{x:+.0f}".replace("+0", "0") if x else "0"))
+    ax.legend(loc="upper left")
+    title(ax, t["f6_title"], t["f6_sub"])
+    save(fig, "fig6_saliva")
+
+
 for LANG in T:
-    for f in (fig1, fig2, fig3, fig4, fig5):
+    for f in (fig1, fig2, fig3, fig4, fig5, fig6):
         f(T[LANG])
-    print(f"  figures/{LANG}/: cinco figuras")
+    print(f"  figures/{LANG}/: seis figuras")
 print(f"  piso {FLOOR:+.2%} | rho fig3 {rho3:.3f} | falsos seguros fig4 "
       f"{int(C4.false_safe.sum())} | fig5 {k_ols} -> {k_r3}")
