@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty-six stages
+## The answer, after thirty-seven stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2624,7 +2624,9 @@ correction):
   hypothesis written after the result, not a finding.
 
   > **Stage 36 tested this and it failed.** Restricted to ages 24–75, GSE40279
-  > keeps the floor (+3.5 → +3.3 for Horvath 2018).
+  > keeps the floor (+3.5 → +3.3 for Horvath 2018). Stage 37 found the floor confined to the
+  > Caucasian-European half of GSE40279; ancestry and plate are confounded there
+  > and centring by plate does not remove it.
 - **Small-n harm from a third fitting cohort (criterion 5, passed):** at n = 40
   the age clocks' correction was harmful in 83% of draws (median +7.6%).
 - **The penalty (criterion 6, passed):** harmful cells go from 13 of 13 to 1 of
@@ -2692,6 +2694,44 @@ to thousands. The fading penalty costs nothing there, but it lets through ten
 more harmful cells at the sizes where transported corrections are actually used.
 Whether a target carries model shift cannot be known in advance (stage 26), so
 the recommendation stays α = 3, now with its cost stated.
+
+## Stage 37 — the GSE40279 floor: neither ancestry nor batch, and the two cannot be separated
+
+With estimation noise out of the way (fitted on all 2,639 of GSE55763), GSE40279
+keeps a floor of +2.4 (Levine 2018) and +3.5 (Horvath 2018) points. Stage 36
+ruled out age extrapolation. The metadata offered two more candidates, both
+written down before scoring: ancestry (426 Caucasian-European, 230
+Hispanic-Mexican; Horvath et al. 2016 report different intrinsic and extrinsic
+ageing between the two) and batch (nine processing plates).
+
+**Criterion 2 (ancestry, Hispanic floor > 2× size-matched Caucasian) failed, and
+the data point the other way.**
+
+| subset | Levine 2018, error left | Horvath 2018, error left |
+|---|---|---|
+| Hispanic-Mexican (230) | −0.4% | −0.2% |
+| Caucasian-European (426) | +4.3% | +3.9% |
+| Caucasian, 30 random subsets of 230 (median, 10th–90th pct) | +3.9% (+1.5, +6.5) | +4.3% (+0.7, +6.0) |
+
+The whole floor is in the Caucasian half. The transport from London into the
+Hispanic half is essentially exact.
+
+**Criterion 3 (batch, centring by plate removes over half) failed:** after
+centring clocks and composition within plate, the error left was +3.9% and +2.5%.
+
+**Ancestry and plate are confounded by design:** Hispanic samples sit on plates
+5, 6 and 9 only, Caucasian samples on the other six. So "the Caucasian half"
+means "those six plates" too, and the two cannot be told apart in this cohort.
+What the stage does establish is where the floor is — half the cohort, not all of
+it — and that a mean shift per plate is not it. In the Caucasian half, the
+correction adds composition signal to Horvath 2018 (+0.8% before, +3.9% after).
+
+### What this changes
+
+Nothing in the practical conclusion. It sharpens the description of model shift:
+the floor is not even a property of a cohort. It can sit in one recruitment
+stream of a cohort and be absent from the other. That strengthens stage 26 —
+diagnostics computed at the level of the cohort cannot see it.
 
 ## Corrections so far
 

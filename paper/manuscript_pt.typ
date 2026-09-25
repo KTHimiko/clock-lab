@@ -338,7 +338,10 @@ coortes. Com tantas amostras de ajuste, a correção sem penalidade ajudou em 10
 13 células, e a penalidade fixa custou benefício (mediana de −3,0% contra −4,0%)
 ao eliminar as três células nocivas. Restringir o GSE40279 à faixa etária da
 coorte de ajuste (24 a 75 anos) não mudou seu piso (de +3,5 para +3,3 pontos no
-Horvath 2018), então a extrapolação de idade não o explica.
+Horvath 2018), então a extrapolação de idade não o explica. O piso se concentra
+na metade de ancestralidade europeia da coorte (+4,3 e +3,9 pontos, contra −0,4 e
+−0,2 na metade hispânica), que nessa coorte também foi processada em placas
+separadas; centrar por placa não o removeu.
 
 = Discussão
 

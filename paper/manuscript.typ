@@ -323,7 +323,10 @@ fitting samples the unpenalised correction helped in 10 of 13 cells, and the
 fixed penalty cost benefit (median −3.0% against −4.0%) while removing the three
 harmful cells. Restricting GSE40279 to the fitting cohort's age range (24–75
 years) left its floor unchanged (+3.5 to +3.3 points for Horvath 2018), so age
-extrapolation does not explain it.
+extrapolation does not explain it. The floor is confined to the cohort's
+European-ancestry half (+4.3 and +3.9 points, against −0.4 and −0.2 in its
+Hispanic half), which in this cohort was also processed on separate plates;
+centring by plate did not remove it.
 
 = Discussion
 
