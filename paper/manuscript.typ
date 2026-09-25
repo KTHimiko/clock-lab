@@ -429,6 +429,19 @@ the tail's size is solver-dependent while its existence is not; it is
 concentrated in saliva, where the composition matrix is nearly singular. At
 $alpha = 3$ no draw exceeded 10 years.
 
+Reliability is not a substitute for this metric. GSE55763 measured 36 people
+twice; on those 72 arrays, which the fit never saw, the technical ICC(2,1) of
+age acceleration fell after the within-study correction for all four age clocks
+(Horvath 2013 0.817 to 0.769), as adjusting for composition lowers reliability
+elsewhere @sehgal2026. A correction transported from 40 samples raised it
+instead (0.842), above the uncorrected value in three clocks. The reason is
+arithmetic: the correction left the disagreement between a person's two arrays
+almost unchanged (3.68 to 3.53 for Horvath 2013) and removed between-person
+variance (18.32 to 13.56), which is what a composition correction is meant to
+remove. A correction that removes less therefore scores as more reliable, so
+reliability cannot rank corrections, while the movement of a reported
+association can.
+
 == Robustness to the reference panels
 
 Repeated on the published libraries, with nothing else changed, the blood results
@@ -512,9 +525,30 @@ to them.
 = Data and code availability
 
 All series are public (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
-GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE35069, GSE167998). Analysis code, the stage-by-stage record including every overturned
-conclusion, and figure scripts are at
-#link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab],
-private at the time of writing and available from the author on request.
+GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE147318, GSE35069,
+GSE167998); published reference matrices come from the EpiDISH Bioconductor
+package (version 2.28.0). Analysis code, figure scripts and the stage-by-stage
+record of the project, including every conclusion that a later stage overturned,
+are at #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
+(code under the MIT licence; text and figures under CC BY 4.0). Every number in
+this manuscript is produced by a script there.
+
+= Declarations
+
+*Use of generative AI.* This study was carried out with extensive use of an AI
+system, Claude (Anthropic), through the Claude Code environment. The AI wrote the
+analysis code, designed and ran the analyses with checks written before each
+result was read, searched and summarised the literature, and drafted the text and
+figures. The author set the aims, decided which questions to pursue and which
+results to report, obtained informal critical readings of earlier drafts and had
+the corrections they required made, and takes responsibility for the content. The
+AI is not an author.
+
+*Funding.* None.
+
+*Competing interests.* None.
+
+*Acknowledgements.* To the readers of earlier drafts, whose criticism corrected
+several claims, each recorded in the project's public corrections table.
 
 #bibliography("refs.bib", title: "References", style: "nature")

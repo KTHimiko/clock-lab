@@ -399,8 +399,20 @@ anos da estimativa de dentro da coorte, o pior a 37,6 anos. Resolvido como
 mínimos quadrados exatos, sem descartar valores singulares próximos de zero,
 10,1% passaram de 10 anos, então o tamanho da cauda depende do solucionador,
 ainda que a existência dela não dependa; ela se concentra na saliva, onde a
-matriz de composição é quase singular. Com $alpha = 3$ nenhum sorteio passou de
-10 anos.
+matriz de composição é quase singular. Com $alpha = 3$ nenhum sorteio passou de 10 anos.
+
+A confiabilidade não substitui essa métrica. O GSE55763 mediu 36 pessoas duas
+vezes; nesses 72 arrays, que o ajuste nunca viu, o ICC(2,1) técnico da
+aceleração caiu depois da correção de dentro do estudo nos quatro relógios de
+idade (Horvath 2013 de 0,817 para 0,769), como já se viu que corrigir por
+composição reduz a confiabilidade @sehgal2026. Uma correção transportada de 40
+amostras o aumentou (0,842), acima do valor sem correção em três relógios. O
+motivo é aritmético: a correção quase não mudou a discordância entre os dois
+arrays de uma pessoa (de 3,68 para 3,53 no Horvath 2013) e removeu variância
+entre pessoas (de 18,32 para 13,56), que é o que uma correção de composição deve
+remover. Uma correção que remove menos pontua, portanto, como mais confiável;
+a confiabilidade não ordena correções, e o deslocamento de uma associação
+reportada ordena.
 
 == Robustez aos painéis de referência
 
@@ -479,9 +491,30 @@ envelhecimento biológico; trata de uma correção aplicada a eles.
 = Disponibilidade de dados e código
 
 Todas as séries são públicas (GSE40279, GSE61151, GSE50660, GSE42861, GSE132203,
-GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE35069, GSE167998). O código de análise, o registro etapa a etapa com toda conclusão
-derrubada e os scripts das figuras estão em
-#link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
-, privado no momento em que isto é escrito e disponível com o autor mediante pedido.
+GSE55763, GSE232891, GSE232332, GSE78874, GSE149747, GSE147318, GSE35069,
+GSE167998); as matrizes de referência publicadas vêm do pacote EpiDISH do
+Bioconductor (versão 2.28.0). O código de análise, os scripts das figuras e o
+registro etapa a etapa do projeto, com toda conclusão que uma etapa posterior
+derrubou, estão em #link("https://github.com/KTHimiko/clock-lab")[github.com/KTHimiko/clock-lab]
+(código sob a licença MIT; texto e figuras sob CC BY 4.0). Todo número deste
+manuscrito é produzido por um script de lá.
+
+= Declarações
+
+*Uso de IA generativa.* Este estudo foi feito com uso extenso de um sistema de
+IA, o Claude (Anthropic), pelo ambiente Claude Code. A IA escreveu o código de
+análise, desenhou e rodou as análises com checagens escritas antes de cada
+resultado ser lido, buscou e resumiu a literatura e redigiu o texto e as
+figuras. O autor definiu os objetivos, decidiu quais perguntas seguir e quais
+resultados reportar, obteve leituras críticas informais de versões anteriores e
+mandou fazer as correções que elas exigiram, e responde pelo conteúdo. A IA não
+é autora.
+
+*Financiamento.* Nenhum.
+
+*Conflito de interesses.* Nenhum.
+
+*Agradecimentos.* Aos leitores das versões anteriores, cujas críticas corrigiram
+várias afirmações, cada uma registrada na tabela de correções pública do projeto.
 
 #bibliography("refs.bib", title: "Referências", style: "nature")

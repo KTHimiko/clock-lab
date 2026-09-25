@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after forty-three stages
+## The answer, after forty-seven stages
 
 **Both, and the proportions matter more than either camp says.**
 

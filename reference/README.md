@@ -139,3 +139,87 @@ curl -sLO "https://raw.githubusercontent.com/yiluyucheng/dnaMethyAge/main/data/H
 
 Read with `pyreadr`; no R needed. `DunedinPACE.rda` fails to parse and is not
 used.
+
+## GSE110554 — FlowSorted.Blood.EPIC, purified blood cell types on EPIC
+
+Salas et al. 2018 (PMID 29843789). Used from stage 5 as the replication of the
+within-donor design on a second array and a second set of donors.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554>
+- 218,262,661 bytes compressed
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE110nnn/GSE110554/matrix/GSE110554_series_matrix.txt.gz"
+```
+
+## GSE132203 — Grady Trauma Project, whole blood on EPIC
+
+PMID 31737926. The fifth blood cohort (stage 33): another array generation and a
+mostly African American population. Only Levine 2018 and Horvath 2018 clear the
+95% probe-coverage rule on it.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132203>
+- betas in `GSE132203_Geo_Submission_GTPEpic.csv.gz`, 5,322,669,451 bytes
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/suppl/GSE132203_Geo_Submission_GTPEpic.csv.gz"
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/matrix/GSE132203_series_matrix.txt.gz"
+```
+
+## GSE55763 — Lehne et al. 2015, 2,711 arrays of whole blood, London
+
+The large fitting cohort (stage 35). 36 people were measured twice for a
+technical replication study: stage 35 drops all 72 of those arrays and fits on
+the 2,639 "Population study sample." arrays; stage 47 uses the 72 replicates to
+measure reliability.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE55763>
+- `GSE55763_normalized_betas.txt.gz`, 10,378,167,001 bytes, md5
+  `64654afe3a8898641c3e321c5a5204df`
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE55nnn/GSE55763/suppl/GSE55763_normalized_betas.txt.gz"
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE55nnn/GSE55763/matrix/GSE55763_series_matrix.txt.gz"
+```
+
+## Saliva: GSE232891, GSE232332, GSE78874, GSE149747
+
+The saliva block (stages 38–46).
+
+| series | array | samples used | file |
+|---|---|---|---|
+| GSE232891 | EPIC | 552 (Crohn's disease, ulcerative colitis, controls) | `GSE232891_Processed_Beta_Values.csv.gz`, md5 `793558b546505f37761501d5a57555cd` |
+| GSE232332 | EPIC | 265 after dropping technical replicates (oesophageal cancer, controls) | `GSE232332_Matrix_Processed.txt.gz` |
+| GSE78874 | 450k | 259 (PEG study; betas computed here from raw signal) | `GSE78874_datSignal.csv.gz` |
+| GSE149747 | EPIC | 44 at baseline (Methylation Diet and Lifestyle) | `GSE149747_MDL_Matrix_AverageBetas.csv.gz`, md5 `40fbc7c376c59ec1e98ff775fd415826` |
+
+GSE232891 and GSE232332 come from one group and carry no genotyping probes, so
+shared individuals cannot be ruled out; they are never paired as fit and target.
+GSE232332's header is a Python list written into a CSV field — see
+`analysis/38a_saliva_cache.py` for how it is parsed. All four files are in each
+series' `suppl/` directory on the GEO FTP server, alongside the series matrix.
+
+## GSE147318 — Middleton et al. 2022, sorted saliva cells
+
+Children's saliva sorted into CD45-positive (immune) and large-cell (epithelial)
+fractions, on EPIC. Stage 46 builds the independent saliva measurement panel from
+it. The processed betas are in the series matrix itself.
+
+- GEO: <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE147318>
+- 429,873,263 bytes, md5 `6af8e2cc7fea88b73f38ce1ac6b714f3`
+
+```bash
+curl -sLO "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE147nnn/GSE147318/matrix/GSE147318_series_matrix.txt.gz"
+```
+
+## EpiDISH 2.28.0 — published reference matrices
+
+The saliva references (`centEpiFibIC.m`, `centBloodSub.m`) and the published
+blood libraries used in stage 44 (`cent12CT450k.m`, the Salas 2022 twelve-type
+reference; `centDHSbloodDMC.m`, seven types) are read from the package's `data/`
+directory, extracted to `reference/data/epidish/`.
+
+```bash
+curl -sLO "https://bioconductor.org/packages/release/bioc/src/contrib/EpiDISH_2.28.0.tar.gz"
+# sha256 1202e825fcbd1432e8cdc22326fc9929dc153268c8bfd2e7f3097a9c9160a4a2
+```
