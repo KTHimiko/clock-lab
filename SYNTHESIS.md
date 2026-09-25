@@ -6,7 +6,7 @@ Every longevity company sells a "biological age" test built on DNA methylation.
 Blood composition shifts with age, and each cell type carries its own methylation
 pattern. **Does a clock read how old the cells are, or who is in the sample?**
 
-## The answer, after thirty stages
+## The answer, after thirty-one stages
 
 **Both, and the proportions matter more than either camp says.**
 
@@ -2402,6 +2402,58 @@ GSE61151 for Levine, +7.5% → +0.5%). The pre-set bar was at most one.
 
 ---
 
+## Stage 31 — model shift inside a single study
+
+Between cohorts, model shift is entangled with batch, laboratory and population.
+Within GSE42861, rheumatoid arthritis cases and controls share the study, the
+array and the lab. A correction fitted on controls and applied to cases — a
+reference-population design — is a transport in which only disease differs.
+
+Controls were split at random into halves 30 times; each time the correction was
+fitted on half A and applied to half B (estimation noise only) and to the cases,
+so the paired difference is what disease adds.
+
+| clock | control → control | control → case | excess |
+|---|---|---|---|
+| Horvath 2013 | −6.8% | +0.6% | **+7.4%** |
+| Levine 2018 | −7.7% | −0.7% | **+7.4%** |
+| Horvath 2018 | −1.2% | +1.2% | **+2.6%** |
+
+The pre-registered prediction was differential: an excess above one point for
+Levine 2018 (whose coefficients stage 25 found to shift with RA) and below one
+point for Horvath 2018 (whose did not). **Refuted** — Horvath 2018 shows an excess
+too. What stands is stronger than what was predicted: inside one study, on one
+array, a correction fitted on controls does worse on patients than on other
+controls, for all three clocks. Batch cannot explain it.
+
+### It is model shift, not covariance (post hoc)
+
+Disease changes two things, the coefficients and the composition distribution,
+and the excess could be either. Written after the prediction failed: the
+transport index, paired draw by draw, is *lower* for control → case (0.065) than
+for control → control (0.096) — by the noise component alone, cases should have
+been harmed less. Removing the predicted noise term leaves the excess at +8.7%
+(Horvath 2013), +8.4% (Levine) and **+6.3% (Horvath 2018)**: all of it is model
+shift. The within-cohort Wald test that cleared Horvath 2018 (p = 0.61) lacked the
+power to see a difference that damage can see — the mismatch stage 25 described.
+
+### What it does to a case-control estimate
+
+The RA effect on age acceleration, in years, adjusted for age:
+
+| clock | unadjusted | adjusted in the whole cohort | correction fitted on controls |
+|---|---|---|---|
+| Horvath 2013 | −1.35 | −0.31 | −0.60 |
+| Levine 2018 | +2.69 | +0.04 | −0.10 |
+| Horvath 2018 | −1.36 | −0.74 | **−1.39** |
+
+The choice of reference population alone moves the Horvath 2018 disease effect
+from −0.74 to −1.39 years. Adjusting in the whole cohort and adjusting with a
+controls-only reference are both defensible-looking choices, and they disagree by
+nearly a factor of two.
+
+---
+
 ## Corrections so far
 
 | what was wrong | what caught it | what it cost |
@@ -2457,6 +2509,7 @@ GSE61151 for Levine, +7.5% → +0.5%). The pre-set bar was at most one.
 | **'ridge at α = 3 holds all twelve pairs'** (stages 21, 23) | stage 27 counting per clock: 29 of 30 cells, one left at +0.2%; and 15 of 30 harmful without a penalty where the pooled count said 3 of 12 | the claim becomes 'reduces 50% to 3%'; α = 10 holds all at the cost of most of the benefit |
 | **the index ranking configurations at ρ = 0.907, p = 2×10⁻²⁴** | a reviewer on dependence; stage 28 showing fitting size alone yields ρ ≈ 0.42, and a block permutation giving p = 0.036 | the index's headline strength — real between-pair information, modest, mostly 1/n |
 | measuring every transport with the six-type panel, blind to the naive/memory axis | a reviewer; stage 29 measuring on twelve types and on the naive/memory columns: +48.1% and +30.6% at n = 40 where six types saw +11.8% | nothing overturned — the six-type curves understated the damage three- to four-fold |
+| reading stage 25's non-significant Wald test (p = 0.61) as Horvath 2018 having no disease-driven model shift | stage 31: within GSE42861, controls → cases leaves +6.3 points beyond the noise term for Horvath 2018 | the differential prediction; model shift is present for all three clocks inside one study |
 
 Three of those returned plausible numbers without crashing, and the loader bug
 returned them for four stages before anything noticed. What finally caught it was
